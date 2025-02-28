@@ -1,4 +1,4 @@
-name: GitHub Pages
+name: Deploy Jupyter Book to GitHub Pages
 
 on:
   push:
@@ -13,22 +13,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          ruby-version: '3.0'  # Ensure this is a valid Ruby version for your project
-      
-      - name: Install dependencies
-        run: bundle install
+          python-version: '3.9'
 
-      - name: Build site
-        run: bundle exec jekyll build
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install jupyter-book ghp-import
+
+      - name: Build Jupyter Book
+        run: jupyter-book build .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: site
-          path: _site
+          path: _build/html
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,10 +44,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: site
-          path: ./site
+          path: ./_build/html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
+          publish_dir: ./_build/html
+
