@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -27,7 +27,7 @@ jobs:
         run: jupyter-book build .
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3  # ✅ Usar v3 en lugar de v2
+        uses: actions/upload-artifact@v4  # ✅ Usar v4
         with:
           name: site
           path: _build/html
@@ -38,10 +38,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download artifact
-        uses: actions/download-artifact@v3  # ✅ Usar v3 en lugar de v2
+        uses: actions/download-artifact@v4  # ✅ Usar v4
         with:
           name: site
           path: ./_build/html
