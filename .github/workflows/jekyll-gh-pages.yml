@@ -16,7 +16,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.0'  # Update to a valid Ruby version as needed
+          ruby-version: '3.0'  # Ensure this is a valid Ruby version for your project
       
       - name: Install dependencies
         run: bundle install
@@ -29,16 +29,23 @@ jobs:
         with:
           name: site
           path: _site
-      - name: Install dependencies
-        run: bundle install
-        working-directory: ./path/to/your/subdirectory
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          name: site
+          path: ./site
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
