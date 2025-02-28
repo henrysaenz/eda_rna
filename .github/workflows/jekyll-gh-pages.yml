@@ -29,6 +29,9 @@ jobs:
         with:
           name: site
           path: _site
+      - name: Install dependencies
+        run: bundle install
+        working-directory: ./path/to/your/subdirectory
 
   deploy:
     runs-on: ubuntu-latest
