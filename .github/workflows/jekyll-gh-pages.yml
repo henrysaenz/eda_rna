@@ -27,7 +27,7 @@ jobs:
         run: jupyter-book build .
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4  # ✅ Usar v4
+        uses: actions/upload-artifact@v4  #  Usar v4
         with:
           name: site
           path: _build/html
