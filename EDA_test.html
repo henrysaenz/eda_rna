@@ -1,0 +1,814 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Exploratory Data Analysis for test data &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'EDA_test';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    RNAseq EDA
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Cargue de datos</a></li>
+
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FEDA_test.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/EDA_test.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Exploratory Data Analysis for test data</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Exploratory Data Analysis for test data</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importacion-de-datos-y-librerias">Importación de datos y librerías</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="exploratory-data-analysis-for-test-data">
+<h1>Exploratory Data Analysis for test data<a class="headerlink" href="#exploratory-data-analysis-for-test-data" title="Link to this heading">#</a></h1>
+<section id="importacion-de-datos-y-librerias">
+<h2>Importación de datos y librerías<a class="headerlink" href="#importacion-de-datos-y-librerias" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.core.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_21568\1582991288.py:6: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
+  from IPython.core.display import display, HTML
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_path</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Single-cell RNASeq data from Mouse Brain&quot;</span>
+<span class="n">data_path2</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Theory - Intro to single-cell RNAseq Images&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path2</span><span class="p">,</span> <span class="s2">&quot;test_adata.h5ad&quot;</span><span class="p">)</span>
+<span class="n">adata_test</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="exploration-and-observation-of-the-data">
+<h2>Exploration and observation of the data<a class="headerlink" href="#exploration-and-observation-of-the-data" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 30474 × 13553
+    obs: &#39;batch_indices&#39;, &#39;n_genes&#39;, &#39;percent_mito&#39;, &#39;leiden_subclusters&#39;, &#39;cell_types&#39;, &#39;tissue&#39;, &#39;batch&#39;
+    obsm: &#39;isotypes_htos&#39;, &#39;protein_expression&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_test</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(30474, 13553)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="explanation-of-the-variables-in-adata-test-obs">
+<h1>📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code><a class="headerlink" href="#explanation-of-the-variables-in-adata-test-obs" title="Link to this heading">#</a></h1>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Column</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code></strong></p></td>
+<td><p>Numerical index of the experimental batch the cell belongs to. Helps identify samples from different experiments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">n_genes</span></code></strong></p></td>
+<td><p>Number of detected genes in each cell. Indicates gene expression diversity.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">percent_mito</span></code></strong></p></td>
+<td><p>Percentage of mitochondrial genes in the cell. A high value may indicate cellular stress or dead cells.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">leiden_subclusters</span></code></strong></p></td>
+<td><p>Cluster assigned to the cell using the <strong>Leiden algorithm</strong>, which detects subpopulations within the data.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">cell_types</span></code></strong></p></td>
+<td><p>The assigned cell type, such as <strong>NKT (Natural Killer T cells)</strong>, <strong>CD8 T cells</strong>, <strong>B cells</strong>, etc.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">tissue</span></code></strong></p></td>
+<td><p>The tissue the cell comes from, such as <strong>Spleen</strong> or <strong>Lymph Node</strong>.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">batch</span></code></strong></p></td>
+<td><p>Identifier of the original experimental batch, e.g., <strong>SLN111-D1</strong>. It may represent samples from different experiments or patients.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<section id="example-of-data-interpretation">
+<h2>📌 Example of Data Interpretation<a class="headerlink" href="#example-of-data-interpretation" title="Link to this heading">#</a></h2>
+<p>Each row represents <strong>an individual cell</strong> with its characteristics:</p>
+<section id="example-1">
+<h3><strong>Example 1</strong><a class="headerlink" href="#example-1" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Cell ID</strong>: <code class="docutils literal notranslate"><span class="pre">AAACCCAAGGGTAATT-1</span></code></p></li>
+<li><p><strong>Leiden cluster</strong>: <code class="docutils literal notranslate"><span class="pre">12,0</span></code></p></li>
+<li><p><strong>Cell type</strong>: <strong>NKT (Natural Killer T cell)</strong></p></li>
+<li><p><strong>Tissue</strong>: <strong>Spleen</strong></p></li>
+<li><p><strong>Experimental batch</strong>: <strong>SLN111-D1</strong></p></li>
+</ul>
+</section>
+<section id="example-2">
+<h3><strong>Example 2</strong><a class="headerlink" href="#example-2" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Cell ID</strong>: <code class="docutils literal notranslate"><span class="pre">AAACCCACAGATACCT-1</span></code></p></li>
+<li><p><strong>Leiden cluster</strong>: <code class="docutils literal notranslate"><span class="pre">4</span></code></p></li>
+<li><p><strong>Cell type</strong>: <strong>Mature B (mature B cell)</strong></p></li>
+<li><p><strong>Tissue</strong>: <strong>Lymph Node</strong></p></li>
+<li><p><strong>Experimental batch</strong>: <strong>SLN111-D1</strong></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">info</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;bound method DataFrame.info of                     batch_indices  n_genes  percent_mito leiden_subclusters  \
+index                                                                         
+AAACCCAAGGGTAATT-1              0     3137      0.062138               12,0   
+AAACCCAAGGTAAACT-1              0     2256      0.057545                  6   
+AAACCCACACTAGGTT-1              0     1367      0.058373                  3   
+AAACCCACAGATACCT-1              0     1567      0.065386                  4   
+AAACCCACAGGAATAT-1              0     1895      0.059644                  0   
+...                           ...      ...           ...                ...   
+TTTGTTGGTGGGCTCT-2              1      785      0.106437                  7   
+TTTGTTGTCAAATAGG-2              1      979      0.050457                  2   
+TTTGTTGTCACGAGGA-2              1      747      0.070362                  0   
+TTTGTTGTCTCGACCT-2              1      920      0.044903                 13   
+TTTGTTGTCTTGGTCC-2              1     1110      0.042289                  0   
+
+                        cell_types      tissue      batch  
+index                                                      
+AAACCCAAGGGTAATT-1             NKT      Spleen  SLN111-D1  
+AAACCCAAGGTAAACT-1    CD122+ CD8 T      Spleen  SLN111-D1  
+AAACCCACACTAGGTT-1  Transitional B      Spleen  SLN111-D1  
+AAACCCACAGATACCT-1        Mature B  Lymph_Node  SLN111-D1  
+AAACCCACAGGAATAT-1           CD4 T  Lymph_Node  SLN111-D1  
+...                            ...         ...        ...  
+TTTGTTGGTGGGCTCT-2        Mature B      Spleen  SLN208-D2  
+TTTGTTGTCAAATAGG-2           CD8 T  Lymph_Node  SLN208-D2  
+TTTGTTGTCACGAGGA-2           CD4 T      Spleen  SLN208-D2  
+TTTGTTGTCTCGACCT-2            B1 B      Spleen  SLN208-D2  
+TTTGTTGTCTTGGTCC-2           CD4 T  Lymph_Node  SLN208-D2  
+
+[30474 rows x 7 columns]&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                    batch_indices  n_genes  percent_mito leiden_subclusters  \
+index                                                                         
+AAACCCAAGGGTAATT-1              0     3137      0.062138               12,0   
+AAACCCAAGGTAAACT-1              0     2256      0.057545                  6   
+AAACCCACACTAGGTT-1              0     1367      0.058373                  3   
+AAACCCACAGATACCT-1              0     1567      0.065386                  4   
+AAACCCACAGGAATAT-1              0     1895      0.059644                  0   
+
+                        cell_types      tissue      batch  
+index                                                      
+AAACCCAAGGGTAATT-1             NKT      Spleen  SLN111-D1  
+AAACCCAAGGTAAACT-1    CD122+ CD8 T      Spleen  SLN111-D1  
+AAACCCACACTAGGTT-1  Transitional B      Spleen  SLN111-D1  
+AAACCCACAGATACCT-1        Mature B  Lymph_Node  SLN111-D1  
+AAACCCACAGGAATAT-1           CD4 T  Lymph_Node  SLN111-D1  
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata_test</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Empty DataFrame
+Columns: []
+Index: [Mrpl15, Lypla1, Tcea1, Atp6v1h, Rb1cc1]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 4️⃣ 🧬 Número de genes y células</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of cells: </span><span class="si">{</span><span class="n">adata_test</span><span class="o">.</span><span class="n">n_obs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of genes: </span><span class="si">{</span><span class="n">adata_test</span><span class="o">.</span><span class="n">n_vars</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of cells: 30474
+Number of genes: 13553
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 5️⃣ 📊 Resumen de la matriz de expresión</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">calculate_qc_metrics</span><span class="p">(</span><span class="n">adata_test</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">adata_test</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;n_genes_by_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;total_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_counts_in_top_50_genes&#39;</span><span class="p">],</span> <span class="n">jitter</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/709cba2ef6b59e99394bb1682c250fd904a25c0d2ee9134ed67e9dc29ec92883.png" src="_images/709cba2ef6b59e99394bb1682c250fd904a25c0d2ee9134ed67e9dc29ec92883.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 6️⃣ 🔬 Distribución de genes y cuentas</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">adata_test</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;total_counts&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;n_genes_by_counts&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Total Counts vs. Genes Detected&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/7df1537cbfc0e310464e27d5f86143419470fd9270d7ade285789917a16f757a.png" src="_images/7df1537cbfc0e310464e27d5f86143419470fd9270d7ade285789917a16f757a.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_path</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Single-cell RNASeq data from Mouse Brain&quot;</span>
+<span class="n">data_path2</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Theory - Intro to single-cell RNAseq Images&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">glioblastoma_norm_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s2">&quot;glioblastoma_normalized.h5ad&quot;</span><span class="p">)</span>
+<span class="n">glioblastoma_raw_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s2">&quot;glioblastoma_raw.h5ad&quot;</span><span class="p">)</span>
+<span class="n">pbmc3k_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s2">&quot;pbmc3k.h5ad&quot;</span><span class="p">)</span>
+
+<span class="n">adata_glioblastoma_norm</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">glioblastoma_norm_file</span><span class="p">)</span>
+<span class="n">adata_glioblastoma_raw</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">glioblastoma_raw_file</span><span class="p">)</span>
+<span class="n">adata_pbmc3k</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">pbmc3k_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\compat\__init__.py:329: FutureWarning: Moving element from .uns[&#39;neighbors&#39;][&#39;distances&#39;] to .obsp[&#39;distances&#39;].
+
+This is where adjacency matrices should go now.
+  warn(
+C:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\compat\__init__.py:329: FutureWarning: Moving element from .uns[&#39;neighbors&#39;][&#39;connectivities&#39;] to .obsp[&#39;connectivities&#39;].
+
+This is where adjacency matrices should go now.
+  warn(
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">common_genes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">adata_test</span><span class="o">.</span><span class="n">var_names</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">var_names</span><span class="p">)</span> <span class="o">&amp;</span> 
+                    <span class="nb">set</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">var_names</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var_names</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of common genes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">common_genes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of common genes: 0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Exploratory Data Analysis for test data</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importacion-de-datos-y-librerias">Importación de datos y librerías</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
