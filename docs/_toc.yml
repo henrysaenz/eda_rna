@@ -5,5 +5,5 @@ format: jb-book
 root: intro
 chapters:
   - file: EDA_RNAseq
-  - file: Datos_celulares_y_genéticos
+  - file: Datos_celulares_y_geneticos
 
