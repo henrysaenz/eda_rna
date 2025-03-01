@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>RNAseq EDA &#8212; My sample book</title>
+    <title>Final Project - Deep Learning &#8212; My sample book</title>
   
   
   
@@ -149,14 +149,8 @@
   
   
   
-    
-    
-      
-    
-    
-    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
-    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
   
+    <p class="title logo__title">My sample book</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -176,7 +170,7 @@
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1 current active">
                 <a class="reference internal" href="#">
-                    RNAseq EDA
+                    Final Project - Deep Learning
                 </a>
             </li>
         </ul>
@@ -187,6 +181,9 @@
 <li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Cargue de datos</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
+
+
 </ul>
 
     </div>
@@ -359,7 +356,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -370,11 +369,33 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>RNAseq EDA</h1>
+    <h1>Final Project - Deep Learning</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Final Project - Deep Learning</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#students"><strong>Students</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#professor"><strong>Professor</strong></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-single-cell-rna-sequencing">Introduction to Single-Cell RNA Sequencing</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-concepts-of-single-cell-rna-seq">Key Concepts of Single-cell RNA-seq</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-type-identification">Cell Type Identification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-expression-profiling">Gene Expression Profiling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transcriptomic-analysis">Transcriptomic Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -384,9 +405,40 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="rnaseq-eda">
-<h1>RNAseq EDA<a class="headerlink" href="#rnaseq-eda" title="Link to this heading">#</a></h1>
-<p>Introducción al EDA de RNAseq</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="final-project-deep-learning">
+<h1>Final Project - Deep Learning<a class="headerlink" href="#final-project-deep-learning" title="Link to this heading">#</a></h1>
+<section id="students">
+<h2><strong>Students</strong><a class="headerlink" href="#students" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Henry David Saenz Valverde</p></li>
+</ul>
+</section>
+<section id="professor">
+<h2><strong>Professor</strong><a class="headerlink" href="#professor" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Lihki Jose Rubio Ortega</p></li>
+</ul>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="introduction-to-single-cell-rna-sequencing">
+<h1>Introduction to Single-Cell RNA Sequencing<a class="headerlink" href="#introduction-to-single-cell-rna-sequencing" title="Link to this heading">#</a></h1>
+<p>Single-cell RNA sequencing (scRNA-seq) is a cutting-edge technique that allows researchers to analyze the gene expression of individual cells in a tissue sample. Unlike traditional RNA sequencing (bulk RNA-seq), which measures the average gene expression across a population of cells, scRNA-seq provides a much more granular view by examining the transcriptome (the complete set of RNA molecules) of each single cell. This is important because cells within the same tissue or organ can have very different functions, behaviors, and gene expression profiles, even if they look similar under a microscope.</p>
+<section id="key-concepts-of-single-cell-rna-seq">
+<h2>Key Concepts of Single-cell RNA-seq<a class="headerlink" href="#key-concepts-of-single-cell-rna-seq" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Single-cell Resolution: scRNA-seq captures gene expression data at the level of individual cells, providing insights into cellular heterogeneity that would be missed with bulk RNA-seq.</p></li>
+</ol>
+<section id="cell-type-identification">
+<h3>Cell Type Identification<a class="headerlink" href="#cell-type-identification" title="Link to this heading">#</a></h3>
+<p>By analyzing the gene expression profiles of individual cells, researchers can classify cells into different types, even rare or novel cell types that were previously difficult to identify.</p>
+</section>
+<section id="gene-expression-profiling">
+<h3>Gene Expression Profiling<a class="headerlink" href="#gene-expression-profiling" title="Link to this heading">#</a></h3>
+<p>scRNA-seq allows scientists to study which genes are active in each cell, and how the expression of those genes differs across the population of cells. This helps in understanding cell functions, signaling pathways, and responses to stimuli.</p>
+</section>
+<section id="transcriptomic-analysis">
+<h3>Transcriptomic Analysis<a class="headerlink" href="#transcriptomic-analysis" title="Link to this heading">#</a></h3>
+<p>The process involves isolating individual cells from a sample (such as a tissue or blood sample), extracting their RNA, and then sequencing it. This data is then analyzed to understand the functional state of each cell and how cells interact within a tissue.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
@@ -395,8 +447,13 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Cargue de datos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html#descripcion-de-las-variables">📌 Descripción de las Variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EDA_test.html#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="EDA_test.html#genes">genes</a></li>
 </ul>
 </div>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -444,6 +501,35 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Final Project - Deep Learning</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#students"><strong>Students</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#professor"><strong>Professor</strong></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-single-cell-rna-sequencing">Introduction to Single-Cell RNA Sequencing</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-concepts-of-single-cell-rna-seq">Key Concepts of Single-cell RNA-seq</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-type-identification">Cell Type Identification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-expression-profiling">Gene Expression Profiling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transcriptomic-analysis">Transcriptomic Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
               
             
           </div>
