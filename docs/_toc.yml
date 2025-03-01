@@ -4,6 +4,9 @@
 format: jb-book
 root: intro
 chapters:
-  - file: EDA_RNAseq
+  - file: EDA_metadata
+  - file: EDA_sparse_matrix
   - file: Datos_celulares_y_geneticos
+  - file: Agrupaciones_y_clusters
+  
 

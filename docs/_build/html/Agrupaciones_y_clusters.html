@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Cargue de datos &#8212; My sample book</title>
+    <title>Exploratory Data Analysis for clusterization and gene expressions &#8212; My sample book</title>
   
   
   
@@ -60,6 +60,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'Agrupaciones_y_clusters';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Cargue de datos" href="Datos_celulares_y_geneticos.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -122,8 +123,6 @@
       
       
       
-        
-      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -179,9 +178,13 @@
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="EDA_sparse_matrix.html">Exploratory Data Analysis for the sparse matrix</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Cargue de datos</a></li>
 
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Exploratory Data Analysis for clusterization and gene expressions</a></li>
 </ul>
 
     </div>
@@ -367,7 +370,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Cargue de datos</h1>
+    <h1>Exploratory Data Analysis for clusterization and gene expressions</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -377,29 +380,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Cargue de datos</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observar-conjunto-de-datos">Observar conjunto de datos</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#descripcion-de-las-variables-en-adata-glioblastoma-norm-obs">Descripción de las Variables en <code class="docutils literal notranslate"><span class="pre">adata_glioblastoma_norm.obs</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#significado-de-las-categorias-en-diagnosis">📌 Significado de las categorías en <code class="docutils literal notranslate"><span class="pre">diagnosis</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importancia-en-el-analisis">📊 Importancia en el análisis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-data-and-information">Import Data and Information</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adata-pbmc3k">adata_pbmc3k</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variables-in-the-dataset">🔍 Variables in the dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">🔍 Variables in the dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-interpret-this">🔍 How to interpret this?</a></li>
 </ul>
-</li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#descripcion-de-las-variables">📌 Descripción de las Variables</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion">🔎 Interpretación</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bivariate-analysis">Bivariate Analysis</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datos-genes">Datos genes</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#descripcion-de-las-variables-en-adata-glioblastoma-norm-var">Descripción de las variables en <code class="docutils literal notranslate"><span class="pre">adata_glioblastoma_norm.var</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analizar-la-matrix-de-expresion">Analizar la matrix de expresion</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
             </nav>
         </div>
     </div>
@@ -410,8 +396,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="cargue-de-datos">
-<h1>Cargue de datos<a class="headerlink" href="#cargue-de-datos" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="exploratory-data-analysis-for-clusterization-and-gene-expressions">
+<h1>Exploratory Data Analysis for clusterization and gene expressions<a class="headerlink" href="#exploratory-data-analysis-for-clusterization-and-gene-expressions" title="Link to this heading">#</a></h1>
+<section id="import-data-and-information">
+<h2>Import Data and Information<a class="headerlink" href="#import-data-and-information" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -424,7 +412,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_18936\1582991288.py:6: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_5588\1582991288.py:6: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
   from IPython.core.display import display, HTML
 </pre></div>
 </div>
@@ -463,1491 +451,67 @@ This is where adjacency matrices should go now.
 </div>
 </div>
 </div>
-<section id="observar-conjunto-de-datos">
-<h2>Observar conjunto de datos<a class="headerlink" href="#observar-conjunto-de-datos" title="Link to this heading">#</a></h2>
-<p>Los archivos H5AD son un formato utilizado en bioinformática para almacenar datos de expresión génica de células individuales en el framework Scanpy, basado en AnnData.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&lt;h3&gt;Metadatos de células:&lt;/h3&gt;&quot;</span><span class="p">))</span>
-<span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">to_html</span><span class="p">()))</span> 
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><h3>Metadatos de células:</h3></div><div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>disease_state</th>
-      <th>plate_id</th>
-      <th>tissue</th>
-      <th>patient_id</th>
-      <th>cell_type</th>
-      <th>neoplastic_state</th>
-      <th>diagnosis</th>
-      <th>n_genes_by_counts</th>
-      <th>log1p_n_genes_by_counts</th>
-      <th>total_counts</th>
-      <th>log1p_total_counts</th>
-      <th>pct_counts_in_top_50_genes</th>
-      <th>pct_counts_in_top_100_genes</th>
-      <th>pct_counts_in_top_200_genes</th>
-      <th>pct_counts_in_top_500_genes</th>
-      <th>n_counts</th>
-      <th>n_genes</th>
-    </tr>
-    <tr>
-      <th>index</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>GSM2243439</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-      <td>1341</td>
-      <td>7.201916</td>
-      <td>159262.312500</td>
-      <td>11.978314</td>
-      <td>65.554424</td>
-      <td>76.898016</td>
-      <td>89.034835</td>
-      <td>98.116145</td>
-      <td>159262.312500</td>
-      <td>1341</td>
-    </tr>
-    <tr>
-      <th>GSM2243444</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-      <td>1456</td>
-      <td>7.284135</td>
-      <td>326321.875000</td>
-      <td>12.695642</td>
-      <td>77.530281</td>
-      <td>83.443820</td>
-      <td>90.526005</td>
-      <td>98.158822</td>
-      <td>326321.875000</td>
-      <td>1456</td>
-    </tr>
-    <tr>
-      <th>GSM2243445</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-      <td>1849</td>
-      <td>7.522941</td>
-      <td>196996.859375</td>
-      <td>12.190948</td>
-      <td>50.919931</td>
-      <td>59.767944</td>
-      <td>70.261123</td>
-      <td>85.793566</td>
-      <td>196996.859375</td>
-      <td>1849</td>
-    </tr>
-    <tr>
-      <th>GSM2243452</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-      <td>1788</td>
-      <td>7.489412</td>
-      <td>208278.578125</td>
-      <td>12.246636</td>
-      <td>45.863893</td>
-      <td>56.620505</td>
-      <td>68.793036</td>
-      <td>87.116435</td>
-      <td>208278.578125</td>
-      <td>1788</td>
-    </tr>
-    <tr>
-      <th>GSM2243455</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Oligodendrocyte</td>
-      <td>neoplastic: Regular</td>
-      <td>Oligodendrocyte</td>
-      <td>2377</td>
-      <td>7.774015</td>
-      <td>288928.750000</td>
-      <td>12.573939</td>
-      <td>53.801413</td>
-      <td>62.445690</td>
-      <td>72.430413</td>
-      <td>87.809547</td>
-      <td>288928.750000</td>
-      <td>2377</td>
-    </tr>
-  </tbody>
-</table></div></div>
-</div>
-<p>Describir las varaobles del conjunto de datos</p>
 </section>
-<section id="descripcion-de-las-variables-en-adata-glioblastoma-norm-obs">
-<h2>Descripción de las Variables en <code class="docutils literal notranslate"><span class="pre">adata_glioblastoma_norm.obs</span></code><a class="headerlink" href="#descripcion-de-las-variables-en-adata-glioblastoma-norm-obs" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>Variable</p></th>
-<th class="head"><p>Descripción</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">disease_state</span></code></strong></p></td>
-<td><p>Estado de la enfermedad del paciente (ej. sano, glioblastoma, etc.).</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">plate_id</span></code></strong></p></td>
-<td><p>Identificador de la placa utilizada en la secuenciación de células.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">tissue</span></code></strong></p></td>
-<td><p>Tipo de tejido del que se extrajo la muestra (ej. tumor, sangre, etc.).</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">patient_id</span></code></strong></p></td>
-<td><p>Identificador único del paciente al que pertenece la muestra.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">cell_type</span></code></strong></p></td>
-<td><p>Tipo de célula identificada en la muestra (ej. Neoplastic, T cells, etc.).</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">neoplastic_state</span></code></strong></p></td>
-<td><p>Indica si la célula es neoplásica (cancerosa) o no.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">diagnosis</span></code></strong></p></td>
-<td><p>Diagnóstico clínico asociado a la muestra (ej. glioblastoma, sano, etc.).</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code></strong></p></td>
-<td><p>Número de genes detectados en la célula en función de la cantidad de lecturas.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code></strong></p></td>
-<td><p>Logaritmo natural de <code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code> más uno, utilizado para normalización.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">total_counts</span></code></strong></p></td>
-<td><p>Número total de lecturas (counts) asignadas a la célula.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">log1p_total_counts</span></code></strong></p></td>
-<td><p>Logaritmo natural de <code class="docutils literal notranslate"><span class="pre">total_counts</span></code> más uno, para normalización.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_50_genes</span></code></strong></p></td>
-<td><p>Porcentaje de las cuentas totales que provienen de los 50 genes más expresados.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_100_genes</span></code></strong></p></td>
-<td><p>Porcentaje de las cuentas totales que provienen de los 100 genes más expresados.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_200_genes</span></code></strong></p></td>
-<td><p>Porcentaje de las cuentas totales que provienen de los 200 genes más expresados.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_500_genes</span></code></strong></p></td>
-<td><p>Porcentaje de las cuentas totales que provienen de los 500 genes más expresados.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">n_counts</span></code></strong></p></td>
-<td><p>Número total de cuentas en la célula (puede ser redundante con <code class="docutils literal notranslate"><span class="pre">total_counts</span></code>).</p></td>
-</tr>
-<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">n_genes</span></code></strong></p></td>
-<td><p>Número total de genes detectados en la célula.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;disease_state&#39;,
- &#39;plate_id&#39;,
- &#39;tissue&#39;,
- &#39;patient_id&#39;,
- &#39;cell_type&#39;,
- &#39;neoplastic_state&#39;,
- &#39;diagnosis&#39;,
- &#39;n_genes_by_counts&#39;,
- &#39;log1p_n_genes_by_counts&#39;,
- &#39;total_counts&#39;,
- &#39;log1p_total_counts&#39;,
- &#39;pct_counts_in_top_50_genes&#39;,
- &#39;pct_counts_in_top_100_genes&#39;,
- &#39;pct_counts_in_top_200_genes&#39;,
- &#39;pct_counts_in_top_500_genes&#39;,
- &#39;n_counts&#39;,
- &#39;n_genes&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<p>contendio de las celulas h5ad</p>
-<p>numero de celulas vs nuemro de variables</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1651, 17)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-Index: 1651 entries, GSM2243439 to GSM2247071
-Data columns (total 17 columns):
- #   Column                       Non-Null Count  Dtype   
----  ------                       --------------  -----   
- 0   disease_state                1651 non-null   category
- 1   plate_id                     1651 non-null   category
- 2   tissue                       1651 non-null   category
- 3   patient_id                   1651 non-null   category
- 4   cell_type                    1651 non-null   category
- 5   neoplastic_state             1651 non-null   category
- 6   diagnosis                    1651 non-null   category
- 7   n_genes_by_counts            1651 non-null   int64   
- 8   log1p_n_genes_by_counts      1651 non-null   float64 
- 9   total_counts                 1651 non-null   float32 
- 10  log1p_total_counts           1651 non-null   float32 
- 11  pct_counts_in_top_50_genes   1651 non-null   float64 
- 12  pct_counts_in_top_100_genes  1651 non-null   float64 
- 13  pct_counts_in_top_200_genes  1651 non-null   float64 
- 14  pct_counts_in_top_500_genes  1651 non-null   float64 
- 15  n_counts                     1651 non-null   float32 
- 16  n_genes                      1651 non-null   int64   
-dtypes: category(7), float32(3), float64(5), int64(2)
-memory usage: 202.2+ KB
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>n_genes_by_counts</th>
-      <th>log1p_n_genes_by_counts</th>
-      <th>total_counts</th>
-      <th>log1p_total_counts</th>
-      <th>pct_counts_in_top_50_genes</th>
-      <th>pct_counts_in_top_100_genes</th>
-      <th>pct_counts_in_top_200_genes</th>
-      <th>pct_counts_in_top_500_genes</th>
-      <th>n_counts</th>
-      <th>n_genes</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>1651.000000</td>
-      <td>1651.000000</td>
-      <td>1651.000000</td>
-      <td>1651.000000</td>
-      <td>1651.000000</td>
-      <td>1651.000000</td>
-      <td>1651.000000</td>
-      <td>1651.000000</td>
-      <td>1651.000000</td>
-      <td>1651.000000</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>1341.784979</td>
-      <td>7.177672</td>
-      <td>156180.015625</td>
-      <td>11.854759</td>
-      <td>54.477025</td>
-      <td>68.027822</td>
-      <td>82.394250</td>
-      <td>95.983677</td>
-      <td>156180.015625</td>
-      <td>1341.784979</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>300.774693</td>
-      <td>0.223335</td>
-      <td>71629.671875</td>
-      <td>0.462496</td>
-      <td>10.670330</td>
-      <td>10.529468</td>
-      <td>9.206988</td>
-      <td>3.974234</td>
-      <td>71629.671875</td>
-      <td>300.774693</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>758.000000</td>
-      <td>6.632002</td>
-      <td>50324.871094</td>
-      <td>10.826275</td>
-      <td>28.037418</td>
-      <td>40.053208</td>
-      <td>54.781912</td>
-      <td>76.990205</td>
-      <td>50324.871094</td>
-      <td>758.000000</td>
-    </tr>
-    <tr>
-      <th>25%</th>
-      <td>1116.000000</td>
-      <td>7.018402</td>
-      <td>100596.058594</td>
-      <td>11.518878</td>
-      <td>46.644485</td>
-      <td>60.524699</td>
-      <td>75.820377</td>
-      <td>94.792221</td>
-      <td>100596.058594</td>
-      <td>1116.000000</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>1315.000000</td>
-      <td>7.182352</td>
-      <td>144781.062500</td>
-      <td>11.882985</td>
-      <td>54.762902</td>
-      <td>68.990140</td>
-      <td>84.223608</td>
-      <td>97.434397</td>
-      <td>144781.062500</td>
-      <td>1315.000000</td>
-    </tr>
-    <tr>
-      <th>75%</th>
-      <td>1538.500000</td>
-      <td>7.339213</td>
-      <td>200567.851562</td>
-      <td>12.208913</td>
-      <td>61.652335</td>
-      <td>75.890519</td>
-      <td>89.952606</td>
-      <td>98.702477</td>
-      <td>200567.851562</td>
-      <td>1538.500000</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>2513.000000</td>
-      <td>7.829630</td>
-      <td>514206.531250</td>
-      <td>13.150382</td>
-      <td>91.136775</td>
-      <td>94.251968</td>
-      <td>98.651389</td>
-      <td>99.881018</td>
-      <td>514206.531250</td>
-      <td>2513.000000</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>Gráficas descriptivas</p>
-<p>desease_state</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;disease_state&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;diagnosis: glioblastoma&#39;]
-Categories (1, object): [&#39;diagnosis: glioblastoma&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;cell type: Neoplastic&#39;, &#39;cell type: Oligodendrocyte&#39;, &#39;cell type: Immune cell&#39;, &#39;cell type: Vascular&#39;, &#39;cell type: OPC&#39;, &#39;cell type: Astocyte&#39;, &#39;cell type: Neuron&#39;]
-Categories (7, object): [&#39;cell type: Astocyte&#39;, &#39;cell type: Immune cell&#39;, &#39;cell type: Neoplastic&#39;, &#39;cell type: Neuron&#39;, &#39;cell type: OPC&#39;, &#39;cell type: Oligodendrocyte&#39;, &#39;cell type: Vascular&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;tissue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;tissue: Tumor&#39;, &#39;tissue: Periphery&#39;]
-Categories (2, object): [&#39;tissue: Periphery&#39;, &#39;tissue: Tumor&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<p>‘neoplastic: Neoplastic’: Indica que la célula es neoplásica (cancerosa).
-‘neoplastic: Regular’: Indica que la célula es normal o no cancerosa.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;neoplastic_state&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;neoplastic: Neoplastic&#39;, &#39;neoplastic: Regular&#39;]
-Categories (2, object): [&#39;neoplastic: Neoplastic&#39;, &#39;neoplastic: Regular&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;diagnosis&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;Neoplastic&#39;, &#39;Oligodendrocyte&#39;, &#39;Immune cell&#39;, &#39;Vascular&#39;, &#39;OPC&#39;, &#39;Astocyte&#39;, &#39;Neuron&#39;]
-Categories (7, object): [&#39;Astocyte&#39;, &#39;Immune cell&#39;, &#39;Neoplastic&#39;, &#39;Neuron&#39;, &#39;OPC&#39;, &#39;Oligodendrocyte&#39;, &#39;Vascular&#39;]
-</pre></div>
-</div>
-</div>
-</div>
+<section id="adata-pbmc3k">
+<h2>adata_pbmc3k<a class="headerlink" href="#adata-pbmc3k" title="Link to this heading">#</a></h2>
+<p>This dataset contains information about gene expression in peripheral blood mononuclear cells (PBMC). Each row represents a gene, and the columns contain statistics about its expression across different cells.</p>
+<p>pbmc3k.h5ad</p>
+<p>Conjunto de datos de 3,000 células mononucleares de sangre periférica (PBMCs).
+Se usa como referencia en análisis de expresión génica.</p>
+<p>El conjunto de datos adata_pbmc3k generalmente hace referencia a un dataset de células sanguíneas humanas de 10x Genomics, utilizado comúnmente en análisis de single-cell RNA sequencing (scRNA-seq).</p>
 </section>
-<section id="significado-de-las-categorias-en-diagnosis">
-<h2>📌 Significado de las categorías en <code class="docutils literal notranslate"><span class="pre">diagnosis</span></code><a class="headerlink" href="#significado-de-las-categorias-en-diagnosis" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p><strong>Categoría</strong></p></th>
-<th class="head"><p><strong>Significado</strong></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Neoplastic</strong></p></td>
-<td><p>Células cancerosas o tumorales en el glioblastoma. Representan células que han sufrido alteraciones genéticas y proliferan de manera descontrolada.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Oligodendrocyte</strong></p></td>
-<td><p>Oligodendrocitos, células del sistema nervioso central responsables de producir mielina, la sustancia que aísla los axones neuronales.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Immune cell</strong></p></td>
-<td><p>Células del sistema inmune, como macrófagos y linfocitos, que pueden estar infiltradas en el tumor y desempeñar un papel en la respuesta inmunológica contra el cáncer.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Vascular</strong></p></td>
-<td><p>Células endoteliales y pericitos que forman los vasos sanguíneos en el cerebro. Su presencia en tumores puede estar relacionada con la angiogénesis, es decir, la formación de nuevos vasos sanguíneos para nutrir el tumor.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>OPC (Oligodendrocyte Precursor Cells)</strong></p></td>
-<td><p>Células progenitoras de oligodendrocitos, un tipo de célula madre del sistema nervioso que puede diferenciarse en oligodendrocitos maduros. Se cree que pueden estar implicadas en la regeneración celular y, en algunos casos, en la progresión tumoral.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Astrocyte</strong></p></td>
-<td><p>Astrocitos, células gliales que brindan soporte estructural y funcional a las neuronas. Pueden desempeñar un papel en la comunicación neuronal y la respuesta a lesiones cerebrales.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Neuron</strong></p></td>
-<td><p>Neuronas, las principales células funcionales del sistema nervioso central. Su presencia en el tumor puede deberse a la contaminación de tejido sano en la muestra.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<section id="importancia-en-el-analisis">
-<h3>📊 Importancia en el análisis<a class="headerlink" href="#importancia-en-el-analisis" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>La proporción de células <strong>neoplásicas</strong> puede indicar la agresividad del glioblastoma.</p></li>
-<li><p>La presencia de células del <strong>sistema inmune</strong> puede dar pistas sobre la respuesta del organismo al tumor.</p></li>
-<li><p>La cantidad de células <strong>vasculares</strong> puede sugerir qué tan desarrollado está el sistema de irrigación del tumor.</p></li>
-<li><p>Las <strong>OPC y oligodendrocitos</strong> pueden estar implicados en procesos de reparación o diferenciación celular en el contexto tumoral.</p></li>
-</ul>
-<p>✔ <strong>Este análisis es clave para entender la heterogeneidad celular en glioblastoma y su potencial respuesta a tratamientos.</strong> 🚀</p>
-<p>numero de genes por conteo</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">desc_stats</span> <span class="o">=</span> <span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📊 Resumen Estadístico de &#39;n_genes_by_counts&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">desc_stats</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>📊 Resumen Estadístico de &#39;n_genes_by_counts&#39;:
- count    1651.000000
-mean     1341.784979
-std       300.774693
-min       758.000000
-25%      1116.000000
-50%      1315.000000
-75%      1538.500000
-max      2513.000000
-Name: n_genes_by_counts, dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<p>conte d egenes</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-
-<span class="c1"># Histograma</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Histograma de &#39;n_genes_by_counts&#39;&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Número de genes detectados por célula&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Frecuencia&quot;</span><span class="p">)</span>
-
-<span class="c1"># Boxplot</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Boxplot de &#39;n_genes_by_counts&#39;&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Número de genes detectados por célula&quot;</span><span class="p">)</span>
-
-<span class="c1"># Ajustar diseño</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/7d15d2210945c32e79ce2cdf74b285e5e4910aeb72c0bdb49562c38cb6186dbf.png" src="_images/7d15d2210945c32e79ce2cdf74b285e5e4910aeb72c0bdb49562c38cb6186dbf.png" />
-</div>
-</div>
-<p>log1p_numeor de genes por conyteo</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">desc_stats</span> <span class="o">=</span> <span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;log1p_n_genes_by_counts&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">desc_stats</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count    1651.000000
-mean        7.177672
-std         0.223335
-min         6.632002
-25%         7.018402
-50%         7.182352
-75%         7.339213
-max         7.829630
-Name: log1p_n_genes_by_counts, dtype: float64
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Crear figura con dos gráficos (histograma y boxplot)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-
-<span class="c1"># Histograma</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;log1p_n_genes_by_counts&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Histograma de &#39;log1p_n_genes_by_counts&#39;&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;log1p Número de genes detectados por célula&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Frecuencia&quot;</span><span class="p">)</span>
-
-<span class="c1"># Boxplot</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;log1p_n_genes_by_counts&quot;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Boxplot de &#39;log1p_n_genes_by_counts&#39;&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;log1p Número de genes detectados por célula&quot;</span><span class="p">)</span>
-
-<span class="c1"># Ajustar diseño</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/694781326dda65ca846eb7b1a8022af700ad4edfb1d05d6bfd5339a91f858847.png" src="_images/694781326dda65ca846eb7b1a8022af700ad4edfb1d05d6bfd5339a91f858847.png" />
-</div>
-</div>
-<p>conteo porcentual de genes</p>
-</section>
-</section>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="descripcion-de-las-variables">
-<h1>📌 Descripción de las Variables<a class="headerlink" href="#descripcion-de-las-variables" title="Link to this heading">#</a></h1>
+<section id="variables-in-the-dataset">
+<h2>🔍 Variables in the dataset<a class="headerlink" href="#variables-in-the-dataset" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Variable</strong></p></th>
-<th class="head"><p><strong>Descripción</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_50_genes</span></code></p></td>
-<td><p><strong>Porcentaje de cuentas en los 50 genes más abundantes</strong>. Representa el porcentaje del total de cuentas en una célula que provienen de los 50 genes más expresados.</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gene_ids</span></code></p></td>
+<td><p>Unique gene identifier in Ensembl format (<code class="docutils literal notranslate"><span class="pre">ENSGxxxxxxxxxxx</span></code>).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_100_genes</span></code></p></td>
-<td><p><strong>Porcentaje de cuentas en los 100 genes más abundantes</strong>. Similar al anterior, pero considerando los 100 genes con mayor expresión.</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">n_cells_by_counts</span></code></p></td>
+<td><p>Number of cells in which the gene was detected.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_200_genes</span></code></p></td>
-<td><p><strong>Porcentaje de cuentas en los 200 genes más abundantes</strong>. Indica cuánto del total de la expresión celular se debe a los 200 genes más expresados.</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mean_counts</span></code></p></td>
+<td><p>Mean expression value of the gene across all cells.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_500_genes</span></code></p></td>
-<td><p><strong>Porcentaje de cuentas en los 500 genes más abundantes</strong>. Muestra la concentración de la expresión en los 500 genes principales.</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">log1p_mean_counts</span></code></p></td>
+<td><p>Log-transformed (<code class="docutils literal notranslate"><span class="pre">log1p</span></code>) mean expression of the gene.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pct_dropout_by_counts</span></code></p></td>
+<td><p>Percentage of cells where the gene was not expressed (<code class="docutils literal notranslate"><span class="pre">dropout</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">total_counts</span></code></p></td>
+<td><p>Total sum of expression values for the gene across all cells.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">log1p_total_counts</span></code></p></td>
+<td><p>Log-transformed (<code class="docutils literal notranslate"><span class="pre">log1p</span></code>) total expression count.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">n_cells</span></code></p></td>
+<td><p>Total number of cells in which gene expression was measured.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">highly_variable</span></code></p></td>
+<td><p>Indicates whether the gene is highly variable (<code class="docutils literal notranslate"><span class="pre">True/False</span></code>), useful for feature selection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">means</span></code></p></td>
+<td><p>Mean gene expression in the sample, without log transformation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dispersions</span></code></p></td>
+<td><p>Dispersion of the gene expression across all cells.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dispersions_norm</span></code></p></td>
+<td><p>Normalized dispersion of the gene, adjusted by the mean.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<hr class="docutils" />
-<section id="interpretacion">
-<h2>🔎 Interpretación<a class="headerlink" href="#interpretacion" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>Estas variables indican <strong>qué tan concentrada está la expresión génica</strong> en un subconjunto de genes.</p></li>
-<li><p>Valores altos sugieren que <strong>pocos genes dominan la expresión en una célula</strong>, lo que puede indicar que ciertos genes son clave en un tipo celular específico.</p></li>
-<li><p>Valores bajos indican una <strong>distribución más uniforme</strong> de la expresión en muchos genes.</p></li>
-<li><p>Pueden ayudar a detectar <strong>sesgos en la expresión</strong> o identificar tipos celulares con perfiles de expresión distintivos.</p></li>
-</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lista de variables a analizar</span>
-<span class="n">variables</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;pct_counts_in_top_50_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_100_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_200_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_500_genes&quot;</span>
-<span class="p">]</span>
-
-<span class="c1"># Crear figura con subgráficos</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>
-    <span class="c1"># Histograma</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Histograma de </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
-    <span class="c1"># Boxplot</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Boxplot de </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Ajustar diseño</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/53900b61e8ef4946ff9d8e8bfa8a6257bc99dc9cf76dd9f3e9645f8f36ccb661.png" src="_images/53900b61e8ef4946ff9d8e8bfa8a6257bc99dc9cf76dd9f3e9645f8f36ccb661.png" />
-</div>
-</div>
-<p>numero de celulas y genes</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-
-<span class="c1"># Histograma de n_counts</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_counts&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Distribución de n_counts&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Número total de cuentas por célula&quot;</span><span class="p">)</span>
-
-<span class="c1"># Histograma de n_genes</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Distribución de n_genes&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Número de genes detectados por célula&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/1ada31e2a2116a4a41ffe4f73607b64c459c53be864daffe199116bae7e723b5.png" src="_images/1ada31e2a2116a4a41ffe4f73607b64c459c53be864daffe199116bae7e723b5.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-
-
-<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_counts&quot;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Boxplot de n_counts&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Número total de cuentas por célula&quot;</span><span class="p">)</span>
-
-<span class="c1"># Boxplot horizontal de n_genes</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes&quot;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Boxplot de n_genes&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Número de genes detectados por célula&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/46e26fac44389e64dfd5e8efc944a8d77a12f6e86f6d91b213064c0b1a607128.png" src="_images/46e26fac44389e64dfd5e8efc944a8d77a12f6e86f6d91b213064c0b1a607128.png" />
-</div>
-</div>
-<p>Distribución del número de genes por estado de enfermedad
-📌 Gráfico sugerido: Boxplot por categoría</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;disease_state&#39;</span><span class="p">],</span>
-            <span class="n">y</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;n_genes&#39;</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Estado de enfermedad&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Número de genes detectados por célula&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribución de &#39;n_genes_by_counts&#39; según &#39;disease_state&#39;&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/9e2283fd39d5df74493273e12c0f866b497174fc9692b105e250f8d73e52f5f4.png" src="_images/9e2283fd39d5df74493273e12c0f866b497174fc9692b105e250f8d73e52f5f4.png" />
-</div>
-</div>
-<section id="bivariate-analysis">
-<h3>Bivariate Analysis<a class="headerlink" href="#bivariate-analysis" title="Link to this heading">#</a></h3>
-<p>numerb of cells vs tissue</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tissue_counts</span> <span class="o">=</span> <span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;tissue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">tissue_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">tissue_counts</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Tissue Type&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of Cells&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Number of Cells per Tissue Type&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/b4c8831c6df33bd5299dba265198dda31d2de1aad2776557e001b89b82d417e0.png" src="_images/b4c8831c6df33bd5299dba265198dda31d2de1aad2776557e001b89b82d417e0.png" />
-</div>
-</div>
-<p>number of cells for cell_type</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cell_type_counts</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">23</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="nb">print</span><span class="p">(</span><span class="n">cell_type_counts</span><span class="p">)</span>
-
-<span class="ne">NameError</span>: name &#39;cell_type_counts&#39; is not defined
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cell_type_counts</span> <span class="o">=</span> <span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;cell_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cell_type_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">cell_type_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">cell_type_counts</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Cell Type&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Number of Cells&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Number of Cells per Cell Type (Descending Order)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>  
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_26984\556676785.py:6: FutureWarning: 
-
-Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
-
-  sns.barplot(x=cell_type_counts.index, y=cell_type_counts.values, palette=&quot;coolwarm&quot;, order=cell_type_counts.index)
-</pre></div>
-</div>
-<img alt="_images/26465145bc75b002af30374b8d14f3556e09d4fe517f8dae7736ae5f7225dd23.png" src="_images/26465145bc75b002af30374b8d14f3556e09d4fe517f8dae7736ae5f7225dd23.png" />
-</div>
-</div>
-<p>Number of cells per nepplastic state</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">neoplastic_state_counts</span> <span class="o">=</span> <span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;neoplastic_state&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">neoplastic_state_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">neoplastic_state_counts</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Neoplastic State&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Number of Cells&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Number of Cells per Neoplastic State&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/ec465d610a97e332637c1aecc92ff5edef15617110108c1204f266c1ef4864ec.png" src="_images/ec465d610a97e332637c1aecc92ff5edef15617110108c1204f266c1ef4864ec.png" />
-</div>
-</div>
-<p>PCTN 50 2X2 FRAME FOR DUSTRIBUTION</p>
-<p>diagnosis</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Choose a categorical variable for comparison</span>
-<span class="n">cat_var</span> <span class="o">=</span> <span class="s2">&quot;disease_state&quot;</span>  <span class="c1"># Change to &#39;tissue&#39;, &#39;cell_type&#39;, or &#39;diagnosis&#39; if needed</span>
-
-<span class="c1"># List of numerical variables to compare</span>
-<span class="n">num_vars</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;pct_counts_in_top_50_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_100_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_200_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_500_genes&quot;</span>
-<span class="p">]</span>
-
-<span class="c1"># Set up the 2x2 grid</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Flatten the 2D axes array for easier iteration</span>
-<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-
-<span class="c1"># Loop through numerical variables and plot</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">num_var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_vars</span><span class="p">):</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">cat_var</span><span class="p">],</span> 
-                <span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">num_var</span><span class="p">],</span> 
-                <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> 
-                <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>  <span class="c1"># Horizontal orientation</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">num_var</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>  <span class="c1"># Clean title format</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/7dd1cd7dc189523f52b6cecd5d6b8aa7eec792fc72dcbdd4a2f3ba73c0e52b16.png" src="_images/7dd1cd7dc189523f52b6cecd5d6b8aa7eec792fc72dcbdd4a2f3ba73c0e52b16.png" />
-</div>
-</div>
-<p>tissue</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Choose a categorical variable for comparison</span>
-<span class="n">cat_var</span> <span class="o">=</span> <span class="s2">&quot;tissue&quot;</span>  <span class="c1"># Change to &#39;tissue&#39;, &#39;cell_type&#39;, or &#39;diagnosis&#39; if needed</span>
-
-<span class="c1"># List of numerical variables to compare</span>
-<span class="n">num_vars</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;pct_counts_in_top_50_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_100_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_200_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_500_genes&quot;</span>
-<span class="p">]</span>
-
-<span class="c1"># Set up the 2x2 grid</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Flatten the 2D axes array for easier iteration</span>
-<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-
-<span class="c1"># Loop through numerical variables and plot</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">num_var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_vars</span><span class="p">):</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">cat_var</span><span class="p">],</span> 
-                <span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">num_var</span><span class="p">],</span> 
-                <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> 
-                <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>  <span class="c1"># Horizontal orientation</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">num_var</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>  <span class="c1"># Clean title format</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/989897101a8e0d9eeeaf0efbeb2b1034001fa67fcf968b82eec7a76fe34912c9.png" src="_images/989897101a8e0d9eeeaf0efbeb2b1034001fa67fcf968b82eec7a76fe34912c9.png" />
-</div>
-</div>
-<p>cell type</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Choose a categorical variable for comparison</span>
-<span class="n">cat_var</span> <span class="o">=</span> <span class="s2">&quot;cell_type&quot;</span>  <span class="c1"># Change to &#39;tissue&#39;, &#39;cell_type&#39;, or &#39;diagnosis&#39; if needed</span>
-
-<span class="c1"># List of numerical variables to compare</span>
-<span class="n">num_vars</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;pct_counts_in_top_50_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_100_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_200_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_500_genes&quot;</span>
-<span class="p">]</span>
-
-<span class="c1"># Set up the 2x2 grid</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Flatten the 2D axes array for easier iteration</span>
-<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-
-<span class="c1"># Loop through numerical variables and plot</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">num_var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_vars</span><span class="p">):</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">cat_var</span><span class="p">],</span> 
-                <span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">num_var</span><span class="p">],</span> 
-                <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> 
-                <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>  <span class="c1"># Horizontal orientation</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">num_var</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>  <span class="c1"># Clean title format</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/7bd184f0d47a4df94605a03f620ced5812957ad026f9d69b525b84a8a55386b6.png" src="_images/7bd184f0d47a4df94605a03f620ced5812957ad026f9d69b525b84a8a55386b6.png" />
-</div>
-</div>
-<p>diagnosis</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Choose a categorical variable for comparison</span>
-<span class="n">cat_var</span> <span class="o">=</span> <span class="s2">&quot;diagnosis&quot;</span>  <span class="c1"># Change to &#39;tissue&#39;, &#39;cell_type&#39;, or &#39;diagnosis&#39; if needed</span>
-
-<span class="c1"># List of numerical variables to compare</span>
-<span class="n">num_vars</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;pct_counts_in_top_50_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_100_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_200_genes&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pct_counts_in_top_500_genes&quot;</span>
-<span class="p">]</span>
-
-<span class="c1"># Set up the 2x2 grid</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Flatten the 2D axes array for easier iteration</span>
-<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-
-<span class="c1"># Loop through numerical variables and plot</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">num_var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_vars</span><span class="p">):</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">cat_var</span><span class="p">],</span> 
-                <span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">num_var</span><span class="p">],</span> 
-                <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> 
-                <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>  <span class="c1"># Horizontal orientation</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">num_var</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>  <span class="c1"># Clean title format</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/d1b3728c0c24edc7b8f772ce20415023261ff62ec79050f52e0547971d6a027a.png" src="_images/d1b3728c0c24edc7b8f772ce20415023261ff62ec79050f52e0547971d6a027a.png" />
-</div>
-</div>
-<p>violin log vs cell type</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Crear el gráfico de violín</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;cell_type&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;log1p_n_genes_by_counts&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">)</span>
-
-<span class="c1"># Personalizar etiquetas</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>  <span class="c1"># Rotar etiquetas si hay muchas categorías</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribución de log1p_n_genes_by_counts por Cell Type&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Cell Type&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;log1p_n_genes_by_counts&quot;</span><span class="p">)</span>
-
-<span class="c1"># Mostrar el gráfico</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/78c7d4609a521141dc186d1a4de7ded2a73ce0508289e276d58f5025cb6e8861.png" src="_images/78c7d4609a521141dc186d1a4de7ded2a73ce0508289e276d58f5025cb6e8861.png" />
-</div>
-</div>
-<p>correlation matrix</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">numeric_data</span> <span class="o">=</span> <span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">])</span>
-
-<span class="c1"># Compute the correlation matrix</span>
-<span class="n">corr_matrix</span> <span class="o">=</span> <span class="n">numeric_data</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
-
-<span class="c1"># Plot the heatmap</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.2f&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Correlation Matrix of Numeric Variables in adata_glioblastoma_norm.obs&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/a641a83f4477f5db94ff4ce76ddc56308a9fef3a5966ad4ad5930295e09fff2e.png" src="_images/a641a83f4477f5db94ff4ce76ddc56308a9fef3a5966ad4ad5930295e09fff2e.png" />
-</div>
-</div>
-<p>correlacion entre todas las variables</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;cell_type&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\seaborn\axisgrid.py:123: UserWarning: The figure layout has changed to tight
-  self._figure.tight_layout(*args, **kwargs)
-</pre></div>
-</div>
-<img alt="_images/2c01a47dff306337b66e59f1ea8ad237ad94424c2c8bf19e22c0911002a1b7e1.png" src="_images/2c01a47dff306337b66e59f1ea8ad237ad94424c2c8bf19e22c0911002a1b7e1.png" />
-</div>
-</div>
-<p>relacion entre conte y genes per ye of cell</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;cell_type&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/10f04febc86c53b55de39885375c6bee0f477c28f6f59e8c1c1cdf689262a556.png" src="_images/10f04febc86c53b55de39885375c6bee0f477c28f6f59e8c1c1cdf689262a556.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtener las categorías únicas de cell_type</span>
-<span class="n">cell_types</span> <span class="o">=</span> <span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;cell_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-
-<span class="c1"># Crear subgráficos</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">cell_types</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_types</span><span class="p">)),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Generar un regplot por cada cell_type</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cell_types</span><span class="p">):</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_types</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">axes</span>
-    <span class="n">subset</span> <span class="o">=</span> <span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;cell_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cell</span><span class="p">]</span>
-    
-    <span class="n">sns</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">subset</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">scatter_kws</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
-    
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Regplot for Cell Type: </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;total_counts&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/5376163343cb65d6210c76e6b53cc4f5540f1f8afebc26bdcc3027001f1c31cd.png" src="_images/5376163343cb65d6210c76e6b53cc4f5540f1f8afebc26bdcc3027001f1c31cd.png" />
-</div>
-</div>
-<p>relacion top gemes y diagnostico</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;diagnosis&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;pct_counts_in_top_50_genes&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/83e456c12b9130508bed01a27a6c5230166bf7201e6adb083f88e31106a6cddf.png" src="_images/83e456c12b9130508bed01a27a6c5230166bf7201e6adb083f88e31106a6cddf.png" />
-</div>
-</div>
-</section>
-<section id="datos-genes">
-<h3>Datos genes<a class="headerlink" href="#datos-genes" title="Link to this heading">#</a></h3>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&lt;h3&gt;Metadatos de genes: &lt;/h3&gt;&quot;</span><span class="p">))</span>
-<span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">to_html</span><span class="p">()))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><h3>Metadatos de genes: </h3></div><div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>n_cells_by_counts</th>
-      <th>mean_counts</th>
-      <th>log1p_mean_counts</th>
-      <th>pct_dropout_by_counts</th>
-      <th>total_counts</th>
-      <th>log1p_total_counts</th>
-      <th>n_cells</th>
-      <th>n_counts</th>
-    </tr>
-    <tr>
-      <th>index</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>ENSG00000000005</th>
-      <td>2</td>
-      <td>0.033459</td>
-      <td>0.032912</td>
-      <td>99.892067</td>
-      <td>62.000000</td>
-      <td>4.143135</td>
-      <td>2</td>
-      <td>62.000000</td>
-    </tr>
-    <tr>
-      <th>ENSG00000001561</th>
-      <td>245</td>
-      <td>17.581758</td>
-      <td>2.922180</td>
-      <td>86.778198</td>
-      <td>32579.000000</td>
-      <td>10.391454</td>
-      <td>236</td>
-      <td>32458.000000</td>
-    </tr>
-    <tr>
-      <th>ENSG00000001629</th>
-      <td>715</td>
-      <td>29.176739</td>
-      <td>3.407071</td>
-      <td>61.413923</td>
-      <td>54064.496094</td>
-      <td>10.897951</td>
-      <td>677</td>
-      <td>52530.570312</td>
-    </tr>
-    <tr>
-      <th>ENSG00000002587</th>
-      <td>1268</td>
-      <td>22.115810</td>
-      <td>3.140517</td>
-      <td>31.570426</td>
-      <td>40980.597656</td>
-      <td>10.620878</td>
-      <td>1166</td>
-      <td>40703.941406</td>
-    </tr>
-    <tr>
-      <th>ENSG00000002933</th>
-      <td>548</td>
-      <td>45.389587</td>
-      <td>3.837075</td>
-      <td>70.426336</td>
-      <td>84106.906250</td>
-      <td>11.339856</td>
-      <td>513</td>
-      <td>80978.914062</td>
-    </tr>
-  </tbody>
-</table></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(6852, 8)
-</pre></div>
-</div>
-</div>
-</div>
-<p>Describir las variables</p>
-</section>
-</section>
-<section id="descripcion-de-las-variables-en-adata-glioblastoma-norm-var">
-<h2>Descripción de las variables en <code class="docutils literal notranslate"><span class="pre">adata_glioblastoma_norm.var</span></code><a class="headerlink" href="#descripcion-de-las-variables-en-adata-glioblastoma-norm-var" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">n_cells_by_counts</span></code></strong>: Número de células en las que se detectó la expresión del gen (es decir, cuántas células tienen conteos mayores a cero para este gen).</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">mean_counts</span></code></strong>: Promedio de conteos de expresión para el gen en todas las células.</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">log1p_mean_counts</span></code></strong>: Promedio de conteos de expresión después de aplicar la transformación <code class="docutils literal notranslate"><span class="pre">log1p(x)</span> <span class="pre">=</span> <span class="pre">log(1</span> <span class="pre">+</span> <span class="pre">x)</span></code>, que reduce el efecto de valores extremos.</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">pct_dropout_by_counts</span></code></strong>: Porcentaje de células en las que el gen no fue detectado (tiene un conteo de 0). Valores altos indican genes expresados en pocas células.</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">total_counts</span></code></strong>: Suma total de conteos de expresión para ese gen en todas las células.</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">log1p_total_counts</span></code></strong>: Suma total de conteos transformada con <code class="docutils literal notranslate"><span class="pre">log1p()</span></code>, para reducir sesgos debido a genes altamente expresados.</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">n_cells</span></code></strong>: Número de células en las que el gen está presente (puede ser similar a <code class="docutils literal notranslate"><span class="pre">n_cells_by_counts</span></code>).</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">n_counts</span></code></strong>: Suma total de conteos de expresión para el gen, similar a <code class="docutils literal notranslate"><span class="pre">total_counts</span></code>.</p></li>
-</ul>
-<p>Cada fila de la tabla representa un gen identificado por su <strong>Ensembl ID</strong> (ejemplo: <code class="docutils literal notranslate"><span class="pre">ENSG00000000005</span></code>, <code class="docutils literal notranslate"><span class="pre">ENSG00000001561</span></code>), y los valores asociados indican su expresión en las células analizadas.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;n_cells_by_counts&#39;,
- &#39;mean_counts&#39;,
- &#39;log1p_mean_counts&#39;,
- &#39;pct_dropout_by_counts&#39;,
- &#39;total_counts&#39;,
- &#39;log1p_total_counts&#39;,
- &#39;n_cells&#39;,
- &#39;n_counts&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-Index: 6852 entries, ENSG00000000005 to ENSG00000284723
-Data columns (total 8 columns):
- #   Column                 Non-Null Count  Dtype  
----  ------                 --------------  -----  
- 0   n_cells_by_counts      6852 non-null   int64  
- 1   mean_counts            6852 non-null   float32
- 2   log1p_mean_counts      6852 non-null   float32
- 3   pct_dropout_by_counts  6852 non-null   float64
- 4   total_counts           6852 non-null   float32
- 5   log1p_total_counts     6852 non-null   float32
- 6   n_cells                6852 non-null   int64  
- 7   n_counts               6852 non-null   float32
-dtypes: float32(5), float64(1), int64(2)
-memory usage: 606.0+ KB
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>n_cells_by_counts</th>
-      <th>mean_counts</th>
-      <th>log1p_mean_counts</th>
-      <th>pct_dropout_by_counts</th>
-      <th>total_counts</th>
-      <th>log1p_total_counts</th>
-      <th>n_cells</th>
-      <th>n_counts</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>6852.000000</td>
-      <td>6852.000000</td>
-      <td>6852.000000</td>
-      <td>6852.000000</td>
-      <td>6.852000e+03</td>
-      <td>6852.000000</td>
-      <td>6852.000000</td>
-      <td>6.852000e+03</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>342.861354</td>
-      <td>21.114870</td>
-      <td>1.598943</td>
-      <td>81.496959</td>
-      <td>3.912585e+04</td>
-      <td>8.164610</td>
-      <td>323.185785</td>
-      <td>3.763068e+04</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>386.570337</td>
-      <td>154.856812</td>
-      <td>1.432277</td>
-      <td>20.861864</td>
-      <td>2.869497e+05</td>
-      <td>2.499461</td>
-      <td>361.706252</td>
-      <td>2.701092e+05</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>2.000000</td>
-      <td>0.002698</td>
-      <td>0.002695</td>
-      <td>0.053967</td>
-      <td>5.000000e+00</td>
-      <td>1.791759</td>
-      <td>2.000000</td>
-      <td>5.000000e+00</td>
-    </tr>
-    <tr>
-      <th>25%</th>
-      <td>34.000000</td>
-      <td>0.330104</td>
-      <td>0.285257</td>
-      <td>71.397733</td>
-      <td>6.116831e+02</td>
-      <td>6.417847</td>
-      <td>32.000000</td>
-      <td>5.875100e+02</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>199.000000</td>
-      <td>2.563776</td>
-      <td>1.270821</td>
-      <td>89.260658</td>
-      <td>4.750677e+03</td>
-      <td>8.466253</td>
-      <td>189.000000</td>
-      <td>4.593108e+03</td>
-    </tr>
-    <tr>
-      <th>75%</th>
-      <td>530.000000</td>
-      <td>13.064106</td>
-      <td>2.643626</td>
-      <td>98.165138</td>
-      <td>2.420779e+04</td>
-      <td>10.094471</td>
-      <td>503.000000</td>
-      <td>2.338818e+04</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>1852.000000</td>
-      <td>7754.024902</td>
-      <td>8.956097</td>
-      <td>99.892067</td>
-      <td>1.436821e+07</td>
-      <td>16.480528</td>
-      <td>1651.000000</td>
-      <td>1.353124e+07</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Variables enteras</span>
-<span class="n">int_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;n_cells_by_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cells&quot;</span><span class="p">]</span>
-<span class="c1"># Variables continuas</span>
-<span class="n">float_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mean_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;log1p_mean_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_dropout_by_counts&quot;</span><span class="p">,</span> 
-              <span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;log1p_total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;n_counts&quot;</span><span class="p">]</span>
-
-<span class="c1"># Figura para variables enteras (2x1)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">int_vars</span><span class="p">):</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kde</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/dd2bcc4dcb8b313925c8abed9b84b3e42f26a418d25caadc01984bf57359399f.png" src="_images/dd2bcc4dcb8b313925c8abed9b84b3e42f26a418d25caadc01984bf57359399f.png" />
-</div>
-</div>
-<p>variables flotates</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Figura para variables continuas (2x3)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">float_vars</span><span class="p">):</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/5d06b1cbd8ff68c05274e4effc73418e85662bbf6375024bf2e54a1c6048fbe4.png" src="_images/5d06b1cbd8ff68c05274e4effc73418e85662bbf6375024bf2e54a1c6048fbe4.png" />
-</div>
-</div>
-<p>regplot entre variables</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_pbmc3k</span>
-
-<span class="c1"># Ver metadatos de células</span>
-<span class="c1"># adata_pbmc3k.obs.head()</span>
-
-<span class="c1"># Ver metadatos de genes</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ver metadatos de genes</span>
 <span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-
-<span class="c1"># Ver matriz de expresión</span>
-<span class="c1"># adata_pbmc3k.X[:5, :5]  #</span>
 </pre></div>
 </div>
 </div>
@@ -2079,6 +643,243 @@ memory usage: 606.0+ KB
 </table>
 </div></div></div>
 </div>
+</section>
+<section id="id1">
+<h2>🔍 Variables in the dataset<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Variable</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code></p></td>
+<td><p>Number of genes detected in the cell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code></p></td>
+<td><p>Log-transformed (<code class="docutils literal notranslate"><span class="pre">log1p</span></code>) number of detected genes.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">total_counts</span></code></p></td>
+<td><p>Total number of RNA molecule counts detected in the cell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">log1p_total_counts</span></code></p></td>
+<td><p>Log-transformed (<code class="docutils literal notranslate"><span class="pre">log1p</span></code>) total RNA counts.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_50_genes</span></code></p></td>
+<td><p>Percentage of total RNA counts contributed by the <strong>top 50 most expressed genes</strong> in the cell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_100_genes</span></code></p></td>
+<td><p>Percentage of total RNA counts contributed by the <strong>top 100 most expressed genes</strong> in the cell.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_200_genes</span></code></p></td>
+<td><p>Percentage of total RNA counts contributed by the <strong>top 200 most expressed genes</strong> in the cell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_500_genes</span></code></p></td>
+<td><p>Percentage of total RNA counts contributed by the <strong>top 500 most expressed genes</strong> in the cell.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">n_genes</span></code></p></td>
+<td><p>Number of genes detected in the cell (<strong>alternative representation of <code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code></strong>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">percent_mito</span></code></p></td>
+<td><p>Percentage of mitochondrial gene expression out of the total RNA counts (<strong>used to assess cell quality</strong>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">n_counts</span></code></p></td>
+<td><p>Total number of UMI (Unique Molecular Identifiers) counts per cell (<strong>alternative representation of <code class="docutils literal notranslate"><span class="pre">total_counts</span></code></strong>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">louvain</span></code></p></td>
+<td><p>Cluster assignment using the <strong>Louvain community detection algorithm</strong> (unsupervised clustering).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">leiden</span></code></p></td>
+<td><p>Cluster assignment using the <strong>Leiden clustering algorithm</strong>, another method for detecting groups of similar cells.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ver metadatos de células</span>
+<span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>n_genes_by_counts</th>
+      <th>log1p_n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>log1p_total_counts</th>
+      <th>pct_counts_in_top_50_genes</th>
+      <th>pct_counts_in_top_100_genes</th>
+      <th>pct_counts_in_top_200_genes</th>
+      <th>pct_counts_in_top_500_genes</th>
+      <th>n_genes</th>
+      <th>percent_mito</th>
+      <th>n_counts</th>
+      <th>louvain</th>
+      <th>leiden</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AAACATACAACCAC-1</th>
+      <td>781</td>
+      <td>6.661855</td>
+      <td>2421.0</td>
+      <td>7.792349</td>
+      <td>47.748864</td>
+      <td>63.279637</td>
+      <td>74.969021</td>
+      <td>88.393226</td>
+      <td>781</td>
+      <td>0.030178</td>
+      <td>2419.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>AAACATTGAGCTAC-1</th>
+      <td>1352</td>
+      <td>7.210080</td>
+      <td>4903.0</td>
+      <td>8.497807</td>
+      <td>45.502753</td>
+      <td>61.023863</td>
+      <td>71.813176</td>
+      <td>82.622884</td>
+      <td>1352</td>
+      <td>0.037936</td>
+      <td>4903.0</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>AAACATTGATCAGC-1</th>
+      <td>1131</td>
+      <td>7.031741</td>
+      <td>3149.0</td>
+      <td>8.055158</td>
+      <td>41.314703</td>
+      <td>53.794856</td>
+      <td>65.449349</td>
+      <td>79.961893</td>
+      <td>1131</td>
+      <td>0.008897</td>
+      <td>3147.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>AAACCGTGCTTCCG-1</th>
+      <td>960</td>
+      <td>6.867974</td>
+      <td>2639.0</td>
+      <td>7.878534</td>
+      <td>39.029936</td>
+      <td>52.898825</td>
+      <td>66.691929</td>
+      <td>82.569155</td>
+      <td>960</td>
+      <td>0.017431</td>
+      <td>2639.0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>AAACCGTGTATGCG-1</th>
+      <td>522</td>
+      <td>6.259581</td>
+      <td>981.0</td>
+      <td>6.889591</td>
+      <td>44.852192</td>
+      <td>55.657492</td>
+      <td>67.176351</td>
+      <td>97.757390</td>
+      <td>522</td>
+      <td>0.012245</td>
+      <td>980.0</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>A. Quality Control Checks
+Total RNA Counts vs. Mitochondrial Percentage
+High mitochondrial content may indicate stressed or dying cells.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;percent_mito&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Total Counts vs. Mitochondrial Percentage&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/94baa957c270cdad47c3df9379b93c83a2b29b12dbf9c546447cf6a1571425fe.png" src="_images/94baa957c270cdad47c3df9379b93c83a2b29b12dbf9c546447cf6a1571425fe.png" />
+</div>
+</div>
+<p>Number of Genes Detected vs. Mitochondrial Percentage
+Used to detect potential outlier</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;percent_mito&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Number of Genes Detected vs. Mitochondrial Percentage&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/077e60b97981c31eea17e77d3cc4b01db5ede8715ac6d989a9913a01c6089440.png" src="_images/077e60b97981c31eea17e77d3cc4b01db5ede8715ac6d989a9913a01c6089440.png" />
+</div>
+</div>
+<p>B. Gene Expression Distribution
+Violin Plot of Total Gene Counts by Clusters (louvain)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_counts&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribution of Total RNA Counts per Cluster&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/29d0d1d1b8e9609fc6f3f36eaf38e84d9f94f49faf7c8fa889a545fe391b10c2.png" src="_images/29d0d1d1b8e9609fc6f3f36eaf38e84d9f94f49faf7c8fa889a545fe391b10c2.png" />
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
@@ -2094,29 +895,21 @@ memory usage: 606.0+ KB
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;pct_counts_in_top_50_genes&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Porcentaje de cuentas en los 50 genes más expresados&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">corr_matrix</span> <span class="o">=</span> <span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;percent_mito&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Correlation Heatmap (obs)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/5fb50285aa18ca8294ae447f35085a4c8247529ae987125b5214b5079fce05f0.png" src="_images/5fb50285aa18ca8294ae447f35085a4c8247529ae987125b5214b5079fce05f0.png" />
+<img alt="_images/87a028b8172adc4f04e7b4851a5d3ac96e610cb9d805a42c865dec063c6b3c5a.png" src="_images/87a028b8172adc4f04e7b4851a5d3ac96e610cb9d805a42c865dec063c6b3c5a.png" />
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;percent_mito&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Relación entre total_counts y percent_mito&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/239b67b4ed5db99605845a521c2a9c12418538fbc46a4caae158b2f2843d45fa.png" src="_images/239b67b4ed5db99605845a521c2a9c12418538fbc46a4caae158b2f2843d45fa.png" />
-</div>
-</div>
+<p>var genes</p>
+<p>A. Highly Variable Genes vs. Mean Expression
+python
+Copiar código</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">var</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;means&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;dispersions_norm&quot;</span><span class="p">)</span>
@@ -2131,147 +924,71 @@ memory usage: 606.0+ KB
 <img alt="_images/81639d26d553576e3289b619a2e2b255ef4196d94a5e07dfc835db8c9ddfe8b9.png" src="_images/81639d26d553576e3289b619a2e2b255ef4196d94a5e07dfc835db8c9ddfe8b9.png" />
 </div>
 </div>
-<section id="analizar-la-matrix-de-expresion">
-<h3>Analizar la matrix de expresion<a class="headerlink" href="#analizar-la-matrix-de-expresion" title="Link to this heading">#</a></h3>
+<p>B. Percentage Dropout vs. Mean Counts
+Higher dropout (zero expression in many cells) means a gene is detected in fewer cells.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">X</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.       , 0.       , 0.       , ..., 0.       , 0.       ,
-        0.       ],
-       [0.       , 0.       , 0.       , ..., 0.       , 0.       ,
-        0.       ],
-       [0.       , 0.       , 5.6354756, ..., 0.       , 0.       ,
-        0.       ],
-       ...,
-       [0.       , 0.       , 6.7574944, ..., 0.       , 0.       ,
-        0.       ],
-       [0.       , 0.       , 0.       , ..., 0.       , 0.       ,
-        0.       ],
-       [0.       , 0.       , 5.4751015, ..., 0.       , 0.       ,
-        0.       ]], dtype=float32)
-</pre></div>
-</div>
-</div>
-</div>
-<p>Ver qué genes corresponden a cada columna de X
-python
-Copiar
-Editar</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;ENSG00000000005&#39;, &#39;ENSG00000001561&#39;, &#39;ENSG00000001629&#39;,
-       &#39;ENSG00000002587&#39;, &#39;ENSG00000002933&#39;, &#39;ENSG00000003056&#39;,
-       &#39;ENSG00000003137&#39;, &#39;ENSG00000004478&#39;, &#39;ENSG00000004779&#39;,
-       &#39;ENSG00000004799&#39;,
-       ...
-       &#39;ENSG00000283945&#39;, &#39;ENSG00000283980&#39;, &#39;ENSG00000284308&#39;,
-       &#39;ENSG00000284337&#39;, &#39;ENSG00000284413&#39;, &#39;ENSG00000284516&#39;,
-       &#39;ENSG00000284573&#39;, &#39;ENSG00000284680&#39;, &#39;ENSG00000284690&#39;,
-       &#39;ENSG00000284723&#39;],
-      dtype=&#39;object&#39;, name=&#39;index&#39;, length=6852)
-</pre></div>
-</div>
-</div>
-</div>
-<p>Ver qué células corresponden a cada fila de X</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">index</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;GSM2243439&#39;, &#39;GSM2243444&#39;, &#39;GSM2243445&#39;, &#39;GSM2243452&#39;, &#39;GSM2243455&#39;,
-       &#39;GSM2243456&#39;, &#39;GSM2243457&#39;, &#39;GSM2243459&#39;, &#39;GSM2243460&#39;, &#39;GSM2243464&#39;,
-       ...
-       &#39;GSM2247059&#39;, &#39;GSM2247062&#39;, &#39;GSM2247063&#39;, &#39;GSM2247064&#39;, &#39;GSM2247065&#39;,
-       &#39;GSM2247066&#39;, &#39;GSM2247067&#39;, &#39;GSM2247068&#39;, &#39;GSM2247070&#39;, &#39;GSM2247071&#39;],
-      dtype=&#39;object&#39;, name=&#39;index&#39;, length=1651)
-</pre></div>
-</div>
-</div>
-</div>
-<p>accederca ka info</p>
-<p>por gen</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gene_id</span> <span class="o">=</span> <span class="s2">&quot;ENSG00000001561&quot;</span>  <span class="c1"># Cambia esto por el ID del gen que te interesa</span>
-<span class="n">adata_glioblastoma_norm</span><span class="p">[:,</span> <span class="n">gene_id</span><span class="p">]</span><span class="o">.</span><span class="n">X</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ArrayView([[0.],
-           [0.],
-           [0.],
-           ...,
-           [0.],
-           [0.],
-           [0.]], dtype=float32)
-</pre></div>
-</div>
-</div>
-</div>
-<p>por celula</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cell_id</span> <span class="o">=</span> <span class="s2">&quot;GSM2243439&quot;</span>  <span class="c1"># Cambia esto por el ID de la célula que te interesa</span>
-<span class="n">adata_glioblastoma_norm</span><span class="p">[</span><span class="n">cell_id</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">X</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ArrayView([[0., 0., 0., ..., 0., 0., 0.]], dtype=float32)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filtrar genes expresados en pocas células</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_genes</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="p">,</span> <span class="n">min_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filtrar células con pocos genes detectados</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_cells</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="p">,</span> <span class="n">min_genes</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>50 celulas tinee 30000 genes</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;cell_type&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">var</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;mean_counts&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;pct_dropout_by_counts&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Gene Dropout vs. Mean Expression&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/10f04febc86c53b55de39885375c6bee0f477c28f6f59e8c1c1cdf689262a556.png" src="_images/10f04febc86c53b55de39885375c6bee0f477c28f6f59e8c1c1cdf689262a556.png" />
+<img alt="_images/05f513045e6441ffd1f96a444e19df60205a35f3f26422ce63ea1e128a2a260a.png" src="_images/05f513045e6441ffd1f96a444e19df60205a35f3f26422ce63ea1e128a2a260a.png" />
 </div>
 </div>
-<p>pbmc3k.h5ad</p>
-<p>Conjunto de datos de 3,000 células mononucleares de sangre periférica (PBMCs).
-Se usa como referencia en análisis de expresión génica.</p>
-<p>El conjunto de datos adata_pbmc3k generalmente hace referencia a un dataset de células sanguíneas humanas de 10x Genomics, utilizado comúnmente en análisis de single-cell RNA sequencing (scRNA-seq).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;pct_counts_in_top_50_genes&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Porcentaje de cuentas en los 50 genes más expresados&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/5fb50285aa18ca8294ae447f35085a4c8247529ae987125b5214b5079fce05f0.png" src="_images/5fb50285aa18ca8294ae447f35085a4c8247529ae987125b5214b5079fce05f0.png" />
+</div>
+</div>
+<p>Combining obs (Cells) and var (Genes)
+These analyses explore how gene expression varies across cells.</p>
+<p>A. Expression of a Specific Gene Across Clusters
+Choose a highly variable gene, e.g., “TNFRSF4”, and plot its expression:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gene</span> <span class="o">=</span> <span class="s2">&quot;TNFRSF4&quot;</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="p">[:,</span> <span class="n">gene</span><span class="p">]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expression of </span><span class="si">{</span><span class="n">gene</span><span class="si">}</span><span class="s2"> Across Clusters&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/21a26f4d11ea27af0f5f7edc4f8f55f4c1951f21f89399208850b5230dd2f6a0.png" src="_images/21a26f4d11ea27af0f5f7edc4f8f55f4c1951f21f89399208850b5230dd2f6a0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gene</span> <span class="o">=</span> <span class="s2">&quot;TNFRSF4&quot;</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;total_counts&quot;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">adata_pbmc3k</span><span class="p">[:,</span> <span class="n">gene</span><span class="p">]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">gene</span><span class="si">}</span><span class="s2"> Expression vs. Total RNA Counts&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/c07610ff081d14048084b415d53a80d966696062d2c5e5e393f17c7aec5ebfe2.png" src="_images/c07610ff081d14048084b415d53a80d966696062d2c5e5e393f17c7aec5ebfe2.png" />
+</div>
+</div>
+<p>Cklusterization</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">adata</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
     <span class="p">[</span><span class="n">adata_glioblastoma_norm</span><span class="p">,</span> <span class="n">adata_glioblastoma_raw</span><span class="p">,</span> <span class="n">adata_pbmc3k</span><span class="p">],</span> 
-    <span class="p">[</span><span class="s2">&quot;Glioblastoma Normalizado&quot;</span><span class="p">,</span> <span class="s2">&quot;Glioblastoma Raw&quot;</span><span class="p">,</span> <span class="s2">&quot;PBMC3K&quot;</span><span class="p">]</span>
+    <span class="p">[</span><span class="s2">&quot;Glioblastoma Normalizado&quot;</span><span class="p">,</span> <span class="s2">&quot;Glioblastoma Raw&quot;</span><span class="p">]</span>
 <span class="p">):</span>
     <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>   <span class="c1"># Construir la gráfica de vecinos</span>
     <span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>        <span class="c1"># Calcular la reducción de dimensionalidad</span>
@@ -2281,88 +998,90 @@ Se usa como referencia en análisis de expresión génica.</p>
 </div>
 <div class="cell_output docutils container">
 <img alt="_images/978c2f6054ca4012aea4f18f6acde91465e69d0e838ac4e50eff11a1e448e3bc.png" src="_images/978c2f6054ca4012aea4f18f6acde91465e69d0e838ac4e50eff11a1e448e3bc.png" />
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_utils.py:41: UserWarning: You’re trying to run this on 7683 dimensions of `.X`, if you really want this, set `use_rep=&#39;X&#39;`.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_utils.py:41: UserWarning: You’re trying to run this on 7683 dimensions of `.X`, if you really want this, set `use_rep=&#39;X&#39;`.
          Falling back to preprocessing with `sc.pp.pca` and default params.
   warnings.warn(
 </pre></div>
 </div>
 <img alt="_images/a2aa7d3cd42c1ed4c011d265c6004927336311e252b38bcc2e424cef9010a3b3.png" src="_images/a2aa7d3cd42c1ed4c011d265c6004927336311e252b38bcc2e424cef9010a3b3.png" />
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="n">line</span> <span class="mi">7</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>   <span class="c1"># Construir la gráfica de vecinos</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>        <span class="c1"># Calcular la reducción de dimensionalidad</span>
-<span class="ne">----&gt; </span><span class="mi">7</span> <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;cell_type&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># Graficar UMAP</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:691,</span> in <span class="ni">umap</span><span class="nt">(adata, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">632</span> <span class="nd">@_wraps_plot_scatter</span>
-<span class="g g-Whitespace">    </span><span class="mi">633</span> <span class="nd">@_doc_params</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">634</span>     <span class="n">adata_color_etc</span><span class="o">=</span><span class="n">doc_adata_color_etc</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">638</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">639</span> <span class="k">def</span><span class="w"> </span><span class="nf">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Figure</span> <span class="o">|</span> <span class="n">Axes</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Axes</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">640</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;\</span>
-<span class="g g-Whitespace">    </span><span class="mi">641</span><span class="sd">     Scatter plot in UMAP basis.</span>
-<span class="g g-Whitespace">    </span><span class="mi">642</span><span class="sd"> </span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">    </span><span class="mi">689</span><span class="sd">     tl.umap</span>
-<span class="g g-Whitespace">    </span><span class="mi">690</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">691</span>     <span class="k">return</span> <span class="n">embedding</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s2">&quot;umap&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:279,</span> in <span class="ni">embedding</span><span class="nt">(adata, basis, color, mask_obs, gene_symbols, use_raw, sort_order, edges, edges_width, edges_color, neighbors_key, arrows, arrows_kwds, groups, components, dimensions, layer, projection, scale_factor, color_map, cmap, palette, na_color, na_in_legend, size, frameon, legend_fontsize, legend_fontweight, legend_loc, legend_fontoutline, colorbar_loc, vmax, vmin, vcenter, norm, add_outline, outline_width, outline_color, ncols, hspace, wspace, title, show, save, ax, return_fig, marker, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">277</span> <span class="k">for</span> <span class="n">count</span><span class="p">,</span> <span class="p">(</span><span class="n">value_to_plot</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">)):</span>
-<span class="g g-Whitespace">    </span><span class="mi">278</span>     <span class="n">kwargs_scatter</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># is potentially mutated for each plot</span>
-<span class="ne">--&gt; </span><span class="mi">279</span>     <span class="n">color_source_vector</span> <span class="o">=</span> <span class="n">_get_color_source_vector</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">280</span>         <span class="n">adata</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">281</span>         <span class="n">value_to_plot</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">282</span>         <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">283</span>         <span class="n">mask_obs</span><span class="o">=</span><span class="n">mask_obs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">284</span>         <span class="n">use_raw</span><span class="o">=</span><span class="n">use_raw</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">285</span>         <span class="n">gene_symbols</span><span class="o">=</span><span class="n">gene_symbols</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">286</span>         <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">287</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">288</span>     <span class="n">color_vector</span><span class="p">,</span> <span class="n">color_type</span> <span class="o">=</span> <span class="n">_color_vector</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">289</span>         <span class="n">adata</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">290</span>         <span class="n">value_to_plot</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">293</span>         <span class="n">na_color</span><span class="o">=</span><span class="n">na_color</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">294</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">296</span>     <span class="c1"># Order points</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1207,</span> in <span class="ni">_get_color_source_vector</span><span class="nt">(adata, value_to_plot, mask_obs, use_raw, gene_symbols, layer, groups)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1205</span>     <span class="n">values</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">obs_vector</span><span class="p">(</span><span class="n">value_to_plot</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1206</span> <span class="k">else</span><span class="p">:</span>
-<span class="ne">-&gt; </span><span class="mi">1207</span>     <span class="n">values</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs_vector</span><span class="p">(</span><span class="n">value_to_plot</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1208</span> <span class="k">if</span> <span class="n">mask_obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1209</span>     <span class="n">values</span><span class="p">[</span><span class="o">~</span><span class="n">mask_obs</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\_core\anndata.py:1301,</span> in <span class="ni">AnnData.obs_vector</span><span class="nt">(self, k, layer)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1295</span>         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1296</span>             <span class="s2">&quot;In a future version of AnnData, access to `.X` by passing&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1297</span>             <span class="s2">&quot; `layer=&#39;X&#39;` will be removed. Instead pass `layer=None`.&quot;</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1298</span>             <span class="ne">FutureWarning</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1299</span>         <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1300</span>         <span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="ne">-&gt; </span><span class="mi">1301</span> <span class="k">return</span> <span class="n">get_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;obs&quot;</span><span class="p">,</span> <span class="s2">&quot;var&quot;</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\_core\index.py:221,</span> in <span class="ni">get_vector</span><span class="nt">(adata, k, coldim, idxdim, layer)</span>
-<span class="g g-Whitespace">    </span><span class="mi">217</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">218</span>         <span class="sa">f</span><span class="s2">&quot;Key </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> could be found in both .</span><span class="si">{</span><span class="n">idxdim</span><span class="si">}</span><span class="s2">_names and .</span><span class="si">{</span><span class="n">coldim</span><span class="si">}</span><span class="s2">.columns&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">219</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">220</span> <span class="k">elif</span> <span class="p">(</span><span class="n">in_col</span> <span class="o">+</span> <span class="n">in_idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">221</span>     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">222</span>         <span class="sa">f</span><span class="s2">&quot;Could not find key </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> in .</span><span class="si">{</span><span class="n">idxdim</span><span class="si">}</span><span class="s2">_names or .</span><span class="si">{</span><span class="n">coldim</span><span class="si">}</span><span class="s2">.columns.&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">223</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">224</span> <span class="k">elif</span> <span class="n">in_col</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">225</span>     <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">coldim</span><span class="p">)[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-
-<span class="ne">KeyError</span>: &#39;Could not find key cell_type in .var_names or .obs.columns.&#39;
+</div>
+</div>
+<p>CLUSTERES DE LAS CELUKAS Y PRIPBABLY ADDED A NEW ONE</p>
+</section>
+<section id="how-to-interpret-this">
+<h2>🔍 How to interpret this?<a class="headerlink" href="#how-to-interpret-this" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Each point represents an individual cell in the dataset.</p></li>
+<li><p>The position in the UMAP space reflects the similarity between cells:</p>
+<ul>
+<li><p><strong>Nearby cells</strong> have similar gene expression profiles.</p></li>
+<li><p><strong>Distant cells</strong> represent different cell populations.</p></li>
+</ul>
+</li>
+<li><p><strong>Color indicates TNFRSF4 gene expression</strong>:</p>
+<ul>
+<li><p><strong>Purple (low or 0 values)</strong> → Cells that do not express TNFRSF4.</p></li>
+<li><p><strong>Green/Yellow (high values)</strong> → Cells with higher TNFRSF4 expression.</p></li>
+</ul>
+</li>
+<li><p><strong>Biological interpretation</strong>:</p>
+<ul>
+<li><p>If TNFRSF4 is expressed only in certain regions, it indicates activity in <strong>specific subpopulations</strong>.</p></li>
+<li><p>If it is uniformly distributed, it suggests <strong>general expression across all cells</strong>.</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">pca</span><span class="p">(</span><span class="n">adata_pbmc3k</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_pbmc3k</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_pbmc3k</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_pbmc3k</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;TNFRSF4&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-<img alt="_images/1666bd7d93a7212337303e4225edbe0a71238a8ea1792f9b9a74430b38f28f7e.png" src="_images/1666bd7d93a7212337303e4225edbe0a71238a8ea1792f9b9a74430b38f28f7e.png" />
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/a5e18d11e60f15a16ab06d225cbdbce63d040c8ecc20e2563cd2889a24aa8e05.png" src="_images/a5e18d11e60f15a16ab06d225cbdbce63d040c8ecc20e2563cd2889a24aa8e05.png" />
 </div>
 </div>
-</section>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_pbmc3k</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_5588\2660952902.py:1: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  adata_pbmc3k.obs.groupby(&quot;louvain&quot;).size()
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>louvain
+0    1153
+1     480
+2     341
+3     303
+4     157
+5     153
+6      36
+7      15
+dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_pbmc3k</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;TNFRSF4&quot;</span><span class="p">,</span><span class="s2">&quot;louvain&quot;</span><span class="p">],</span> <span class="n">legend_loc</span><span class="o">=</span><span class="s2">&quot;on data&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Louvain Clustering&quot;</span><span class="p">,)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
+</pre></div>
+</div>
+<img alt="_images/ee775575623b9d5811ebe79fe24e87e634f58c8ba38855815adad5f5a2707545.png" src="_images/ee775575623b9d5811ebe79fe24e87e634f58c8ba38855815adad5f5a2707545.png" />
+</div>
+</div>
 </section>
 </section>
 
@@ -2396,6 +1115,15 @@ Se usa como referencia en análisis de expresión génica.</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="Datos_celulares_y_geneticos.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Cargue de datos</p>
+      </div>
+    </a>
 </div>
                 </footer>
               
@@ -2412,29 +1140,12 @@ Se usa como referencia en análisis de expresión génica.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Cargue de datos</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observar-conjunto-de-datos">Observar conjunto de datos</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#descripcion-de-las-variables-en-adata-glioblastoma-norm-obs">Descripción de las Variables en <code class="docutils literal notranslate"><span class="pre">adata_glioblastoma_norm.obs</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#significado-de-las-categorias-en-diagnosis">📌 Significado de las categorías en <code class="docutils literal notranslate"><span class="pre">diagnosis</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importancia-en-el-analisis">📊 Importancia en el análisis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-data-and-information">Import Data and Information</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adata-pbmc3k">adata_pbmc3k</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variables-in-the-dataset">🔍 Variables in the dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">🔍 Variables in the dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-interpret-this">🔍 How to interpret this?</a></li>
 </ul>
-</li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#descripcion-de-las-variables">📌 Descripción de las Variables</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion">🔎 Interpretación</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bivariate-analysis">Bivariate Analysis</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datos-genes">Datos genes</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#descripcion-de-las-variables-en-adata-glioblastoma-norm-var">Descripción de las variables en <code class="docutils literal notranslate"><span class="pre">adata_glioblastoma_norm.var</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analizar-la-matrix-de-expresion">Analizar la matrix de expresion</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
   </nav></div>
 
 </div></div>
