@@ -148,8 +148,14 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/logo_uninorte.png" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/logo_uninorte.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
   
-    <p class="title logo__title">My sample book</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -239,7 +245,7 @@
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+      <li><a href="https://github.com/henrysaenz/eda_rna" target="_blank"
    class="btn btn-sm btn-source-repository-button dropdown-item"
    title="Source repository"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -256,7 +262,7 @@
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FEDA_metadata.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/henrysaenz/eda_rna/issues/new?title=Issue%20on%20page%20%2FEDA_metadata.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -384,7 +390,18 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-data">Import data</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-and-describe-data">Analyze and Describe data</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-and-describe-data">Analyze and Describe data</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-for-cell-type-and-proportion">Count for cell type and proportion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-and-proportion-of-subtissue">Count and proportion of subtissue</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#missing-data">Missing data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-summary">Statistical summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis-for-each-sex">Analysis For each sex</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-and-proportion-of-tissues-type-by-sex">Count and proportion of tissues type by sex</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-count-by-type">Cell count by type</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-count-by-tissue-type">Cell count by tissue type</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#heatmap-of-gene-expression">Heatmap of gene expression</a></li>
+</ul>
+</li>
 </ul>
 
             </nav>
@@ -413,7 +430,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_19436\1582991288.py:6: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_17604\1582991288.py:6: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
   from IPython.core.display import display, HTML
 </pre></div>
 </div>
@@ -447,18 +464,28 @@ document.write(`
 </section>
 <section id="analyze-and-describe-data">
 <h1>Analyze and Describe data<a class="headerlink" href="#analyze-and-describe-data" title="Link to this heading">#</a></h1>
+<p>The dimension of the data is 3401 observation for 6 different variables. This information belongs to the decsription of the the brain extracted mices cells</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dimensin of DataFrame:&quot;</span><span class="p">,</span> <span class="n">df_metadata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dimension of DataFrame:&quot;</span><span class="p">,</span> <span class="n">df_metadata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimensin of DataFrame: (3401, 6)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimension of DataFrame: (3401, 6)
 </pre></div>
 </div>
 </div>
 </div>
+<p>All columns are of type object (string/text), meaning they contain categorical data. Below is an overview of each column:</p>
+<ul class="simple">
+<li><p><strong>cell</strong>: Identifies individual cells in the dataset. Each row corresponds to a unique cell.</p></li>
+<li><p><strong>cell_ontology_class</strong>: Specifies the ontology classification of each cell, likely indicating its biological type or function.</p></li>
+<li><p><strong>subtissue</strong>: Describes the specific tissue or sub-region from which the cell was extracted.</p></li>
+<li><p><strong>mouse.sex:</strong> Indicates the sex of the mouse (e.g., “male” or “female”).</p></li>
+<li><p><strong><a class="reference external" href="http://mouse.id">mouse.id</a>:</strong> A unique identifier for each mouse in the study. Multiple cells may belong to the same mouse.</p></li>
+<li><p><strong>plate.barcode:</strong> A barcode identifier for the plate used in the experiment, which can help track batch effects or technical variations.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📊 Information of DataFrame:&quot;</span><span class="p">)</span>
@@ -487,13 +514,13 @@ memory usage: 159.5+ KB
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📈 Description of numerica variables:&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📈 Description of numerical variables:&quot;</span><span class="p">)</span>
 <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">df_metadata</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">to_html</span><span class="p">()))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>📈 Description of numerica variables:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>📈 Description of numerical variables:
 </pre></div>
 </div>
 <div class="output text_html"><table border="1" class="dataframe">
@@ -550,13 +577,13 @@ memory usage: 159.5+ KB
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔹 Primeras 10 filas del DataFrame:&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔹 Firts 10 rows of the DataFrame:&quot;</span><span class="p">)</span>
 <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">df_metadata</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔹 Primeras 10 filas del DataFrame:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔹 Firts 10 rows of the DataFrame:
 </pre></div>
 </div>
 <div class="output text_html"><table border="1" class="dataframe">
@@ -654,7 +681,17 @@ memory usage: 159.5+ KB
   </tbody>
 </table></div></div>
 </div>
-<p>conteo de tipo de células</p>
+<section id="count-for-cell-type-and-proportion">
+<h2>Count for cell type and proportion<a class="headerlink" href="#count-for-cell-type-and-proportion" title="Link to this heading">#</a></h2>
+<p>The following chart presents the distribution of cell types in a dataset of mouse brain cells. The left plot shows the absolute count of each cell type, while the right plot displays their proportional distribution as a percentage.</p>
+<p><strong>Key observations:</strong></p>
+<ul class="simple">
+<li><p><em>Oligodendrocytes</em> are the most abundant cell type, making up the largest portion of the dataset.</p></li>
+<li><p><em>Endothelial</em> cells and astrocytes are also common, though in lower numbers.</p></li>
+<li><p><em>Neurons</em>, <em>oligodendrocyte</em> <em>precursor</em> <em>cells</em>, and <em>brain pericytes</em> are present in moderate amounts.</p></li>
+<li><p>Bergmann glial cells appear in the smallest proportion.</p></li>
+</ul>
+<p>The proportional chart highlights the dominance of oligodendrocytes, which account for over 40% of the dataset, while other cell types have significantly lower representation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cell_type_counts</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="s2">&quot;cell_ontology_class&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
@@ -663,15 +700,15 @@ memory usage: 159.5+ KB
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cell_type_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">cell_type_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Conteo de Tipos Celulares (Cantidad)&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Tipo de célula&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Cantidad&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Count for cell type (Quantity)&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Cell type&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Quantity&quot;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
 
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cell_type_percent</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">cell_type_percent</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Conteo de Tipos Celulares (Proporción)&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Tipo de célula&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Porcentaje (%)&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Cell Type Count (Proportion)&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Cell type&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Percentage (%)&quot;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -680,22 +717,28 @@ memory usage: 159.5+ KB
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_19436\4005747970.py:6: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_17604\3752527540.py:6: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.barplot(x=cell_type_counts.index, y=cell_type_counts.values, palette=&quot;coolwarm&quot;, ax=axes[0])
-C:\Users\henry\AppData\Local\Temp\ipykernel_19436\4005747970.py:12: FutureWarning: 
+C:\Users\henry\AppData\Local\Temp\ipykernel_17604\3752527540.py:12: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.barplot(x=cell_type_percent.index, y=cell_type_percent.values, palette=&quot;coolwarm&quot;, ax=axes[1])
 </pre></div>
 </div>
-<img alt="_images/7315a74db719040d19eb1a9820ba360296b6b55505b97b72b81098f1fd8b6ab5.png" src="_images/7315a74db719040d19eb1a9820ba360296b6b55505b97b72b81098f1fd8b6ab5.png" />
+<img alt="_images/f9f3773d4dd8bfe1a7984e6eb82fded85cdb36cd82d1fbee23ad1842bb873591.png" src="_images/f9f3773d4dd8bfe1a7984e6eb82fded85cdb36cd82d1fbee23ad1842bb873591.png" />
 </div>
 </div>
-<p>conteo y proporcion por tejido</p>
+</section>
+<section id="count-and-proportion-of-subtissue">
+<h2>Count and proportion of subtissue<a class="headerlink" href="#count-and-proportion-of-subtissue" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The left Chart “Subtissue Distribution (Quantity)” displays the absolute count of cells in different brain subtissues. The Cortex has the highest count, followed by the Hippocampus, Striatum, and Cerebellum, which has the lowest count.</p></li>
+<li><p>The right chart “Proportion of Subtissue” represents the proportion of each subtissue relative to the total dataset. The Cortex accounts for the largest percentage (33.8%), followed by the Hippocampus (28.7%), Striatum (21.3%), and Cerebellum (16.3%).</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">subtissue_type_counts</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="s1">&#39;subtissue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
@@ -704,74 +747,46 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
 
-<span class="c1"># 📊 Gráfico de barras - Conteo de subtissue</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">subtissue_type_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">subtissue_type_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Distribución de Subtissue (Cantidad)&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Subtissue Distribution (Quantity)&quot;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Subtissue&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Cantidad&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Quantity&quot;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
 
-<span class="c1"># 🥧 Gráfico de pastel - Proporción de subtissue</span>
 <span class="n">colors</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">subtissue_type_counts</span><span class="p">))</span>  <span class="c1"># Colores</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">subtissue_type_percent</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">subtissue_type_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">140</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Proporción de Subtissue&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Proportion of Subtissue&quot;</span><span class="p">)</span>
 
-<span class="c1"># 📈 Ajustar diseño y mostrar</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_19436\423397699.py:8: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_17604\2567555667.py:8: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.barplot(x=subtissue_type_counts.index, y=subtissue_type_counts.values, palette=&quot;coolwarm&quot;, ax=axes[0])
 </pre></div>
 </div>
-<img alt="_images/8be89eddab727bb69165f602aa8fa9e4568d2b3e72323715dc8a28b017137551.png" src="_images/8be89eddab727bb69165f602aa8fa9e4568d2b3e72323715dc8a28b017137551.png" />
+<img alt="_images/548e30a1b04e0f70f60da4250657fdf4a1c922e7966ad144fe548f7d2c2f7702.png" src="_images/548e30a1b04e0f70f60da4250657fdf4a1c922e7966ad144fe548f7d2c2f7702.png" />
 </div>
 </div>
+</section>
+<section id="missing-data">
+<h2>Missing data<a class="headerlink" href="#missing-data" title="Link to this heading">#</a></h2>
+<p>The missing data analysis shows that there is no missing data in any of the columns. Each column; cell, cell_ontology_class, subtissue, mouse.sex, <a class="reference external" href="http://mouse.id">mouse.id</a>, and plate.barcode—has complete values, meaning there are no null or empty entries.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Información de las columnas</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📝 Información de la Metadata:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df_metadata</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>📝 Información de la Metadata:
-&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-RangeIndex: 3401 entries, 0 to 3400
-Data columns (total 6 columns):
- #   Column               Non-Null Count  Dtype 
----  ------               --------------  ----- 
- 0   cell                 3401 non-null   object
- 1   cell_ontology_class  3401 non-null   object
- 2   subtissue            3401 non-null   object
- 3   mouse.sex            3401 non-null   object
- 4   mouse.id             3401 non-null   object
- 5   plate.barcode        3401 non-null   object
-dtypes: object(6)
-memory usage: 159.5+ KB
-None
-</pre></div>
-</div>
-</div>
-</div>
-<p>datos faltantes</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Revisar valores nulos</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔍 Valores nulos en Metadata:&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># To check missing data</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔍 Missing data in Metadata:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df_metadata</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔍 Valores nulos en Metadata:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔍 Missing data in Metadata:
 cell                   0
 cell_ontology_class    0
 subtissue              0
@@ -783,135 +798,27 @@ dtype: int64
 </div>
 </div>
 </div>
+</section>
+<section id="statistical-summary">
+<h2>Statistical summary<a class="headerlink" href="#statistical-summary" title="Link to this heading">#</a></h2>
+<p><strong>Key Observations:</strong></p>
+<ul class="simple">
+<li><p><em><strong>Cell Ontology Class:</strong></em> There are 7 distinct cell types, with oligodendrocytes being the most frequent (1,574 occurrences).</p></li>
+<li><p><em><strong>Subtissue Distribution:</strong></em> Cells are found in 4 different brain regions, with the Cortex being the most represented (1,149 occurrences).</p></li>
+<li><p><em><strong>Sex Distribution:</strong></em> The dataset contains both male and female samples, but males (2,694) are more prevalent.</p></li>
+<li><p><em><strong>Mouse ID:</strong></em> There are 7 unique mouse IDs, with mouse 3_10_M appearing most frequently (980 occurrences).</p></li>
+<li><p><em><strong>Plate Barcode:</strong></em> A total of 41 different plate barcodes were used, with MAA000560 being the most common (287 occurrences).</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ver primeras filas</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🧬 Matriz de Expresión Génica (primeras filas):&quot;</span><span class="p">)</span>
-<span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">df_metadata</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">to_html</span><span class="p">()))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🧬 Matriz de Expresión Génica (primeras filas):
-</pre></div>
-</div>
-<div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>cell</th>
-      <th>cell_ontology_class</th>
-      <th>subtissue</th>
-      <th>mouse.sex</th>
-      <th>mouse.id</th>
-      <th>plate.barcode</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>A1.B003290.3_38_F.1.1</td>
-      <td>astrocyte</td>
-      <td>Striatum</td>
-      <td>F</td>
-      <td>3_38_F</td>
-      <td>B003290</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>A1.B003728.3_56_F.1.1</td>
-      <td>astrocyte</td>
-      <td>Striatum</td>
-      <td>F</td>
-      <td>3_56_F</td>
-      <td>B003728</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>A1.MAA000560.3_10_M.1.1</td>
-      <td>oligodendrocyte</td>
-      <td>Cortex</td>
-      <td>M</td>
-      <td>3_10_M</td>
-      <td>MAA000560</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>A1.MAA000564.3_10_M.1.1</td>
-      <td>endothelial cell</td>
-      <td>Striatum</td>
-      <td>M</td>
-      <td>3_10_M</td>
-      <td>MAA000564</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>A1.MAA000923.3_9_M.1.1</td>
-      <td>astrocyte</td>
-      <td>Hippocampus</td>
-      <td>M</td>
-      <td>3_9_M</td>
-      <td>MAA000923</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>A1.MAA000930.3_8_M.1.1</td>
-      <td>oligodendrocyte</td>
-      <td>Cortex</td>
-      <td>M</td>
-      <td>3_8_M</td>
-      <td>MAA000930</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>A1.MAA000932.3_11_M.1.1</td>
-      <td>endothelial cell</td>
-      <td>Hippocampus</td>
-      <td>M</td>
-      <td>3_11_M</td>
-      <td>MAA000932</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>A1.MAA000940.3_8_M.1.1</td>
-      <td>neuron</td>
-      <td>Striatum</td>
-      <td>M</td>
-      <td>3_8_M</td>
-      <td>MAA000940</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>A1.MAA001854.3_38_F.1.1</td>
-      <td>oligodendrocyte</td>
-      <td>Cerebellum</td>
-      <td>F</td>
-      <td>3_38_F</td>
-      <td>MAA001854</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>A1.MAA001894.3_39_F.1.1</td>
-      <td>endothelial cell</td>
-      <td>Cortex</td>
-      <td>F</td>
-      <td>3_39_F</td>
-      <td>MAA001894</td>
-    </tr>
-  </tbody>
-</table></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Resumen estadístico</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📈 Resumen Estadístico:&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Statistical summary </span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📈 Statistical summary:&quot;</span><span class="p">)</span>
 <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">df_metadata</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">to_html</span><span class="p">()))</span>
-<span class="c1"># print(df_counts.describe())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>📈 Resumen Estadístico:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>📈 Statistical summary:
 </pre></div>
 </div>
 <div class="output text_html"><table border="1" class="dataframe">
@@ -966,111 +873,118 @@ dtype: int64
   </tbody>
 </table></div></div>
 </div>
+<p>There are also zero values in the gene expression matrix wich means that the matrix has full values.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Revisar valores nulos</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔍 Valores nulos en la Matriz de Expresión:&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Null values</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔍 Null Values in the gene expresssion matrix:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df_counts</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔍 Valores nulos en la Matriz de Expresión:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔍 Null Values in the gene expresssion matrix:
 0
 </pre></div>
 </div>
 </div>
 </div>
-<p>Análiis por sexo</p>
+</section>
+<section id="analysis-for-each-sex">
+<h2>Analysis For each sex<a class="headerlink" href="#analysis-for-each-sex" title="Link to this heading">#</a></h2>
+<p>The metadata information of the cells analyzed contains 2694 registers that belongs to male mice and 707 that belongs to female.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_metadata_m</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="n">C</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_metadata_m</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="n">df_metadata</span><span class="p">[</span><span class="s1">&#39;mouse.sex&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">]</span>
 <span class="n">df_metadata_f</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="n">df_metadata</span><span class="p">[</span><span class="s1">&#39;mouse.sex&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Filtramos por sexo de ratón y tenemos que: &#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🐭 Machos: </span><span class="si">{</span><span class="n">df_metadata_m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🐭 Hembras: </span><span class="si">{</span><span class="n">df_metadata_f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> We filter by sex of the mouse and we get that: &#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🐭 Male: </span><span class="si">{</span><span class="n">df_metadata_m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🐭 Female: </span><span class="si">{</span><span class="n">df_metadata_f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">df_metadata_m</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="n">C</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">]</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">df_metadata_f</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="n">df_metadata</span><span class="p">[</span><span class="s1">&#39;mouse.sex&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Filtramos por sexo de ratón y tenemos que: &#39;</span><span class="p">)</span>
-
-<span class="ne">NameError</span>: name &#39;C&#39; is not defined
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> We filter by sex of the mouse and we get that: 
+🐭 Male: 2694
+🐭 Female: 707
 </pre></div>
 </div>
 </div>
 </div>
+<p>The mice proportion in the dataset consist in 20.8% for female and 79,8% for male, wich is the greatest part.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sex_counts</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="s1">&#39;mouse.sex&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 
-<span class="c1"># Crear la figura con dos subgráficos</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
-<span class="c1"># Gráfico de barras</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sex_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">sex_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;pastel&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Conteo de Ratones por Sexo&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Sexo&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Cantidad&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Mice count per sex&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Sex&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Quantity&quot;</span><span class="p">)</span>
 
-<span class="c1"># Gráfico de pastel</span>
+<span class="c1"># Pie chart</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">sex_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">sex_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">,</span> 
             <span class="n">colors</span><span class="o">=</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;pastel&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sex_counts</span><span class="p">)),</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Proporción de Sexo en Ratones&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Sex proportion of mice&quot;</span><span class="p">)</span>
 
-<span class="c1"># Ajustar diseño y mostrar</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_22152\3189286318.py:7: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_17604\798154539.py:5: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.barplot(x=sex_counts.index, y=sex_counts.values, palette=&quot;pastel&quot;, ax=axes[0])
 </pre></div>
 </div>
-<img alt="_images/cde4a54e25910c79b6b9561b2336aa4c47e3005bc547fa64f038428ed21b0e88.png" src="_images/cde4a54e25910c79b6b9561b2336aa4c47e3005bc547fa64f038428ed21b0e88.png" />
+<img alt="_images/cd05c7482b619d6f4c15bf62da5112c7133cb8328e4b793a8b5646be256b9c58.png" src="_images/cd05c7482b619d6f4c15bf62da5112c7133cb8328e4b793a8b5646be256b9c58.png" />
 </div>
 </div>
+</section>
+<section id="count-and-proportion-of-tissues-type-by-sex">
+<h2>Count and proportion of tissues type by sex<a class="headerlink" href="#count-and-proportion-of-tissues-type-by-sex" title="Link to this heading">#</a></h2>
+<p>The male group has a significantly larger sample size compared to the female group, which is evident from the higher counts across all tissues.</p>
+<ul class="simple">
+<li><p>Males show a more skewed distribution, with Cortex having the highest sample count and the other tissues decreasing progressively.</p></li>
+<li><p>Females have a more balanced distribution among Cortex, Hippocampus, and Striatum, while Cerebellum remains the least represented in both groups.</p></li>
+</ul>
+<p>While absolute counts are different, the relative proportions (percentages) provide a normalized view of tissue representation:</p>
+<ul class="simple">
+<li><p>Males have a higher proportion of <strong>Cortex</strong> samples (35.0%) compared to females (29.3%).</p></li>
+<li><p><strong>Striatum</strong> is more represented in females (27.0%) than in males (19.7%).</p></li>
+<li><p><strong>Hippocampus</strong> is nearly identical in both groups (~28%).</p></li>
+<li><p><strong>Cerebellum</strong> has the lowest proportion in both, with a slight difference between males (16.5%) and females (15.3%).</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tissue_counts_m</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="n">df_metadata</span><span class="p">[</span><span class="s1">&#39;mouse.sex&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">][</span><span class="s1">&#39;subtissue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 <span class="n">tissue_counts_f</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="n">df_metadata</span><span class="p">[</span><span class="s1">&#39;mouse.sex&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">][</span><span class="s1">&#39;subtissue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 
-<span class="c1"># Crear la figura con cuatro subgráficos (2x2)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
-<span class="c1"># Gráfico de barras para machos</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">tissue_counts_m</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">tissue_counts_m</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Conteo de Tipos de Tejido en Machos&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Tipo de Tejido&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Cantidad&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Tissue count for male&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Tissue&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Quantity&quot;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
 
-<span class="c1"># Gráfico de barras para hembras</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">tissue_counts_f</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">tissue_counts_f</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Conteo de Tipos de Tejido en Hembras&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Tipo de Tejido&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Tissue count for female&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Tissue&quot;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
 
-<span class="c1"># Gráfico de pastel para machos</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">tissue_counts_m</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">tissue_counts_m</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">,</span> 
                <span class="n">colors</span><span class="o">=</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tissue_counts_m</span><span class="p">)))</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Proporción de Tipos de Tejido en Machos&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Tissue proportion for male&quot;</span><span class="p">)</span>
 
-<span class="c1"># Gráfico de pastel para hembras</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">tissue_counts_f</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">tissue_counts_f</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">,</span> 
                <span class="n">colors</span><span class="o">=</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tissue_counts_f</span><span class="p">)))</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Proporción de Tipos de Tejido en Hembras&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Tissue proportion for female&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1078,40 +992,51 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_22152\293180145.py:5: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_17604\2428431691.py:6: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.barplot(x=tissue_counts_m.index, y=tissue_counts_m.values, palette=&quot;coolwarm&quot;, ax=axes[0, 0])
-C:\Users\henry\AppData\Local\Temp\ipykernel_22152\293180145.py:12: FutureWarning: 
+C:\Users\henry\AppData\Local\Temp\ipykernel_17604\2428431691.py:12: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.barplot(x=tissue_counts_f.index, y=tissue_counts_f.values, palette=&quot;coolwarm&quot;, ax=axes[0, 1])
 </pre></div>
 </div>
-<img alt="_images/76e9f3b6dd008fa57fa8ffa961707dea19ac155b3b3ed2f64d00f97c9418dda4.png" src="_images/76e9f3b6dd008fa57fa8ffa961707dea19ac155b3b3ed2f64d00f97c9418dda4.png" />
+<img alt="_images/66591e4bc1b9159068793c12a1c123908e37045b65fbbcdc644364a1b5f5c747.png" src="_images/66591e4bc1b9159068793c12a1c123908e37045b65fbbcdc644364a1b5f5c747.png" />
 </div>
 </div>
-<p>celular por sexo</p>
+</section>
+<section id="cell-count-by-type">
+<h2>Cell count by type<a class="headerlink" href="#cell-count-by-type" title="Link to this heading">#</a></h2>
+<p>These information is divided into counts per cell type as followed:</p>
+<ul class="simple">
+<li><p><em>Oligodendrocytes</em> are the most numerous, with approximately 1,600 cells, making them the dominant cell type.</p></li>
+<li><p><em>Endothelial cells</em> are the second most common, with about 700 cells, representing a significant portion of the dataset.</p></li>
+<li><p><em>Astrocytes</em> account for roughly 430 cells, while neurons are less frequent, with around 280 cells.</p></li>
+<li><p>The remaining cell <em>types—oligodendrocyte</em> <em>precursor cells</em> (~200), <em>brain pericytes</em> (~150), and <em>Bergmann glial cells</em> (~40)—are comparatively rare.</p></li>
+</ul>
+<p><strong>Statistical Insights</strong></p>
+<ul class="simple">
+<li><p><em><strong>Skewed Distribution:</strong></em> The dataset is highly unbalanced, with oligodendrocytes being nearly twice as common as the next most frequent cell type (endothelial cells).</p></li>
+<li><p><em><strong>Low Representation:</strong></em> Some cell types, such as Bergmann glial cells (1.2%) and brain pericytes (4.6%), have very few samples, which may impact statistical analyses if these groups are too small to generalize results.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cell_counts</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="s1">&#39;cell_ontology_class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 
-<span class="c1"># Crear la figura con dos subgráficos (1x2)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
-<span class="c1"># Gráfico de barras</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cell_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">cell_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Conteo de Tipos de Células&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Tipo de Célula&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Cantidad&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Cell count by type&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Cell type&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Quantity&quot;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
 
-<span class="c1"># Gráfico de pastel</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">cell_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">cell_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">,</span> 
             <span class="n">colors</span><span class="o">=</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_counts</span><span class="p">)))</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Proporción de Tipos de Células&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Cell type proportion&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1119,72 +1044,57 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_22152\527172210.py:7: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_17604\2006688091.py:7: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.barplot(x=cell_counts.index, y=cell_counts.values, palette=&quot;coolwarm&quot;, ax=axes[0])
 </pre></div>
 </div>
-<img alt="_images/7ea1ce5086362068ae40efa6f480b701e266a9fd12499c553d64e91844c23119.png" src="_images/7ea1ce5086362068ae40efa6f480b701e266a9fd12499c553d64e91844c23119.png" />
+<img alt="_images/e997e2fb1e177fff39fbb03636713a3980b238c4b482c06eb9744b20b1c3bc0a.png" src="_images/e997e2fb1e177fff39fbb03636713a3980b238c4b482c06eb9744b20b1c3bc0a.png" />
 </div>
 </div>
+</section>
+<section id="cell-count-by-tissue-type">
+<h2>Cell count by tissue type<a class="headerlink" href="#cell-count-by-tissue-type" title="Link to this heading">#</a></h2>
+<p><strong>Oligodendrocytes</strong></p>
+<ul class="simple">
+<li><p>Most abundant in Cortex (~580 cells), followed by Hippocampus (~470) and Striatum (~380).</p></li>
+<li><p>Least common in Cerebellum (~170).</p></li>
+</ul>
+<p><strong>Endothelial Cells:</strong></p>
+<ul class="simple">
+<li><p>Highest in Hippocampus (~270), followed by Cerebellum (~190).</p></li>
+<li><p>Lower presence in Cortex (~140) and Striatum (~110).</p></li>
+</ul>
+<p><strong>Astrocytes</strong>:</p>
+<ul class="simple">
+<li><p>Predominantly found in Cortex (~260).</p></li>
+<li><p>Lower numbers in Hippocampus (~90), Striatum (~80), and Cerebellum (~10).</p></li>
+</ul>
+<p><strong>Neurons</strong>:</p>
+<ul class="simple">
+<li><p>More evenly distributed, with Striatum (~110) and Cerebellum (~100) having slightly higher counts.</p></li>
+<li><p>Cortex and Hippocampus have fewer neurons (~50 and ~30, respectively).</p></li>
+</ul>
+<p><strong>Oligodendrocyte Precursor Cells:</strong></p>
+<ul class="simple">
+<li><p>Most present in Hippocampus (~100), with Cortex (~90) and Striatum (~50) having moderate counts.</p></li>
+<li><p>Least frequent in Cerebellum (~20).</p></li>
+</ul>
+<p><strong>Brain Pericytes:</strong></p>
+<ul class="simple">
+<li><p>Found in all tissues in small amounts, with slightly more in Cortex (~80) and Cerebellum (~70).</p></li>
+</ul>
+<p><strong>Bergmann Glial Cells:</strong></p>
+<ul class="simple">
+<li><p>Almost exclusive to Cerebellum (~60), with negligible counts in other tissues.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Contar la cantidad de cada tipo de célula</span>
-<span class="n">cell_counts</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="p">[</span><span class="s1">&#39;cell_ontology_class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
-
-<span class="c1"># Calcular las proporciones</span>
-<span class="n">cell_proportions</span> <span class="o">=</span> <span class="n">cell_counts</span> <span class="o">/</span> <span class="n">cell_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-
-<span class="c1"># Crear la figura con dos subgráficos (1x2)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-
-<span class="c1"># Gráfico de barras para conteo</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cell_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">cell_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Conteo de Tipos de Células&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Tipo de Célula&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Cantidad&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
-
-<span class="c1"># Gráfico de barras para proporciones</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cell_proportions</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">cell_proportions</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Proporción de Tipos de Células&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Tipo de Célula&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Proporción&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_22152\571404742.py:11: FutureWarning: 
-
-Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
-
-  sns.barplot(x=cell_counts.index, y=cell_counts.values, palette=&quot;coolwarm&quot;, ax=axes[0])
-C:\Users\henry\AppData\Local\Temp\ipykernel_22152\571404742.py:18: FutureWarning: 
-
-Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
-
-  sns.barplot(x=cell_proportions.index, y=cell_proportions.values, palette=&quot;coolwarm&quot;, ax=axes[1])
-</pre></div>
-</div>
-<img alt="_images/174bec695d0893c65b0f38075acf543c8b2cff05c31121585a5004fb7dcc0208.png" src="_images/174bec695d0893c65b0f38075acf543c8b2cff05c31121585a5004fb7dcc0208.png" />
-</div>
-</div>
-<p>grafuca por tipo de celula por tejido</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Contar la cantidad de cada tipo de tejido por tipo de célula</span>
-<span class="n">tissue_by_cell</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;cell_ontology_class&#39;</span><span class="p">,</span> <span class="s1">&#39;subtissue&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
-
-<span class="c1"># Ordenar por cantidad de mayor a menor</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tissue_by_cell</span> <span class="o">=</span> <span class="n">df_metadata</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;cell_ontology_class&#39;</span><span class="p">,</span> <span class="s1">&#39;subtissue&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
 <span class="n">tissue_by_cell</span> <span class="o">=</span> <span class="n">tissue_by_cell</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="c1"># Crear el gráfico de barras agrupadas</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span>
     <span class="n">data</span><span class="o">=</span><span class="n">tissue_by_cell</span><span class="p">,</span> 
@@ -1196,41 +1106,49 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <span class="p">)</span>
 
 <span class="c1"># Personalizar etiquetas</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribución de Tejidos por Tipo de Célula&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Tipo de Célula&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Cantidad&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Count distribution per cell type and subtissue&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Cell type&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Quanrity&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Tipo de Tejido&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Tissue&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/46d865d723e2502e90c095af910891d6f25498ab7db02ceea0b5f8c8d6f8bfc3.png" src="_images/46d865d723e2502e90c095af910891d6f25498ab7db02ceea0b5f8c8d6f8bfc3.png" />
+<img alt="_images/ea7147a2e104d7d3d75e310b6458015641c3e4c020c8ff1bb18bf962ca298211.png" src="_images/ea7147a2e104d7d3d75e310b6458015641c3e4c020c8ff1bb18bf962ca298211.png" />
 </div>
 </div>
-<p>diferencias significativas entre el conteo de células por cada sexo</p>
+</section>
+<section id="heatmap-of-gene-expression">
+<h2>Heatmap of gene expression<a class="headerlink" href="#heatmap-of-gene-expression" title="Link to this heading">#</a></h2>
+<p>This heatmap represents the gene expression levels of a randomly selected subset of 20 genes across 20 different cells. The color intensity in the heatmap indicates the level of gene expression, where:</p>
+<ul class="simple">
+<li><p>Dark blue (low values) represents little to no gene expression.</p></li>
+<li><p>Light blue to red (higher values) indicates increased expression levels, with red showing the highest expression values.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seleccionar una muestra aleatoria de 20 genes y 20 células</span>
-<span class="n">sample_genes</span> <span class="o">=</span> <span class="n">df_counts</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Elegimos 20 genes aleatoriamente</span>
-<span class="n">sample_cells</span> <span class="o">=</span> <span class="n">sample_genes</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Tomamos 20 células aleatorias</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Random Gene and cell selection</span>
+<span class="n">sample_genes</span> <span class="o">=</span> <span class="n">df_counts</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># We select randomly 20 genes</span>
+<span class="n">sample_cells</span> <span class="o">=</span> <span class="n">sample_genes</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># We select randomly 20 cells</span>
 
-<span class="c1"># Mapa de calor</span>
+<span class="c1"># Heat map</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">sample_cells</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Mapa de Calor de Expresión Génica (Muestra de 20 genes y 20 células)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Heatmap of Gene Expression (Sample of 20 Genes and 20 Cells)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Genes&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Células&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Cells&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/4aa214ac8c58e3efd48b14ab32552ab304e0c470f45c286a11a86c38f971ad6b.png" src="_images/4aa214ac8c58e3efd48b14ab32552ab304e0c470f45c286a11a86c38f971ad6b.png" />
+<img alt="_images/7de3e1f93b60e6fbfe7ad05af789b029b22393d92b9f6fe2390e8ded3082112a.png" src="_images/7de3e1f93b60e6fbfe7ad05af789b029b22393d92b9f6fe2390e8ded3082112a.png" />
 </div>
 </div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1301,7 +1219,18 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-data">Import data</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-and-describe-data">Analyze and Describe data</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-and-describe-data">Analyze and Describe data</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-for-cell-type-and-proportion">Count for cell type and proportion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-and-proportion-of-subtissue">Count and proportion of subtissue</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#missing-data">Missing data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-summary">Statistical summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis-for-each-sex">Analysis For each sex</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-and-proportion-of-tissues-type-by-sex">Count and proportion of tissues type by sex</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-count-by-type">Cell count by type</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-count-by-tissue-type">Cell count by tissue type</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#heatmap-of-gene-expression">Heatmap of gene expression</a></li>
+</ul>
+</li>
 </ul>
 
   </nav></div>
