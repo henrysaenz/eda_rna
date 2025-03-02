@@ -185,11 +185,9 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Exploratory Data Analysis for Metadata</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="EDA_sparse_matrix.html">Exploratory Data Analysis for the sparse matrix</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Cargue de datos</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Exploratory Data Analysis for Glioblastoma data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
-
 
 </ul>
 
@@ -464,6 +462,7 @@ document.write(`
 </section>
 <section id="analyze-and-describe-data">
 <h1>Analyze and Describe data<a class="headerlink" href="#analyze-and-describe-data" title="Link to this heading">#</a></h1>
+<p>Metadata is “data about data.” In this dataset, it provides descriptive, structural, and administrative information about a mice laboratory gene and RNA experiment, where it was collected cellular and RNA decomposition information from 3401 male and female population.</p>
 <p>The dimension of the data is 3401 observation for 6 different variables. This information belongs to the decsription of the the brain extracted mices cells</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -512,6 +511,13 @@ memory usage: 159.5+ KB
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p><strong>cell_ontology_class</strong>: Cell classification with <strong>7 distinct types</strong>, with <strong>oligodendrocytes</strong> being the most common (<strong>1,574 occurrences</strong>).</p></li>
+<li><p><strong>subtissue</strong>: The brain sub-region where the cell was extracted (<strong>4 unique regions</strong>), with the <strong>Cortex</strong> as the most frequent (<strong>1,149 occurrences</strong>).</p></li>
+<li><p><strong>mouse.sex</strong>: Mouse sex (<strong>2 categories</strong>: Male/Female), with <strong>males being the majority</strong> (<strong>2,694 occurrences</strong>).</p></li>
+<li><p><strong><a class="reference external" href="http://mouse.id">mouse.id</a></strong>: Unique mouse identifier (<strong>7 distinct mice</strong>), with <strong>mouse “3_10_M” being the most frequent</strong> (<strong>980 occurrences</strong>).</p></li>
+<li><p><strong>plate.barcode</strong>: Experimental plate barcode (<strong>41 unique plates</strong>), with <strong>“MAA000560” used most often</strong> (<strong>28 occurrences</strong>).</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📈 Description of numerical variables:&quot;</span><span class="p">)</span>
@@ -1128,6 +1134,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <li><p>Dark blue (low values) represents little to no gene expression.</p></li>
 <li><p>Light blue to red (higher values) indicates increased expression levels, with red showing the highest expression values.</p></li>
 </ul>
+<p>There are 4 genes that have a representative high level of expresion into some of the cells, being HNRNPH2 with the hihgest level of expression for an specific one and repetitively high expression grades for more than one copared to the others.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Random Gene and cell selection</span>

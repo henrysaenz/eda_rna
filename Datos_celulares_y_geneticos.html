@@ -189,7 +189,6 @@
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
 
-
 </ul>
 
     </div>
@@ -398,7 +397,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#description-of-the-variables">📌 Description of the Variables</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretation">🔎 Interpretation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-genes-counted-and-detected-per-cell">Number of genes counted and detected per cell</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribucion-del-conteo-de-genes-por-disease-state">Distribución del conteo de genes por disease state</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-count-per-disease-state-distribution">Gene count per disease state distribution</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bivariate-analysis">Bivariate Analysis</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-cells-per-tissue-type">Number of cells per tissue type</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#count-of-ceels-per-type">Count of ceels per type</a></li>
@@ -437,6 +436,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="exploratory-data-analysis-for-glioblastoma-data">
 <h1>Exploratory Data Analysis for Glioblastoma data<a class="headerlink" href="#exploratory-data-analysis-for-glioblastoma-data" title="Link to this heading">#</a></h1>
+<p>This Glioblastoma data contains information about glioblastoma multiforme (GBM), an aggressive type of brain cancer. Where we can identify the behaviour of the genes levels of expressions into different cells, tissues and their combination.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -485,13 +485,13 @@ document.write(`
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&lt;h3&gt;Metadatos de células:&lt;/h3&gt;&quot;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&lt;h3&gt;Metadata about the cells:&lt;/h3&gt;&quot;</span><span class="p">))</span>
 <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">to_html</span><span class="p">()))</span> 
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><h3>Metadatos de células:</h3></div><div class="output text_html"><table border="1" class="dataframe">
+<div class="output text_html"><h3>Metadata about the cells:</h3></div><div class="output text_html"><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -1178,28 +1178,28 @@ Name: log1p_n_genes_by_counts, dtype: float64
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Crear figura con dos gráficos (histograma y boxplot)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create figure with two plots (histogram and boxplot)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
-<span class="c1"># Histograma</span>
+<span class="c1"># Histogram</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;log1p_n_genes_by_counts&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Histograma de &#39;log1p_n_genes_by_counts&#39;&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;log1p Número de genes detectados por célula&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Frecuencia&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Histogram of &#39;log1p_n_genes_by_counts&#39;&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;log1p Number of genes detected per cell&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Frequency&quot;</span><span class="p">)</span>
 
 <span class="c1"># Boxplot</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">adata_glioblastoma_norm</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;log1p_n_genes_by_counts&quot;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Boxplot de &#39;log1p_n_genes_by_counts&#39;&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;log1p Número de genes detectados por célula&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Boxplot of &#39;log1p_n_genes_by_counts&#39;&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;log1p Number of genes detected per cell&quot;</span><span class="p">)</span>
 
-<span class="c1"># Ajustar diseño</span>
+<span class="c1"># Adjust layout</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/694781326dda65ca846eb7b1a8022af700ad4edfb1d05d6bfd5339a91f858847.png" src="_images/694781326dda65ca846eb7b1a8022af700ad4edfb1d05d6bfd5339a91f858847.png" />
+<img alt="_images/851bbc227dce1a0979410ca533e981cabcb78f79f7864a046dfbaf923fc8fce5.png" src="_images/851bbc227dce1a0979410ca533e981cabcb78f79f7864a046dfbaf923fc8fce5.png" />
 </div>
 </div>
 </section>
@@ -1332,8 +1332,8 @@ The fourth histogram (top 500 genes) is right-skewed, indicating that for most c
 </div>
 </div>
 </section>
-<section id="distribucion-del-conteo-de-genes-por-disease-state">
-<h2>Distribución del conteo de genes por disease state<a class="headerlink" href="#distribucion-del-conteo-de-genes-por-disease-state" title="Link to this heading">#</a></h2>
+<section id="gene-count-per-disease-state-distribution">
+<h2>Gene count per disease state distribution<a class="headerlink" href="#gene-count-per-disease-state-distribution" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>The median (central line inside the box) is approximately 1,250 genes detected per cell.</p></li>
 <li><p>The IQR (box range) extends from roughly 1,000 to 1,500 genes, indicating that 50% of the data falls within this range.</p></li>
@@ -2439,7 +2439,7 @@ memory usage: 606.0+ KB
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#description-of-the-variables">📌 Description of the Variables</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretation">🔎 Interpretation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-genes-counted-and-detected-per-cell">Number of genes counted and detected per cell</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribucion-del-conteo-de-genes-por-disease-state">Distribución del conteo de genes por disease state</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-count-per-disease-state-distribution">Gene count per disease state distribution</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bivariate-analysis">Bivariate Analysis</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-cells-per-tissue-type">Number of cells per tissue type</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#count-of-ceels-per-type">Count of ceels per type</a></li>
