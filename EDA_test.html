@@ -188,7 +188,6 @@
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Exploratory Data Analysis for test data</a></li>
 
-
 </ul>
 
     </div>
@@ -386,20 +385,30 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Exploratory Data Analysis for test data</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importacion-de-datos-y-librerias">Importación de datos y librerías</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#univariate-analysis">Univariate Analysis</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#genes">genes</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-bivariado">Análisis bivariado</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#genes-detected-per-cell">Genes detected per cell</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-type-and-percentage-distribution">Cell type and percentage distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mitochondrial-distribution">Mitochondrial distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tissue-count-distribution">Tissue count distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bivariate-analysis">Bivariate analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistic-summary">Statistic summary</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-gene-count-for-cell-type">Distribution of gene count for cell type</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlations">Correlations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regression-plot">Regression plot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recommendations-for-the-model">Recommendations for the model</a></li>
 </ul>
 </li>
 </ul>
@@ -481,10 +490,8 @@ document.write(`
 </div>
 </div>
 </div>
-</section>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="explanation-of-the-variables-in-adata-test-obs">
-<h1>📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code><a class="headerlink" href="#explanation-of-the-variables-in-adata-test-obs" title="Link to this heading">#</a></h1>
+<section id="explanation-of-the-variables-in-adata-test-obs">
+<h3>📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code><a class="headerlink" href="#explanation-of-the-variables-in-adata-test-obs" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Column</strong></p></th>
@@ -516,12 +523,13 @@ document.write(`
 </tbody>
 </table>
 </div>
+</section>
 <hr class="docutils" />
 <section id="example-of-data-interpretation">
-<h2>📌 Example of Data Interpretation<a class="headerlink" href="#example-of-data-interpretation" title="Link to this heading">#</a></h2>
+<h3>📌 Example of Data Interpretation<a class="headerlink" href="#example-of-data-interpretation" title="Link to this heading">#</a></h3>
 <p>Each row represents <strong>an individual cell</strong> with its characteristics:</p>
 <section id="example-1">
-<h3><strong>Example 1</strong><a class="headerlink" href="#example-1" title="Link to this heading">#</a></h3>
+<h4><strong>Example 1</strong><a class="headerlink" href="#example-1" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p><strong>Cell ID</strong>: <code class="docutils literal notranslate"><span class="pre">AAACCCAAGGGTAATT-1</span></code></p></li>
 <li><p><strong>Leiden cluster</strong>: <code class="docutils literal notranslate"><span class="pre">12,0</span></code></p></li>
@@ -531,7 +539,7 @@ document.write(`
 </ul>
 </section>
 <section id="example-2">
-<h3><strong>Example 2</strong><a class="headerlink" href="#example-2" title="Link to this heading">#</a></h3>
+<h4><strong>Example 2</strong><a class="headerlink" href="#example-2" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p><strong>Cell ID</strong>: <code class="docutils literal notranslate"><span class="pre">AAACCCACAGATACCT-1</span></code></p></li>
 <li><p><strong>Leiden cluster</strong>: <code class="docutils literal notranslate"><span class="pre">4</span></code></p></li>
@@ -634,6 +642,7 @@ Number of genes: 13553
 </div>
 </div>
 </div>
+</section>
 </section>
 <section id="univariate-analysis">
 <h3>Univariate Analysis<a class="headerlink" href="#univariate-analysis" title="Link to this heading">#</a></h3>
@@ -870,8 +879,23 @@ Number of genes: 13553
 </section>
 </section>
 </section>
-<section class="tex2jax_ignore mathjax_ignore" id="genes">
-<h1>genes<a class="headerlink" href="#genes" title="Link to this heading">#</a></h1>
+<section class="tex2jax_ignore mathjax_ignore" id="genes-detected-per-cell">
+<h1>Genes detected per cell<a class="headerlink" href="#genes-detected-per-cell" title="Link to this heading">#</a></h1>
+<ul class="simple">
+<li><p>The <strong>peak around 1000-1500 genes per cell</strong> suggests that most cells express a moderate number of genes.</p></li>
+<li><p>The <strong>long tail towards higher gene counts</strong> may indicate:</p>
+<ul>
+<li><p><strong>Highly active cells</strong> with robust transcription.</p></li>
+<li><p><strong>Technical variation</strong>, where certain cells capture more RNA molecules.</p></li>
+</ul>
+</li>
+<li><p>The <strong>low-gene count cells on the left</strong> could represent:</p>
+<ul>
+<li><p><strong>Low-quality or dying cells</strong> with reduced gene expression.</p></li>
+<li><p><strong>Doublets or multiplets</strong> affecting gene detection.</p></li>
+</ul>
+</li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot histogram</span>
@@ -888,7 +912,18 @@ Number of genes: 13553
 <img alt="_images/b77502321ab320555c00d4259110ff8012012f01b31093f414da1521995bb338.png" src="_images/b77502321ab320555c00d4259110ff8012012f01b31093f414da1521995bb338.png" />
 </div>
 </div>
-<p>cell typed</p>
+<section id="cell-type-and-percentage-distribution">
+<h2>Cell type and percentage distribution<a class="headerlink" href="#cell-type-and-percentage-distribution" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Observations</strong>:</p>
+<ul>
+<li><p><strong>Mature B cells</strong> account for over <strong>30%</strong> of the dataset.</p></li>
+<li><p><strong>CD4 T cells</strong> contribute around <strong>15%</strong>, while <strong>CD8 T cells</strong> make up slightly less.</p></li>
+<li><p><strong>Other immune cells (e.g., Neutrophils, Monocytes, Macrophages, and Dendritic Cells)</strong> have relatively smaller proportions.</p></li>
+<li><p>The <strong>color gradient</strong> highlights differences in abundance, with <strong>blue indicating more frequent cell types</strong> and <strong>red indicating rare cell types</strong>.</p></li>
+</ul>
+</li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cell_counts</span> <span class="o">=</span> <span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_types&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
@@ -929,7 +964,12 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/9ef0fa38e9c63cf8e4e6c30953b85c5b3a960f192f3947e25df0f90cef410068.png" src="_images/9ef0fa38e9c63cf8e4e6c30953b85c5b3a960f192f3947e25df0f90cef410068.png" />
 </div>
 </div>
-<p>closer</p>
+<ul class="simple">
+<li><p><strong>Mature B cells</strong> make up <strong>41.9%</strong> of the dataset, indicating a strong dominance.</p></li>
+<li><p><strong>CD4 T cells</strong> comprise <strong>21.8%</strong>, reinforcing their substantial presence.</p></li>
+<li><p><strong>CD8 T cells account for 12.3%</strong>, and <strong>Transitional B cells make up 11.5%</strong>.</p></li>
+<li><p><strong>CD122+ CD8 T cells</strong> and <strong>Ifit3-high B cells</strong> contribute <strong>6.9% and 5.5%</strong>, respectively.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the top 6 most frequent cell types</span>
@@ -965,7 +1005,14 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/1196dd92c836748996582a16785aadc9645fccba0e7f0ccf29d52799183b6624.png" src="_images/1196dd92c836748996582a16785aadc9645fccba0e7f0ccf29d52799183b6624.png" />
 </div>
 </div>
-<p>mito</p>
+</section>
+<section id="mitochondrial-distribution">
+<h2>Mitochondrial distribution<a class="headerlink" href="#mitochondrial-distribution" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The <strong>peak of the histogram</strong> occurs at approximately <strong>6%</strong>, aligning with the median in the violin plot.</p></li>
+<li><p>Some cells have <strong>higher mitochondrial percentages (~10-15%)</strong>, possibly indicating stressed or dying cells.</p></li>
+<li><p><strong>Low mitochondrial gene percentage</strong> is expected in healthy cells, while <strong>high percentages</strong> may indicate cell stress or apoptosis.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a 1x2 subplot</span>
@@ -998,7 +1045,13 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/cd0060b9bae1a721e1d7dd19300fa0be0d6afd6ca0d83aefa7d1fccce4a3b9c5.png" src="_images/cd0060b9bae1a721e1d7dd19300fa0be0d6afd6ca0d83aefa7d1fccce4a3b9c5.png" />
 </div>
 </div>
-<p>tissue</p>
+</section>
+<section id="tissue-count-distribution">
+<h2>Tissue count distribution<a class="headerlink" href="#tissue-count-distribution" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Spleen</strong> accounts for <strong>53.9%</strong> of the total samples.</p></li>
+<li><p><strong>Lymph Node</strong> accounts for <strong>46.1%</strong> of the total samples.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tissue_counts</span> <span class="o">=</span> <span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;tissue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
@@ -1032,8 +1085,46 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/cf5f023d87e24f79aa61cba885c025d86027d59b22596a637d0efc03fc2d08d5.png" src="_images/cf5f023d87e24f79aa61cba885c025d86027d59b22596a637d0efc03fc2d08d5.png" />
 </div>
 </div>
-<section id="analisis-bivariado">
-<h2>Análisis bivariado<a class="headerlink" href="#analisis-bivariado" title="Link to this heading">#</a></h2>
+</section>
+<section id="bivariate-analysis">
+<h2>Bivariate analysis<a class="headerlink" href="#bivariate-analysis" title="Link to this heading">#</a></h2>
+<section id="statistic-summary">
+<h3>Statistic summary<a class="headerlink" href="#statistic-summary" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Statistic</p></th>
+<th class="head"><p>Lymph_Node (Blue)</p></th>
+<th class="head"><p>Spleen (Orange)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Mean</strong></p></td>
+<td><p>~1300–1500</p></td>
+<td><p>~1200–1400</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Median</strong></p></td>
+<td><p>~1200</p></td>
+<td><p>~1100</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Mode</strong></p></td>
+<td><p>~1000</p></td>
+<td><p>~900</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>IQR (Q1–Q3)</strong></p></td>
+<td><p>~800–2000</p></td>
+<td><p>~700–1900</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Max Gene Count</strong></p></td>
+<td><p>~6000–7000</p></td>
+<td><p>~6000–7000</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Min Gene Count</strong></p></td>
+<td><p>~0–100</p></td>
+<td><p>~0–100</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a 1x2 subplot</span>
@@ -1068,7 +1159,15 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/2c8a72015ab89f968fa1cfe47e70320c39f7c16dc7ceb9d9e28706e4e463fe0b.png" src="_images/2c8a72015ab89f968fa1cfe47e70320c39f7c16dc7ceb9d9e28706e4e463fe0b.png" />
 </div>
 </div>
-<p>top 5 cell type</p>
+</section>
+</section>
+<section id="distribution-of-gene-count-for-cell-type">
+<h2>Distribution of gene count for cell type<a class="headerlink" href="#distribution-of-gene-count-for-cell-type" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>High Variability:</strong> Cell types like <strong>Neutrophils and DCs</strong> have a <strong>large spread</strong> of gene counts.</p></li>
+<li><p><strong>Low Variability:</strong> Cells like <strong>Erythrocytes and Tregs</strong> have <strong>more uniform distributions</strong>.</p></li>
+<li><p><strong>Presence of Outliers:</strong> Many cell types have <strong>significant outliers</strong>, indicating a subset of cells with unusually high gene expression.</p></li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#  Ordenar cell_types por el promedio de n_genes de mayor a menor</span>
@@ -1105,7 +1204,34 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/bba6f5ac58832b7e8c0e84ee13654a73d9a791588e437cc3bc7e45e979d304e4.png" src="_images/bba6f5ac58832b7e8c0e84ee13654a73d9a791588e437cc3bc7e45e979d304e4.png" />
 </div>
 </div>
-<p>correlations</p>
+</section>
+<section id="correlations">
+<h2>Correlations<a class="headerlink" href="#correlations" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Strong Positive Correlations ( &gt; 0.90)</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_genes</span></code> and <code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code> (<strong>0.96</strong>): Indicates that the number of genes detected strongly correlates with the number of genes counted, as expected.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_genes</span></code> and <code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code> (<strong>0.96</strong>): Log-transformed values maintain a strong correlation with raw gene counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code> and <code class="docutils literal notranslate"><span class="pre">total_counts</span></code> (<strong>0.94</strong>): Suggests that higher gene expression is generally associated with an increase in total counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code> and <code class="docutils literal notranslate"><span class="pre">log1p_total_counts</span></code> (<strong>0.97</strong>): Log transformation preserves the strong relationship between gene counts and total counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_50_genes</span></code>, <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_100_genes</span></code>, <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_200_genes</span></code>, and <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_500_genes</span></code> all show strong positive correlations (<strong>0.74 to 0.97</strong>) with each other, implying that cells with high expression in a few genes tend to maintain similar trends across different top-ranked gene categories.</p></li>
+</ul>
+</li>
+<li><p><strong>Strong Negative Correlations ( &lt; -0.60)</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">n_genes</span></code> (<strong>-0.61</strong>): Suggests that batch effects could be influencing gene detection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code> (<strong>-0.61</strong>): Further supports batch-driven variability in gene expression.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code> (<strong>-0.67</strong>): Indicates batch effects impact even log-transformed gene counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">log1p_total_counts</span></code> (<strong>-0.65</strong>): Batch effects also influence total gene expression.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_500_genes</span></code> and <code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code> (<strong>-0.74</strong>) and <code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code> (<strong>-0.82</strong>): Suggests that when a small number of genes dominate expression, the overall gene count is lower.</p></li>
+</ul>
+</li>
+<li><p><strong>Moderate Correlations (0.40 to 0.70)</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_50_genes</span></code> (<strong>0.40</strong>) &amp; <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_500_genes</span></code> (<strong>0.50</strong>): Indicates that batch effects may influence the concentration of expression in top genes.</p></li>
+</ul>
+</li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">numerical_vars</span> <span class="o">=</span> <span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">])</span>
@@ -1127,6 +1253,13 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/e6c39b2de4286e115c77acba6e01f167a0935424d1cb2fc127944eb927fdca28.png" src="_images/e6c39b2de4286e115c77acba6e01f167a0935424d1cb2fc127944eb927fdca28.png" />
 </div>
 </div>
+</section>
+<section id="regression-plot">
+<h2>Regression plot<a class="headerlink" href="#regression-plot" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>There is <strong>no strong correlation</strong> between mitochondrial gene percentage and the number of genes detected, as indicated by the flat regression line.</p></li>
+<li><p>Some cells with <strong>high mitochondrial gene content</strong> show reduced gene detection, which may indicate <strong>low-quality or dying cells</strong>.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the figure</span>
@@ -1149,8 +1282,10 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/eff1b435b8b89d3efa76cccbcec42dd482b57cca95f948e2904b65fbe75b8a6a.png" src="_images/eff1b435b8b89d3efa76cccbcec42dd482b57cca95f948e2904b65fbe75b8a6a.png" />
 </div>
 </div>
-<p>Recoemndation for modeo</p>
-<p>varaitionla autoencoder and clustering</p>
+</section>
+<section id="recommendations-for-the-model">
+<h2>Recommendations for the model<a class="headerlink" href="#recommendations-for-the-model" title="Link to this heading">#</a></h2>
+<p>After performing Exploratory Data Analysis (EDA) on the RNA-seq dataset, the next step is to implement a robust feature extraction and dimensionality reduction methodology to optimize clustering performance. The desired methodology involves integrating Variational Autoencoders (VAE) and Generative Adversarial Networks (GAN). The VAE will encode the high-dimensional gene expression data into a meaningful low-dimensional latent space, preserving probabilistic gene relationships. The GAN will further refine this representation, ensuring alignment with biological priors while reducing noise. Once the latent space is optimized, advanced clustering techniques such as Leiden clustering can be applied to improve cell-type classification.</p>
 </section>
 </section>
 
@@ -1211,20 +1346,30 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Exploratory Data Analysis for test data</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importacion-de-datos-y-librerias">Importación de datos y librerías</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#univariate-analysis">Univariate Analysis</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#genes">genes</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-bivariado">Análisis bivariado</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#genes-detected-per-cell">Genes detected per cell</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-type-and-percentage-distribution">Cell type and percentage distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mitochondrial-distribution">Mitochondrial distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tissue-count-distribution">Tissue count distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bivariate-analysis">Bivariate analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistic-summary">Statistic summary</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-gene-count-for-cell-type">Distribution of gene count for cell type</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlations">Correlations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regression-plot">Regression plot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recommendations-for-the-model">Recommendations for the model</a></li>
 </ul>
 </li>
 </ul>
