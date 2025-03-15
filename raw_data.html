@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Final Project - Deep Learning &#8212; My sample book</title>
+    <title>Raw Data for RNA Analysis &#8212; My sample book</title>
   
   
   
@@ -57,10 +57,10 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'intro';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raw_data';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction to Single-Cell RNA Sequencing" href="introduction.html" />
+    <link rel="prev" title="Exploratory Data Analysis for test data" href="EDA_test.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -123,8 +123,6 @@
       
       
       
-        
-      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -143,7 +141,7 @@
     
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="intro.html">
   
   
   
@@ -174,13 +172,13 @@
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1 current active">
-                <a class="reference internal" href="#">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
                     Final Project - Deep Learning
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to Single-Cell RNA Sequencing</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
@@ -190,7 +188,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="raw_data.html">Raw Data for RNA Analysis</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Raw Data for RNA Analysis</a></li>
 </ul>
 
     </div>
@@ -262,7 +260,7 @@
       
       
       
-      <li><a href="https://github.com/henrysaenz/eda_rna/issues/new?title=Issue%20on%20page%20%2Fintro.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/henrysaenz/eda_rna/issues/new?title=Issue%20on%20page%20%2Fraw_data.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -292,7 +290,7 @@
       
       
       
-      <li><a href="_sources/intro.md" target="_blank"
+      <li><a href="_sources/raw_data.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -302,7 +300,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.md</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
 </li>
       
@@ -376,7 +374,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Final Project - Deep Learning</h1>
+    <h1>Raw Data for RNA Analysis</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -386,11 +384,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-single-cell-rna-sequencing">Introduction to Single-Cell RNA Sequencing</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#students"><strong>Students</strong></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#professor"><strong>Professor</strong></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-libraries-and-data">Import Libraries and data</a></li>
 </ul>
             </nav>
         </div>
@@ -402,38 +396,36 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="final-project-deep-learning">
-<h1>Final Project - Deep Learning<a class="headerlink" href="#final-project-deep-learning" title="Link to this heading">#</a></h1>
-<section id="introduction-to-single-cell-rna-sequencing">
-<h2>Introduction to Single-Cell RNA Sequencing<a class="headerlink" href="#introduction-to-single-cell-rna-sequencing" title="Link to this heading">#</a></h2>
-<section id="students">
-<h3><strong>Students</strong><a class="headerlink" href="#students" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Henry David Saenz Valverde</p></li>
-<li><p>Valentina Nicole De la Hoz López</p></li>
-<li><p>Ayrgthon Soraca Bonett</p></li>
-</ul>
-</section>
-<section id="professor">
-<h3><strong>Professor</strong><a class="headerlink" href="#professor" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Lihki Jose Rubio Ortega</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to Single-Cell RNA Sequencing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html#single-cell-rna-sequencing-isolation-analysis-workflow">Single-Cell RNA Sequencing Isolation Analysis Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html#analyze-and-describe-data">Analyze and Describe data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_sparse_matrix.html">Exploratory Data Analysis for the sparse matrix</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Exploratory Data Analysis for Glioblastoma data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_test.html#genes-detected-per-cell">Genes detected per cell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="raw_data.html">Raw Data for RNA Analysis</a></li>
-</ul>
+  <section class="tex2jax_ignore mathjax_ignore" id="raw-data-for-rna-analysis">
+<h1>Raw Data for RNA Analysis<a class="headerlink" href="#raw-data-for-rna-analysis" title="Link to this heading">#</a></h1>
+<section id="import-libraries-and-data">
+<h2>Import Libraries and data<a class="headerlink" href="#import-libraries-and-data" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.core.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
+</pre></div>
 </div>
-</section>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_23104\1582991288.py:6: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
+  from IPython.core.display import display, HTML
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_path</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Single-cell RNASeq data from Mouse Brain&quot;</span>
+<span class="n">data_path2</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Theory - Intro to single-cell RNAseq Images&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 
@@ -467,14 +459,14 @@ document.write(`
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="right-next"
-       href="introduction.html"
-       title="next page">
+    <a class="left-prev"
+       href="EDA_test.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Introduction to Single-Cell RNA Sequencing</p>
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Exploratory Data Analysis for test data</p>
       </div>
-      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -492,11 +484,7 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-single-cell-rna-sequencing">Introduction to Single-Cell RNA Sequencing</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#students"><strong>Students</strong></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#professor"><strong>Professor</strong></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-libraries-and-data">Import Libraries and data</a></li>
 </ul>
   </nav></div>
 
