@@ -443,6 +443,13 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>scrublet
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">anndata</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ad</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scrublet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">scr</span>
@@ -1502,7 +1509,7 @@ c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span> <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">,</span> <span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;UMAP of filtered data&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">,</span> <span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;UMAP of filtered data&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1518,11 +1525,6 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 </section>
 <section id="doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">
 <h2>Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)<a class="headerlink" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq" title="Link to this heading">#</a></h2>
-<p>In single-cell RNA sequencing (scRNA-Seq), the terms <strong>“doublet”</strong> and <strong>“singlet”</strong> refer to the nature of the captured cells in the experiment:</p>
-<ul class="simple">
-<li><p><strong>Singlet</strong> → A single individual cell encapsulated in a droplet or captured in a well.</p></li>
-<li><p><strong>Doublet</strong> → Two cells encapsulated together in the same droplet, which can lead to contaminated or mixed data in the analysis.</p></li>
-</ul>
 <section id="why-is-it-important-to-detect-doublets">
 <h3>🔬 Why is it important to detect doublets?<a class="headerlink" href="#why-is-it-important-to-detect-doublets" title="Link to this heading">#</a></h3>
 <p>Doublets can lead to <strong>false interpretations</strong> in the analysis, as they may appear to be a new cell type with a combined expression profile of two real cells. This affects:</p>
@@ -1533,7 +1535,7 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># sc.pp.filter_genes(adata_test, min_cells = 10)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scrublet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">scr</span>
 </pre></div>
 </div>
 </div>
