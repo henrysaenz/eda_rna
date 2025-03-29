@@ -407,19 +407,27 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geenrs">geenrs</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filters">Filters</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization">Data Normalization</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#select-the-most-highly-variable-genes">Select the most highly variable genes</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-wise-scaling">Feature wise scaling</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#inspection-the-doublets-manually">Inspection the doublets manually</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-the-doublets-manually">Inspecting the doublets manually</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lowering-the-tresholds-manually">Lowering the tresholds manually</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization">Data Normalization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#select-the-most-highly-variable-genes">Select the most highly variable genes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-wise-scaling">Feature wise scaling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-ledein-and-louvain">Clustering - ledein and Louvain</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-with-louvain">Compare with louvain</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-comparation">Cluster comparation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#markers-genes-for-each-cluster">Markers genes for each cluster</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-top-marker-genes-per-cluster">Extracting top marker genes per cluster</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a></li>
 </ul>
 </li>
 </ul>
@@ -471,6 +479,13 @@ document.write(`
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_23128\284488194.py:10: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
   from IPython.core.display import display, HTML
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">adjusted_rand_score</span><span class="p">,</span> <span class="n">normalized_mutual_info_score</span>
 </pre></div>
 </div>
 </div>
@@ -1268,8 +1283,182 @@ Number of cells after filtering: 1825
 </div>
 </div>
 </section>
+</section>
+<section id="doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">
+<h2>Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)<a class="headerlink" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq" title="Link to this heading">#</a></h2>
+<section id="why-is-it-important-to-detect-doublets">
+<h3>🔬 Why is it important to detect doublets?<a class="headerlink" href="#why-is-it-important-to-detect-doublets" title="Link to this heading">#</a></h3>
+<p>Doublets can lead to <strong>false interpretations</strong> in the analysis, as they may appear to be a new cell type with a combined expression profile of two real cells. This affects:</p>
+<ul class="simple">
+<li><p><strong>Cell type identification</strong> (they may seem like new cell types that do not actually exist).</p></li>
+<li><p><strong>Analysis of cellular subpopulations</strong>.</p></li>
+<li><p><strong>Inference of cell relationships and trajectories</strong>.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scrublet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">scr</span>
+<span class="n">adata_glioblastoma_raw_copy</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="n">min_genes</span> <span class="o">=</span> <span class="mi">200</span>    
+<span class="n">max_genes</span> <span class="o">=</span> <span class="mi">5000</span>   
+<span class="n">min_UMI</span> <span class="o">=</span> <span class="mi">500</span>      
+<span class="n">max_mito</span> <span class="o">=</span> <span class="mi">10</span>      
+
+<span class="n">filtered_cells</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_genes</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_genes</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_UMI</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;pct_mito&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_mito</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">adata_filtered_copy</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw_copy</span><span class="p">[</span><span class="n">filtered_cells</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">adata_glioblastoma_filtered</span> <span class="o">=</span> <span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counts_matrix</span> <span class="o">=</span> <span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">X</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Automatically set threshold at doublet score = 0.57</p>
+<p>Scrublet sets a cutoff score to classify cells as doublets or singlets.</p>
+<p>Cells above this score are considered doublets, and cells below it are considered singlets.</p>
+<p>Detected doublet rate = 0.0%</p>
+<p>No doublets were detected in the dataset, meaning that all cells had doublet scores below 0.57.</p>
+<p>Estimated detectable doublet fraction = 16.6%</p>
+<p>This means that 16.6% of true doublets in the dataset should be detectable with the current settings. If the fraction was much lower, Scrublet might be missing doublets.</p>
+<p>Overall doublet rate:</p>
+<p>Expected = 10.0% → This is the theoretical doublet rate based on experimental parameters (e.g., cell concentration).</p>
+<p>Estimated = 0.0% → Scrublet found no actual doublets in the dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run Scrublet on the raw (unnormalized) filtered dataset</span>
+<span class="n">scrub</span> <span class="o">=</span> <span class="n">scr</span><span class="o">.</span><span class="n">Scrublet</span><span class="p">(</span><span class="n">counts_matrix</span><span class="p">)</span>
+<span class="n">doublet_scores</span><span class="p">,</span> <span class="n">predicted_doublets</span> <span class="o">=</span> <span class="n">scrub</span><span class="o">.</span><span class="n">scrub_doublets</span><span class="p">()</span>
+
+<span class="c1"># Store results in adata_filtered_copy for further analysis</span>
+<span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;doublet_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doublet_scores</span>
+<span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;predicted_doublet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted_doublets</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Preprocessing...
+Simulating doublets...
+Embedding transcriptomes using PCA...
+Calculating doublet scores...
+Automatically set threshold at doublet score = 0.57
+Detected doublet rate = 0.0%
+Estimated detectable doublet fraction = 16.6%
+Overall doublet rate:
+	Expected   = 10.0%
+	Estimated  = 0.0%
+Elapsed time: 1.9 seconds
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="inspecting-the-doublets-manually">
+<h3>Inspecting the doublets manually<a class="headerlink" href="#inspecting-the-doublets-manually" title="Link to this heading">#</a></h3>
+<p>Scrublet is likely too strict, and it is not detecting doublets because all your scores are too low. Your dataset may have a naturally low doublet rate, but it’s uncommon to have 0% doublets in a real scRNA-seq dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Doublet Score&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Doublet Scores&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/588c376149d4dc24bbd451d72033fd2936e4eb5227d9a727475ab9d78aa37d3e.png" src="_images/588c376149d4dc24bbd451d72033fd2936e4eb5227d9a727475ab9d78aa37d3e.png" />
+</div>
+</div>
+<section id="lowering-the-tresholds-manually">
+<h4>Lowering the tresholds manually<a class="headerlink" href="#lowering-the-tresholds-manually" title="Link to this heading">#</a></h4>
+<p>The vertical black line represents the doublet score threshold (around 0.2–0.3) that Scrublet set to classify doublets.</p>
+<p>Only a small fraction of observed cells have doublet scores above this threshold.</p>
+<p>Right Plot: Simulated Doublets
+This histogram shows the distribution of doublet scores for simulated doublets.</p>
+<p>Simulated doublets generally have higher scores than the observed cells.</p>
+<p>The doublet score threshold (black line) is placed at the intersection between real cells and simulated doublets.</p>
+<p>Key Metrics Explained
+Detected doublet rate = 1.4%</p>
+<p>This means that only 1.4% of cells in your dataset were classified as doublets based on the threshold.</p>
+<p>Estimated detectable doublet fraction = 38.1%</p>
+<p>Scrublet estimates that 38.1% of actual doublets could be detected using its method.</p>
+<p>Some doublets might be missed because they are too similar to singlets.</p>
+<p>Expected doublet rate = 10.0%</p>
+<p>This is an estimate based on your experimental settings (e.g., cell loading density).</p>
+<p>It suggests that around 10% of cells might be doublets in reality.</p>
+<p>Estimated overall doublet rate = 3.7%</p>
+<p>This is Scrublet’s final estimate of the actual number of doublets in your dataset, accounting for undetected doublets.</p>
+<p><strong>What Does This Mean for Your Data?</strong></p>
+<p>You likely have fewer doublets than expected (3.7% vs. 10%).</p>
+<p>Some doublets might be missed due to the doublet score distribution.</p>
+<p>The doublet score threshold may be too strict, leading to fewer detected doublets than expected.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span><span class="o">.</span><span class="n">call_doublets</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>  <span class="c1"># Adjust the threshold down</span>
+<span class="n">scrub</span><span class="o">.</span><span class="n">plot_histogram</span><span class="p">()</span>  <span class="c1"># Plot the histogram of doublet scores</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Detected doublet rate = 1.4%
+Estimated detectable doublet fraction = 38.1%
+Overall doublet rate:
+	Expected   = 10.0%
+	Estimated  = 3.7%
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&lt;Figure size 800x300 with 2 Axes&gt;,
+ array([&lt;Axes: title={&#39;center&#39;: &#39;Observed transcriptomes&#39;}, xlabel=&#39;Doublet score&#39;, ylabel=&#39;Prob. density&#39;&gt;,
+        &lt;Axes: title={&#39;center&#39;: &#39;Simulated doublets&#39;}, xlabel=&#39;Doublet score&#39;, ylabel=&#39;Prob. density&#39;&gt;],
+       dtype=object))
+</pre></div>
+</div>
+<img alt="_images/dd480e81624572d5f04053bff842b96c878f63f354e4b9ac4dd72327a59f4a0a.png" src="_images/dd480e81624572d5f04053bff842b96c878f63f354e4b9ac4dd72327a59f4a0a.png" />
+</div>
+</div>
+<p>Observed transcriptomes (left plot): Uses a log scale (values range from
+10
+1
+10
+1
+to
+10
+−
+1
+10
+−1
+), making the distribution more spread out.</p>
+<p>Simulated doublets (right plot): Uses a linear scale (values range from 0 to 5), meaning the bar heights represent raw counts.</p>
+<p>This difference happens because Scrublet automatically applies a log scale to the observed transcriptomes to better visualize the spread of scores. Meanwhile, the simulated doublets are usually plotted on a normal scale.</p>
+<p>To see how the estimated doublet rate changes compared to your previous results. If needed, we can adjust the threshold again based on what we see.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span><span class="o">.</span><span class="n">detected_doublet_rate_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.033424657534246574
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
 <section id="data-normalization">
-<h3>Data Normalization<a class="headerlink" href="#data-normalization" title="Link to this heading">#</a></h3>
+<h2>Data Normalization<a class="headerlink" href="#data-normalization" title="Link to this heading">#</a></h2>
 <p>In this step we have to normalize the <strong>total UMI counts per cell</strong>. This means each cell’s total count is rescaled to <strong>10,000</strong>, ensuring comparability across cells.  To get that we apply a <strong>log transformation</strong> to all gene expression values in <code class="docutils literal notranslate"><span class="pre">adata_glioblastoma_filtered.X</span></code>.</p>
 <p><em><strong>Variables normalized</strong></em></p>
 <ul class="simple">
@@ -1291,7 +1480,7 @@ Number of cells after filtering: 1825
 </div>
 </div>
 <section id="select-the-most-highly-variable-genes">
-<h4>Select the most highly variable genes<a class="headerlink" href="#select-the-most-highly-variable-genes" title="Link to this heading">#</a></h4>
+<h3>Select the most highly variable genes<a class="headerlink" href="#select-the-most-highly-variable-genes" title="Link to this heading">#</a></h3>
 <p>Uses the Seurat v3 method to find highly variable genes. It selects the top 2,000 most variable genes for further analysis.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1360,7 +1549,6 @@ Number of cells after filtering: 1825
 </div>
 </div>
 </div>
-</section>
 </section>
 <section id="feature-wise-scaling">
 <h3>Feature wise scaling<a class="headerlink" href="#feature-wise-scaling" title="Link to this heading">#</a></h3>
@@ -1526,190 +1714,1276 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 </div>
 </div>
 </section>
+<section id="clustering-ledein-and-louvain">
+<h3>Clustering - ledein and Louvain<a class="headerlink" href="#clustering-ledein-and-louvain" title="Link to this heading">#</a></h3>
+<p>Map the genes</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mg</span> <span class="o">=</span> <span class="n">mygene</span><span class="o">.</span><span class="n">MyGeneInfo</span><span class="p">()</span>
+<span class="n">ensembl_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">gene_info</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">querymany</span><span class="p">(</span><span class="n">ensembl_ids</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="s2">&quot;ensembl.gene&quot;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="s2">&quot;symbol&quot;</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="s2">&quot;human&quot;</span><span class="p">)</span> <span class="c1"># Query MyGeneInfo for gene symbols</span>
+<span class="n">gene_mappings</span> <span class="o">=</span> <span class="p">{</span><span class="n">gene</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">]:</span> <span class="n">gene</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">,</span> <span class="n">gene</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">gene_info</span> <span class="k">if</span> <span class="s2">&quot;query&quot;</span> <span class="ow">in</span> <span class="n">gene</span><span class="p">}</span> <span class="c1"># Create a mapping dictionary</span>
+<span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;gene_symbol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">gene_mappings</span><span class="p">)</span> <span class="c1"># Replace Ensembl IDs with Gene Symbols in AnnData</span>
+<span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;gene_symbol&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Input sequence provided is already in string format. No operation performed
+Input sequence provided is already in string format. No operation performed
+1 input query terms found dup hits:	[(&#39;ENSG00000268674&#39;, 3)]
+58 input query terms found no hit:	[&#39;ENSG00000130489&#39;, &#39;ENSG00000133808&#39;, &#39;ENSG00000139656&#39;, &#39;ENSG00000168078&#39;, &#39;ENSG00000170647&#39;, &#39;ENS
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updated gene symbols:&quot;</span><span class="p">,</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Updated gene symbols: Index([&#39;TNMD&#39;, &#39;ENPP4&#39;, &#39;ANKIB1&#39;, &#39;HS3ST1&#39;, &#39;TMEM176A&#39;, &#39;M6PR&#39;, &#39;CYP26B1&#39;,
+       &#39;FKBP4&#39;, &#39;NDUFAB1&#39;, &#39;PDK4&#39;],
+      dtype=&#39;object&#39;, name=&#39;gene_symbol&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">leidenalg</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: You’re trying to run this on 7683 dimensions of `.X`, if you really want this, set `use_rep=&#39;X&#39;`.
+         Falling back to preprocessing with `sc.pp.pca` and default params.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\_core\anndata.py:430: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+  warnings.warn(
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">)</span>  <span class="c1"># Recompute UMAP</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>  <span class="c1"># Run clustering</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Leiden Clustering&quot;</span><span class="p">)</span>  <span class="c1"># Plot results</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+</pre></div>
+</div>
+<img alt="_images/e05f24d1291722e05a2b1e7802824f5c2f7e3d172c2c5337c4971f3f4e24f5b3.png" src="_images/e05f24d1291722e05a2b1e7802824f5c2f7e3d172c2c5337c4971f3f4e24f5b3.png" />
+</div>
+</div>
+<p>How to Interpret Each Cluster’s Top Genes
+Each subplot represents a cluster of cells, and the genes shown are the most specific for that cluster. This helps identify cell types or biological states in single-cell RNA sequencing (scRNA-seq) data.</p>
+<p>Example Interpretation for Some Clusters
+Cluster 0 (“0 vs. rest”)</p>
+<p>IFI30, HLA-DRB5, HLA-DRB4</p>
+<p>These genes are associated with antigen presentation and immune response, suggesting that Cluster 0 could represent immune cells (e.g., dendritic cells, macrophages, or microglia).</p>
+<p>Cluster 1 (“1 vs. rest”)</p>
+<p>COX1, COX2, COX3, ATP8, ND5</p>
+<p>These genes are involved in mitochondrial function and oxidative phosphorylation, meaning this cluster could represent highly metabolic cells, such as neuronal or glial cells.</p>
+<p>Cluster 2 (“2 vs. rest”)</p>
+<p>APOD, MARCKSL1, PCDHGC3</p>
+<p>APOD is involved in lipid metabolism and neuroprotection, suggesting a glial cell identity (astrocytes or oligodendrocytes).</p>
+<p>Cluster 3 (“3 vs. rest”)</p>
+<p>CCL3, CCL4, CCL13</p>
+<p>These are chemokines involved in immune cell recruitment, indicating that this cluster could represent inflammatory cells like microglia or infiltrating immune cells.</p>
+<p>Cluster 4 (“4 vs. rest”)</p>
+<p>Some genes are still in Ensembl ID format, meaning they are either less studied or not mapped correctly.</p>
+<p>S100B is a well-known astrocyte marker, suggesting this cluster could be astrocytes.</p>
+<p>Cluster 5 (“5 vs. rest”)</p>
+<p>ETNPPL, PLPBP, GLUL</p>
+<p>These genes are related to glutamate metabolism, which suggests a role in neurotransmitter regulation.</p>
+<p>Possible cell type: neurons or glial cells.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;wilcoxon&#39;</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_genes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\numpy\core\fromnumeric.py:86: FutureWarning: The behavior of DataFrame.sum with axis=None is deprecated, in a future version this will reduce over both axes and return a scalar. To retain the old behavior, pass axis=0 (or do not pass axis)
+  return reduction(axis=axis, out=out, **passkwargs)
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+</pre></div>
+</div>
+<img alt="_images/aba30c2549547a794ed431d37645ddd8c0ed80a482279e0386c90f1ff407c804.png" src="_images/aba30c2549547a794ed431d37645ddd8c0ed80a482279e0386c90f1ff407c804.png" />
+</div>
+</div>
+<section id="compare-with-louvain">
+<h4>Compare with louvain<a class="headerlink" href="#compare-with-louvain" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install louvain
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting louvain
+  Downloading louvain-0.8.2-cp39-cp39-win_amd64.whl.metadata (1.5 kB)
+Requirement already satisfied: igraph&lt;0.12,&gt;=0.10.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from louvain) (0.11.8)
+Requirement already satisfied: texttable&gt;=1.6.2 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from igraph&lt;0.12,&gt;=0.10.0-&gt;louvain) (1.7.0)
+Downloading louvain-0.8.2-cp39-cp39-win_amd64.whl (89 kB)
+Installing collected packages: louvain
+Successfully installed louvain-0.8.2
+Note: you may need to restart the kernel to use updated packages.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">louvain</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The Louvain clustering (left UMAP plot) results in 13 clusters, showing a more granular subdivision of cells.</p>
+<p>The Leiden clustering (right UMAP plot) generates 6 broader clusters, grouping more cells together.</p>
+<p>This suggests that Leiden enforces stricter connectivity constraints, leading to fewer but larger clusters, while Louvain allows for more fragmented groupings.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+</pre></div>
+</div>
+<img alt="_images/4ea3a31e9f9c0ec131b6ebe29a21bbfaee98e8ff6d9a6598196a177eaa3b5871.png" src="_images/4ea3a31e9f9c0ec131b6ebe29a21bbfaee98e8ff6d9a6598196a177eaa3b5871.png" />
+</div>
+</div>
 </section>
-<section id="doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">
-<h2>Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)<a class="headerlink" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq" title="Link to this heading">#</a></h2>
-<section id="why-is-it-important-to-detect-doublets">
-<h3>🔬 Why is it important to detect doublets?<a class="headerlink" href="#why-is-it-important-to-detect-doublets" title="Link to this heading">#</a></h3>
-<p>Doublets can lead to <strong>false interpretations</strong> in the analysis, as they may appear to be a new cell type with a combined expression profile of two real cells. This affects:</p>
+<section id="cluster-comparation">
+<h4>Cluster comparation<a class="headerlink" href="#cluster-comparation" title="Link to this heading">#</a></h4>
+<div class="admonition-ari-adjusted-rand-index admonition">
+<p class="admonition-title">ARI (Adjusted Rand Index)</p>
+<p>Measures how similar the cluster assignments are, adjusting for random chance.</p>
 <ul class="simple">
-<li><p><strong>Cell type identification</strong> (they may seem like new cell types that do not actually exist).</p></li>
-<li><p><strong>Analysis of cellular subpopulations</strong>.</p></li>
-<li><p><strong>Inference of cell relationships and trajectories</strong>.</p></li>
+<li><p>Range: 0 (random) to 1 (perfect match).</p></li>
+<li><p>Higher ARI means Leiden and Louvain results are similar.</p></li>
+</ul>
+</div>
+<div class="admonition-nmi-normalized-mutual-information admonition">
+<p class="admonition-title">NMI (Normalized Mutual Information)</p>
+<p>Measures how much information is shared between the two clustering methods.</p>
+<ul class="simple">
+<li><p>Range: 0 (independent) to 1 (identical clustering).</p></li>
+<li><p>Higher NMI indicates strong agreement between Leiden and Louvain.</p></li>
+</ul>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract Leiden and Louvain cluster labels</span>
+<span class="n">leiden_labels</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;leiden&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">louvain_labels</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;louvain&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute ARI (Adjusted Rand Index)</span>
+<span class="n">ari_score</span> <span class="o">=</span> <span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">leiden_labels</span><span class="p">,</span> <span class="n">louvain_labels</span><span class="p">)</span>
+
+<span class="c1"># Compute NMI (Normalized Mutual Information)</span>
+<span class="n">nmi_score</span> <span class="o">=</span> <span class="n">normalized_mutual_info_score</span><span class="p">(</span><span class="n">leiden_labels</span><span class="p">,</span> <span class="n">louvain_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This means the cluster assignments are somewhat similar, but Leiden and Louvain still differ significantly in how they assign cells to clusters. A score of 0.6434 suggests that Leiden and Louvain have substantial overlap in their cluster assignments, but they still capture different underlying structures in the data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ARI Score (Leiden vs. Louvain): </span><span class="si">{</span><span class="n">ari_score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NMI Score (Leiden vs. Louvain): </span><span class="si">{</span><span class="n">nmi_score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ARI Score (Leiden vs. Louvain): 0.4478
+NMI Score (Leiden vs. Louvain): 0.6434
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="markers-genes-for-each-cluster">
+<h4>Markers genes for each cluster<a class="headerlink" href="#markers-genes-for-each-cluster" title="Link to this heading">#</a></h4>
+<p>Use Wilcoxon rank-sum test (or another suitable test) to find genes significantly upregulated in each cluster and the select top marker genes per cluster based on log fold change (logFC) and adjusted p-value (FDR).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute marker genes for Leiden clusters</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="s2">&quot;rank_genes_leiden&quot;</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_genes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Compute marker genes for Louvain clusters</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="s2">&quot;rank_genes_louvain&quot;</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_genes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\numpy\core\fromnumeric.py:86: FutureWarning: The behavior of DataFrame.sum with axis=None is deprecated, in a future version this will reduce over both axes and return a scalar. To retain the old behavior, pass axis=0 (or do not pass axis)
+  return reduction(axis=axis, out=out, **passkwargs)
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+</pre></div>
+</div>
+<img alt="_images/04939c86be6838810dd38df26503036835bcbef5e5b45280620eb6172db90c6e.png" src="_images/04939c86be6838810dd38df26503036835bcbef5e5b45280620eb6172db90c6e.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\numpy\core\fromnumeric.py:86: FutureWarning: The behavior of DataFrame.sum with axis=None is deprecated, in a future version this will reduce over both axes and return a scalar. To retain the old behavior, pass axis=0 (or do not pass axis)
+  return reduction(axis=axis, out=out, **passkwargs)
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+</pre></div>
+</div>
+<img alt="_images/04939c86be6838810dd38df26503036835bcbef5e5b45280620eb6172db90c6e.png" src="_images/04939c86be6838810dd38df26503036835bcbef5e5b45280620eb6172db90c6e.png" />
+</div>
+</div>
+</section>
+<section id="extracting-top-marker-genes-per-cluster">
+<h4>Extracting top marker genes per cluster<a class="headerlink" href="#extracting-top-marker-genes-per-cluster" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top marker genes for Leiden</span>
+<span class="n">marker_genes_leiden</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;rank_genes_leiden&quot;</span><span class="p">][</span><span class="s2">&quot;names&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">marker_genes_louvain</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;rank_genes_louvain&quot;</span><span class="p">][</span><span class="s2">&quot;names&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># print(&quot;Top marker genes for Leiden clusters:\n&quot;, leiden_markers)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Leiden clustering has identified genes that are involved in immune response, oxidative phosphorylation, and neuronal differentiation. Some notable genes:</p>
+<p>IFI30 (Gamma-interferon-inducible lysosomal thiol reductase)</p>
+<p>Highly expressed in antigen-presenting cells (APCs) like macrophages and dendritic cells.</p>
+<p>Plays a role in processing antigens for MHC class II presentation.</p>
+<p>HLA-DRB5, HLA-DRB4 (Human leukocyte antigen genes)</p>
+<p>Indicate the presence of immune cells, likely dendritic cells or monocytes.</p>
+<p>Involved in antigen presentation via the MHC class II pathway.</p>
+<p>LAPTM5 (Lysosomal-associated protein transmembrane 5)</p>
+<p>Expressed in hematopoietic cells and linked to B-cell and T-cell function.</p>
+<p>APOC1 (Apolipoprotein C1)</p>
+<p>Involved in lipid metabolism and may suggest microglial activation in the brain.</p>
+<p>COX genes (COX1, COX2, COX3, ATP8, ATP5MF)</p>
+<p>These genes are part of the mitochondrial respiratory chain, indicating a possible population of metabolically active cells.</p>
+<p>PCSK1N (Proprotein convertase subtilisin/kexin type 1 inhibitor)</p>
+<p>Found in neural tissues, involved in neuropeptide processing.</p>
+<p>SYT11 (Synaptotagmin 11)</p>
+<p>Associated with neuronal vesicle trafficking, possibly marking a neuronal or glial cell population.</p>
+<p>Leiden Clustering Interpretation
+Cluster 0, 1, 2, 3: Likely immune-related clusters (macrophages, monocytes, dendritic cells) due to HLA genes, IFI30, and LAPTM5.</p>
+<p>Cluster 4, 5: Potential neuronal clusters (presence of PCSK1N, SYT11, and COX genes).</p>
+<p>Cluster 6, 7: Could be microglia or metabolically active cells, as seen from APOC1 and mitochondrial genes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top marker genes for Leiden clusters:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">marker_genes_leiden</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top marker genes for Leiden clusters:
+          0       1                2       3                4                5
+0     IFI30    ND4L             APOD    CCL3  ENSG00000255823  ENSG00000277196
+1  HLA-DRB5    COX2         MARCKSL1    CCL4  ENSG00000232196              AGT
+2    LAPTM5    COX1             DNER  CCL3L3  ENSG00000270672           ETNPPL
+3      SRGN    COX3             PLLP  CCL4L2  ENSG00000269028            TTYH1
+4  HLA-DRB4    ATP8            SYT11    CD83  ENSG00000256618            PLPP3
+5   ALOX5AP    CYTB            FAIM2  CCL3L3  ENSG00000256045            GLUD1
+6     APOC1     ND5          PCDHGC3    OLR1            S100B             SCG3
+7    TMSB10     ND4           PCSK1N    EGR3           ATP1B2           ATP1B2
+8   ARHGDIB   HSPB1             CHL1    FPR1           KCNJ10           CLDN10
+9   RNF144B  ATP5MF  ENSG00000184258  LAPTM5              AGT             CST3
+</pre></div>
+</div>
+</div>
+</div>
+<p>Louvain Cluster Marker Genes
+Potential Functional Interpretation
+Louvain clustering shares some genes with Leiden but also includes neuronal differentiation markers and stress response genes.</p>
+<p>GPR183 (G protein-coupled receptor 183)</p>
+<p>Highly expressed in B-cells and macrophages.</p>
+<p>Plays a role in immune cell migration.</p>
+<p>LYZ (Lysozyme)</p>
+<p>Indicates monocyte and macrophage activity.</p>
+<p>Important in antimicrobial defense.</p>
+<p>FOS (Fos proto-oncogene)</p>
+<p>Marker of cell activation, particularly in neuronal and immune cells.</p>
+<p>SRGN (Serglycin)</p>
+<p>Found in granulocytes, mast cells, and cytotoxic T cells.</p>
+<p>Important for immune cell degranulation.</p>
+<p>OLIG2 (Oligodendrocyte transcription factor 2)</p>
+<p>Specific for oligodendrocyte progenitor cells (OPCs), which are crucial for myelination in the central nervous system.</p>
+<p>HSPA1A, HSPA1B (Heat shock proteins)</p>
+<p>Indicate cellular stress response, likely reflecting activated or stressed cells.</p>
+<p>PLIN2 (Perilipin 2)</p>
+<p>Involved in lipid droplet formation and found in microglia and macrophages.</p>
+<p>Louvain Clustering Interpretation
+Cluster 0, 1, 2: Immune-related clusters (monocytes, macrophages, B cells) due to GPR183, LYZ, and SRGN.</p>
+<p>Cluster 3, 4, 5: Neuronal clusters, with OLIG2 marking oligodendrocytes and FOS indicating neuronal activity.</p>
+<p>Cluster 6, 7: Stress-responsive and metabolic clusters, supported by HSPA1A/B and PLIN2.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top marker genes for Louvain clusters:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">marker_genes_louvain</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top marker genes for Louvain clusters:
+          0       1                2       3         4                5  \
+0     IFI30    ND4L             APOD    CCL3    TMSB10             APOD   
+1  HLA-DRB5   HSPB1             PLLP    CCL4     IFI30  ENSG00000184258   
+2    GPR183    COX2         MARCKSL1  CCL4L2       LYZ             SOX8   
+3  HLA-DRB4     MT3              FOS  CCL3L3      BTG1             DNER   
+4   ARHGDIB    COX1             DNER  CCL3L3      SRGN           CACNG4   
+5      SRGN    COX3            S100B    CD83     PLIN2            OLIG2   
+6     FCGBP    ATP8            SYT11    OLR1  HLA-DRB5          ARFGEF3   
+7    MAP3K8  ATP5MF            FAIM2    EGR3    LAPTM5        ANKRD20A1   
+8  HLA-DPA1    CYTB  ENSG00000184258    FPR1   ALOX5AP           GABBR1   
+9     LAIR1     ND5            PEBP1    PLEK   S100A11             LRP4   
+
+                 6       7     8        9               10               11  \
+0  ENSG00000255823    CCL3  COX1    ACTG1           ETNPPL           HSPA1A   
+1  ENSG00000232196    CD83  COX3  TSPAN31              AGT           HSPA1B   
+2  ENSG00000270672    CCL4  CYTB     TBK1            PLPP3           DNAJB1   
+3  ENSG00000269028  SRGAP2  COX2   TUBB2B             SCG3            HSPA6   
+4  ENSG00000256618    OLR1  ND4L   SRGAP1            S1PR1             BAG3   
+5  ENSG00000256045  CCL3L3   ND4  MARCHF9           CLDN10            DDIT4   
+6            S100B  SELPLG  ATP8    NACAD            GLUD1            HSPB1   
+7              ND4  LAPTM5  ATP6    CCND2  ENSG00000277196             HCST   
+8           KCNJ10  CCL4L2   ND5   PCSK1N           ATP1B2             HAMP   
+9  ENSG00000184258    EGR3   ND2   LANCL2            FXYD1  ENSG00000268864   
+
+         12  
+0   HLA-DRA  
+1     APOC1  
+2      PFN1  
+3   S100A11  
+4     IFI30  
+5      GPX1  
+6      APOE  
+7  HLA-DPA1  
+8      FPR1  
+9       ND6  
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="differential-expression-analysis">
+<h3>Differential Expression Analysis<a class="headerlink" href="#differential-expression-analysis" title="Link to this heading">#</a></h3>
+<div class="admonition-what-is-differential-expression-analysis admonition">
+<p class="admonition-title">What is Differential Expression Analysis?</p>
+<p>Differential Expression (DE) analysis identifies genes that are <strong>significantly upregulated or downregulated</strong> between different conditions, cell types, or clusters in a single-cell RNA-seq (scRNA-seq) dataset.</p>
+<ul class="simple">
+<li><p>Helps <strong>identify marker genes</strong> that define different cell populations.</p></li>
+<li><p>Reveals <strong>biological differences</strong> between clusters or experimental conditions.</p></li>
+<li><p>Can be used for <strong>functional enrichment analysis</strong> (e.g., GO, KEGG pathways).</p></li>
+</ul>
+</div>
+<p>When analyzing differentially expressed genes, we focus on:</p>
+<ul class="simple">
+<li><p><strong>Log Fold Change (logFC)</strong>: Measures how much a gene is up/downregulated.</p></li>
+<li><p><strong>Adjusted p-value (FDR)</strong>: Ensures statistical significance while controlling false positives.</p></li>
+<li><p><strong>Mean Expression</strong>: Helps distinguish truly expressed genes from noise.</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scrublet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">scr</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw_copy</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-<span class="n">min_genes</span> <span class="o">=</span> <span class="mi">200</span>    
-<span class="n">max_genes</span> <span class="o">=</span> <span class="mi">5000</span>   
-<span class="n">min_UMI</span> <span class="o">=</span> <span class="mi">500</span>      
-<span class="n">max_mito</span> <span class="o">=</span> <span class="mi">10</span>      
-
-<span class="n">filtered_cells</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_genes</span><span class="p">)</span> <span class="o">&amp;</span>
-    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_genes</span><span class="p">)</span> <span class="o">&amp;</span>
-    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_UMI</span><span class="p">)</span> <span class="o">&amp;</span>
-    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;pct_mito&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_mito</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="n">adata_filtered_copy</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw_copy</span><span class="p">[</span><span class="n">filtered_cells</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">adata_glioblastoma_filtered</span> <span class="o">=</span> <span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get results as a DataFrame</span>
+<span class="n">deg_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;rank_genes_leiden&#39;</span><span class="p">][</span><span class="s1">&#39;names&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">deg_results</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Original number of cells: 1853
-Number of cells after filtering: 1825
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counts_matrix</span> <span class="o">=</span> <span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">X</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Automatically set threshold at doublet score = 0.57</p>
-<p>Scrublet sets a cutoff score to classify cells as doublets or singlets.</p>
-<p>Cells above this score are considered doublets, and cells below it are considered singlets.</p>
-<p>Detected doublet rate = 0.0%</p>
-<p>No doublets were detected in the dataset, meaning that all cells had doublet scores below 0.57.</p>
-<p>Estimated detectable doublet fraction = 16.6%</p>
-<p>This means that 16.6% of true doublets in the dataset should be detectable with the current settings. If the fraction was much lower, Scrublet might be missing doublets.</p>
-<p>Overall doublet rate:</p>
-<p>Expected = 10.0% → This is the theoretical doublet rate based on experimental parameters (e.g., cell concentration).</p>
-<p>Estimated = 0.0% → Scrublet found no actual doublets in the dataset.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run Scrublet on the raw (unnormalized) filtered dataset</span>
-<span class="n">scrub</span> <span class="o">=</span> <span class="n">scr</span><span class="o">.</span><span class="n">Scrublet</span><span class="p">(</span><span class="n">counts_matrix</span><span class="p">)</span>
-<span class="n">doublet_scores</span><span class="p">,</span> <span class="n">predicted_doublets</span> <span class="o">=</span> <span class="n">scrub</span><span class="o">.</span><span class="n">scrub_doublets</span><span class="p">()</span>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<span class="c1"># Store results in adata_filtered_copy for further analysis</span>
-<span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;doublet_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doublet_scores</span>
-<span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;predicted_doublet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted_doublets</span>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>IFI30</td>
+      <td>ND4L</td>
+      <td>APOD</td>
+      <td>CCL3</td>
+      <td>ENSG00000255823</td>
+      <td>ENSG00000277196</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>HLA-DRB5</td>
+      <td>COX2</td>
+      <td>MARCKSL1</td>
+      <td>CCL4</td>
+      <td>ENSG00000232196</td>
+      <td>AGT</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>LAPTM5</td>
+      <td>COX1</td>
+      <td>DNER</td>
+      <td>CCL3L3</td>
+      <td>ENSG00000270672</td>
+      <td>ETNPPL</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SRGN</td>
+      <td>COX3</td>
+      <td>PLLP</td>
+      <td>CCL4L2</td>
+      <td>ENSG00000269028</td>
+      <td>TTYH1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>HLA-DRB4</td>
+      <td>ATP8</td>
+      <td>SYT11</td>
+      <td>CD83</td>
+      <td>ENSG00000256618</td>
+      <td>PLPP3</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>ALOX5AP</td>
+      <td>CYTB</td>
+      <td>FAIM2</td>
+      <td>CCL3L3</td>
+      <td>ENSG00000256045</td>
+      <td>GLUD1</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>APOC1</td>
+      <td>ND5</td>
+      <td>PCDHGC3</td>
+      <td>OLR1</td>
+      <td>S100B</td>
+      <td>SCG3</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>TMSB10</td>
+      <td>ND4</td>
+      <td>PCSK1N</td>
+      <td>EGR3</td>
+      <td>ATP1B2</td>
+      <td>ATP1B2</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>ARHGDIB</td>
+      <td>HSPB1</td>
+      <td>CHL1</td>
+      <td>FPR1</td>
+      <td>KCNJ10</td>
+      <td>CLDN10</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>RNF144B</td>
+      <td>ATP5MF</td>
+      <td>ENSG00000184258</td>
+      <td>LAPTM5</td>
+      <td>AGT</td>
+      <td>CST3</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">deg_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;rank_genes_louvain&#39;</span><span class="p">][</span><span class="s1">&#39;names&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">deg_results</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Preprocessing...
-Simulating doublets...
-Embedding transcriptomes using PCA...
-Calculating doublet scores...
-Automatically set threshold at doublet score = 0.57
-Detected doublet rate = 0.0%
-Estimated detectable doublet fraction = 16.6%
-Overall doublet rate:
-	Expected   = 10.0%
-	Estimated  = 0.0%
-Elapsed time: 12.5 seconds
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>IFI30</td>
+      <td>ND4L</td>
+      <td>APOD</td>
+      <td>CCL3</td>
+      <td>TMSB10</td>
+      <td>APOD</td>
+      <td>ENSG00000255823</td>
+      <td>CCL3</td>
+      <td>COX1</td>
+      <td>ACTG1</td>
+      <td>ETNPPL</td>
+      <td>HSPA1A</td>
+      <td>HLA-DRA</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>HLA-DRB5</td>
+      <td>HSPB1</td>
+      <td>PLLP</td>
+      <td>CCL4</td>
+      <td>IFI30</td>
+      <td>ENSG00000184258</td>
+      <td>ENSG00000232196</td>
+      <td>CD83</td>
+      <td>COX3</td>
+      <td>TSPAN31</td>
+      <td>AGT</td>
+      <td>HSPA1B</td>
+      <td>APOC1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GPR183</td>
+      <td>COX2</td>
+      <td>MARCKSL1</td>
+      <td>CCL4L2</td>
+      <td>LYZ</td>
+      <td>SOX8</td>
+      <td>ENSG00000270672</td>
+      <td>CCL4</td>
+      <td>CYTB</td>
+      <td>TBK1</td>
+      <td>PLPP3</td>
+      <td>DNAJB1</td>
+      <td>PFN1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>HLA-DRB4</td>
+      <td>MT3</td>
+      <td>FOS</td>
+      <td>CCL3L3</td>
+      <td>BTG1</td>
+      <td>DNER</td>
+      <td>ENSG00000269028</td>
+      <td>SRGAP2</td>
+      <td>COX2</td>
+      <td>TUBB2B</td>
+      <td>SCG3</td>
+      <td>HSPA6</td>
+      <td>S100A11</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ARHGDIB</td>
+      <td>COX1</td>
+      <td>DNER</td>
+      <td>CCL3L3</td>
+      <td>SRGN</td>
+      <td>CACNG4</td>
+      <td>ENSG00000256618</td>
+      <td>OLR1</td>
+      <td>ND4L</td>
+      <td>SRGAP1</td>
+      <td>S1PR1</td>
+      <td>BAG3</td>
+      <td>IFI30</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>SRGN</td>
+      <td>COX3</td>
+      <td>S100B</td>
+      <td>CD83</td>
+      <td>PLIN2</td>
+      <td>OLIG2</td>
+      <td>ENSG00000256045</td>
+      <td>CCL3L3</td>
+      <td>ND4</td>
+      <td>MARCHF9</td>
+      <td>CLDN10</td>
+      <td>DDIT4</td>
+      <td>GPX1</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>FCGBP</td>
+      <td>ATP8</td>
+      <td>SYT11</td>
+      <td>OLR1</td>
+      <td>HLA-DRB5</td>
+      <td>ARFGEF3</td>
+      <td>S100B</td>
+      <td>SELPLG</td>
+      <td>ATP8</td>
+      <td>NACAD</td>
+      <td>GLUD1</td>
+      <td>HSPB1</td>
+      <td>APOE</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>MAP3K8</td>
+      <td>ATP5MF</td>
+      <td>FAIM2</td>
+      <td>EGR3</td>
+      <td>LAPTM5</td>
+      <td>ANKRD20A1</td>
+      <td>ND4</td>
+      <td>LAPTM5</td>
+      <td>ATP6</td>
+      <td>CCND2</td>
+      <td>ENSG00000277196</td>
+      <td>HCST</td>
+      <td>HLA-DPA1</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>HLA-DPA1</td>
+      <td>CYTB</td>
+      <td>ENSG00000184258</td>
+      <td>FPR1</td>
+      <td>ALOX5AP</td>
+      <td>GABBR1</td>
+      <td>KCNJ10</td>
+      <td>CCL4L2</td>
+      <td>ND5</td>
+      <td>PCSK1N</td>
+      <td>ATP1B2</td>
+      <td>HAMP</td>
+      <td>FPR1</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>LAIR1</td>
+      <td>ND5</td>
+      <td>PEBP1</td>
+      <td>PLEK</td>
+      <td>S100A11</td>
+      <td>LRP4</td>
+      <td>ENSG00000184258</td>
+      <td>EGR3</td>
+      <td>ND2</td>
+      <td>LANCL2</td>
+      <td>FXYD1</td>
+      <td>ENSG00000268864</td>
+      <td>ND6</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure unique variable names in adata_glioblastoma_filtered</span>
+<span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var_names_make_unique</span><span class="p">()</span>
+
+<span class="c1"># Plot the violin plot</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SYT11&quot;</span><span class="p">],</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:843: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  ax = sns.violinplot(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:843: FutureWarning: 
+
+The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `density_norm=&#39;width&#39;` for the same effect.
+  ax = sns.violinplot(
+</pre></div>
+</div>
+<img alt="_images/e2631ecd967726bf7afb6e17d67bda367b61f0e9160d78edec20fe051892caf3.png" src="_images/e2631ecd967726bf7afb6e17d67bda367b61f0e9160d78edec20fe051892caf3.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;rank_genes_leiden&#39;</span><span class="p">][</span><span class="s1">&#39;names&#39;</span><span class="p">][</span><span class="s1">&#39;0&#39;</span><span class="p">][:</span><span class="mi">10</span><span class="p">],</span> 
+              <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span> <span class="n">swap_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/328cf188ed69c48349068bf48284b28506220b0fa3170ab422370aa2c0b537eb.png" src="_images/328cf188ed69c48349068bf48284b28506220b0fa3170ab422370aa2c0b537eb.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<section id="inspection-the-doublets-manually">
-<h4>Inspection the doublets manually<a class="headerlink" href="#inspection-the-doublets-manually" title="Link to this heading">#</a></h4>
-<p>Scrublet is likely too strict, and it is not detecting doublets because all your scores are too low. Your dataset may have a naturally low doublet rate, but it’s uncommon to have 0% doublets in a real scRNA-seq dataset.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Doublet Score&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Doublet Scores&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">filter_rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">min_fold_change</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">min_in_group_fraction</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Volcano plot</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:66: FutureWarning: The previous implementation of stack is deprecated and will be removed in a future version of pandas. See the What&#39;s New notes for pandas 2.1.0 for details. Specify future_stack=True to adopt the new implementation and silence this warning.
+  d = d.stack(level=1).reset_index()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="p">[</span><span class="n">df_filtered</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;significant&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">]),</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;significant&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Axes: xlabel=&#39;logfoldchanges&#39;, ylabel=&#39;pvals&#39;&gt;
+</pre></div>
+</div>
+<img alt="_images/434bb7fa185dd3d704f49aec5f9db0bfd867f91b3a466ff2a8334bd6d10d0746.png" src="_images/434bb7fa185dd3d704f49aec5f9db0bfd867f91b3a466ff2a8334bd6d10d0746.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract results</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span> 
+
+<span class="c1"># Plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">]),</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>  <span class="c1"># Significance threshold</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Log Fold Change&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;-log10(p-value)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Volcano Plot for Cluster 0&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/588c376149d4dc24bbd451d72033fd2936e4eb5227d9a727475ab9d78aa37d3e.png" src="_images/588c376149d4dc24bbd451d72033fd2936e4eb5227d9a727475ab9d78aa37d3e.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:66: FutureWarning: The previous implementation of stack is deprecated and will be removed in a future version of pandas. See the What&#39;s New notes for pandas 2.1.0 for details. Specify future_stack=True to adopt the new implementation and silence this warning.
+  d = d.stack(level=1).reset_index()
+</pre></div>
+</div>
+<img alt="_images/247e85082a596d8a676115c7e5556ddacae610692f8340452fcb9b4c562a95e5.png" src="_images/247e85082a596d8a676115c7e5556ddacae610692f8340452fcb9b4c562a95e5.png" />
 </div>
 </div>
-</section>
-<section id="lowering-the-tresholds-manually">
-<h4>Lowering the tresholds manually<a class="headerlink" href="#lowering-the-tresholds-manually" title="Link to this heading">#</a></h4>
-<p>The vertical black line represents the doublet score threshold (around 0.2–0.3) that Scrublet set to classify doublets.</p>
-<p>Only a small fraction of observed cells have doublet scores above this threshold.</p>
-<p>Right Plot: Simulated Doublets
-This histogram shows the distribution of doublet scores for simulated doublets.</p>
-<p>Simulated doublets generally have higher scores than the observed cells.</p>
-<p>The doublet score threshold (black line) is placed at the intersection between real cells and simulated doublets.</p>
-<p>Key Metrics Explained
-Detected doublet rate = 1.4%</p>
-<p>This means that only 1.4% of cells in your dataset were classified as doublets based on the threshold.</p>
-<p>Estimated detectable doublet fraction = 38.1%</p>
-<p>Scrublet estimates that 38.1% of actual doublets could be detected using its method.</p>
-<p>Some doublets might be missed because they are too similar to singlets.</p>
-<p>Expected doublet rate = 10.0%</p>
-<p>This is an estimate based on your experimental settings (e.g., cell loading density).</p>
-<p>It suggests that around 10% of cells might be doublets in reality.</p>
-<p>Estimated overall doublet rate = 3.7%</p>
-<p>This is Scrublet’s final estimate of the actual number of doublets in your dataset, accounting for undetected doublets.</p>
-<p><strong>What Does This Mean for Your Data?</strong></p>
-<p>You likely have fewer doublets than expected (3.7% vs. 10%).</p>
-<p>Some doublets might be missed due to the doublet score distribution.</p>
-<p>The doublet score threshold may be too strict, leading to fewer detected doublets than expected.</p>
+<p>Dot plots summarize expression across clusters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span><span class="o">.</span><span class="n">call_doublets</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>  <span class="c1"># Adjust the threshold down</span>
-<span class="n">scrub</span><span class="o">.</span><span class="n">plot_histogram</span><span class="p">()</span>  <span class="c1"># Plot the histogram of doublet scores</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)[</span><span class="s2">&quot;names&quot;</span><span class="p">],</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Detected doublet rate = 1.4%
-Estimated detectable doublet fraction = 38.1%
-Overall doublet rate:
-	Expected   = 10.0%
-	Estimated  = 3.7%
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:169: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  obs_bool.groupby(level=0).sum() / obs_bool.groupby(level=0).count()
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:179: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  dot_color_df = self.obs_tidy.groupby(level=0).mean()
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:749: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
+  dot_ax.scatter(x, y, **kwds)
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&lt;Figure size 800x300 with 2 Axes&gt;,
- array([&lt;Axes: title={&#39;center&#39;: &#39;Observed transcriptomes&#39;}, xlabel=&#39;Doublet score&#39;, ylabel=&#39;Prob. density&#39;&gt;,
-        &lt;Axes: title={&#39;center&#39;: &#39;Simulated doublets&#39;}, xlabel=&#39;Doublet score&#39;, ylabel=&#39;Prob. density&#39;&gt;],
-       dtype=object))
-</pre></div>
-</div>
-<img alt="_images/dd480e81624572d5f04053bff842b96c878f63f354e4b9ac4dd72327a59f4a0a.png" src="_images/dd480e81624572d5f04053bff842b96c878f63f354e4b9ac4dd72327a59f4a0a.png" />
+<img alt="_images/58da8bd441d63cb21e2d12b7b15d43560eabb55bc65549e380a6f55d25cef296.png" src="_images/58da8bd441d63cb21e2d12b7b15d43560eabb55bc65549e380a6f55d25cef296.png" />
 </div>
 </div>
-<p>Observed transcriptomes (left plot): Uses a log scale (values range from
-10
-1
-10
-1
-to
-10
-−
-1
-10
-−1
-), making the distribution more spread out.</p>
-<p>Simulated doublets (right plot): Uses a linear scale (values range from 0 to 5), meaning the bar heights represent raw counts.</p>
-<p>This difference happens because Scrublet automatically applies a log scale to the observed transcriptomes to better visualize the spread of scores. Meanwhile, the simulated doublets are usually plotted on a normal scale.</p>
-<p>to see how the estimated doublet rate changes compared to your previous results. If needed, we can adjust the threshold again based on what we see.</p>
+<ol class="arabic simple" start="5">
+<li><p>Gene Ontology (GO) &amp; Pathway Enrichment
+Find biological functions of differentially expressed genes:</p></li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span><span class="o">.</span><span class="n">detected_doublet_rate_</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">gseapy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gp</span>
+<span class="n">gp</span><span class="o">.</span><span class="n">enrichr</span><span class="p">(</span><span class="n">gene_list</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">gene_sets</span><span class="o">=</span><span class="s1">&#39;GO_Biological_Process_2021&#39;</span><span class="p">,</span> <span class="n">organism</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.033424657534246574
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;gseapy.enrichr.Enrichr at 0x22262477790&gt;
 </pre></div>
 </div>
 </div>
 </div>
-</section>
+<p>cell identification</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">missing_genes</span> <span class="o">=</span> <span class="p">[</span><span class="n">gene</span> <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;CD3D&#39;</span><span class="p">,</span> <span class="s1">&#39;MS4A1&#39;</span><span class="p">,</span> <span class="s1">&#39;CD68&#39;</span><span class="p">,</span> <span class="s1">&#39;LYZ&#39;</span><span class="p">,</span> <span class="s1">&#39;EPCAM&#39;</span><span class="p">,</span> <span class="s1">&#39;PDGFRA&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">gene</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var_names</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Missing genes:&quot;</span><span class="p">,</span> <span class="n">missing_genes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Missing genes: [&#39;MS4A1&#39;, &#39;CD68&#39;, &#39;EPCAM&#39;, &#39;PDGFRA&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> 
+              <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CD3D&#39;</span><span class="p">,</span> <span class="s1">&#39;MS4A1&#39;</span><span class="p">,</span> <span class="s1">&#39;CD68&#39;</span><span class="p">,</span> <span class="s1">&#39;LYZ&#39;</span><span class="p">,</span> <span class="s1">&#39;EPCAM&#39;</span><span class="p">,</span> <span class="s1">&#39;PDGFRA&#39;</span><span class="p">],</span> 
+              <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="n">standard_scale</span><span class="o">=</span><span class="s1">&#39;var&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">198</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> 
+<span class="g g-Whitespace">      </span><span class="mi">2</span>               <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CD3D&#39;</span><span class="p">,</span> <span class="s1">&#39;MS4A1&#39;</span><span class="p">,</span> <span class="s1">&#39;CD68&#39;</span><span class="p">,</span> <span class="s1">&#39;LYZ&#39;</span><span class="p">,</span> <span class="s1">&#39;EPCAM&#39;</span><span class="p">,</span> <span class="s1">&#39;PDGFRA&#39;</span><span class="p">],</span> 
+<span class="g g-Whitespace">      </span><span class="mi">3</span>               <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="n">standard_scale</span><span class="o">=</span><span class="s1">&#39;var&#39;</span><span class="p">)</span>
+
+<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:942,</span> in <span class="ni">dotplot</span><span class="nt">(adata, var_names, groupby, use_raw, log, num_categories, expression_cutoff, mean_only_expressed, cmap, dot_max, dot_min, standard_scale, smallest_dot, title, colorbar_title, size_title, figsize, dendrogram, gene_symbols, var_group_positions, var_group_labels, var_group_rotation, layer, swap_axes, dot_color_df, show, save, ax, return_fig, vmin, vmax, vcenter, norm, **kwds)</span>
+<span class="g g-Whitespace">    </span><span class="mi">939</span> <span class="k">if</span> <span class="s1">&#39;color_map&#39;</span> <span class="ow">in</span> <span class="n">kwds</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">940</span>     <span class="k">del</span> <span class="n">kwds</span><span class="p">[</span><span class="s1">&#39;color_map&#39;</span><span class="p">]</span>
+<span class="ne">--&gt; </span><span class="mi">942</span> <span class="n">dp</span> <span class="o">=</span> <span class="n">DotPlot</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">943</span>     <span class="n">adata</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">944</span>     <span class="n">var_names</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">945</span>     <span class="n">groupby</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">946</span>     <span class="n">use_raw</span><span class="o">=</span><span class="n">use_raw</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">947</span>     <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">948</span>     <span class="n">num_categories</span><span class="o">=</span><span class="n">num_categories</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">949</span>     <span class="n">expression_cutoff</span><span class="o">=</span><span class="n">expression_cutoff</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">950</span>     <span class="n">mean_only_expressed</span><span class="o">=</span><span class="n">mean_only_expressed</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">951</span>     <span class="n">standard_scale</span><span class="o">=</span><span class="n">standard_scale</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">952</span>     <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">953</span>     <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">954</span>     <span class="n">gene_symbols</span><span class="o">=</span><span class="n">gene_symbols</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">955</span>     <span class="n">var_group_positions</span><span class="o">=</span><span class="n">var_group_positions</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">956</span>     <span class="n">var_group_labels</span><span class="o">=</span><span class="n">var_group_labels</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">957</span>     <span class="n">var_group_rotation</span><span class="o">=</span><span class="n">var_group_rotation</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">958</span>     <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">959</span>     <span class="n">dot_color_df</span><span class="o">=</span><span class="n">dot_color_df</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">960</span>     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">961</span>     <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">962</span>     <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">963</span>     <span class="n">vcenter</span><span class="o">=</span><span class="n">vcenter</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">964</span>     <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">965</span>     <span class="o">**</span><span class="n">kwds</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">966</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">968</span> <span class="k">if</span> <span class="n">dendrogram</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">969</span>     <span class="n">dp</span><span class="o">.</span><span class="n">add_dendrogram</span><span class="p">(</span><span class="n">dendrogram_key</span><span class="o">=</span><span class="n">dendrogram</span><span class="p">)</span>
+
+<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:132,</span> in <span class="ni">DotPlot.__init__</span><span class="nt">(self, adata, var_names, groupby, use_raw, log, num_categories, categories_order, title, figsize, gene_symbols, var_group_positions, var_group_labels, var_group_rotation, layer, expression_cutoff, mean_only_expressed, standard_scale, dot_color_df, dot_size_df, ax, vmin, vmax, vcenter, norm, **kwds)</span>
+<span class="g g-Whitespace">    </span><span class="mi">104</span> <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">105</span>     <span class="bp">self</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">106</span>     <span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
+   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">130</span>     <span class="o">**</span><span class="n">kwds</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">131</span> <span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">132</span>     <span class="n">BasePlot</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">133</span>         <span class="bp">self</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">134</span>         <span class="n">adata</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">135</span>         <span class="n">var_names</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">136</span>         <span class="n">groupby</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">137</span>         <span class="n">use_raw</span><span class="o">=</span><span class="n">use_raw</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">138</span>         <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">139</span>         <span class="n">num_categories</span><span class="o">=</span><span class="n">num_categories</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">140</span>         <span class="n">categories_order</span><span class="o">=</span><span class="n">categories_order</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">141</span>         <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">142</span>         <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">143</span>         <span class="n">gene_symbols</span><span class="o">=</span><span class="n">gene_symbols</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">144</span>         <span class="n">var_group_positions</span><span class="o">=</span><span class="n">var_group_positions</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">145</span>         <span class="n">var_group_labels</span><span class="o">=</span><span class="n">var_group_labels</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">146</span>         <span class="n">var_group_rotation</span><span class="o">=</span><span class="n">var_group_rotation</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">147</span>         <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">149</span>         <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">150</span>         <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">151</span>         <span class="n">vcenter</span><span class="o">=</span><span class="n">vcenter</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">152</span>         <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">153</span>         <span class="o">**</span><span class="n">kwds</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">154</span>     <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">156</span>     <span class="c1"># for if category defined by groupby (if any) compute for each var_name</span>
+<span class="g g-Whitespace">    </span><span class="mi">157</span>     <span class="c1"># 1. the fraction of cells in the category having a value &gt;expression_cutoff</span>
+<span class="g g-Whitespace">    </span><span class="mi">158</span>     <span class="c1"># 2. the mean value over the category</span>
+<span class="g g-Whitespace">    </span><span class="mi">159</span> 
+<span class="g g-Whitespace">    </span><span class="mi">160</span>     <span class="c1"># 1. compute fraction of cells having value &gt; expression_cutoff</span>
+<span class="g g-Whitespace">    </span><span class="mi">161</span>     <span class="c1"># transform obs_tidy into boolean matrix using the expression_cutoff</span>
+<span class="g g-Whitespace">    </span><span class="mi">162</span>     <span class="n">obs_bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_tidy</span> <span class="o">&gt;</span> <span class="n">expression_cutoff</span>
+
+<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_baseplot_class.py:111,</span> in <span class="ni">BasePlot.__init__</span><span class="nt">(self, adata, var_names, groupby, use_raw, log, num_categories, categories_order, title, figsize, gene_symbols, var_group_positions, var_group_labels, var_group_rotation, layer, ax, vmin, vmax, vcenter, norm, **kwds)</span>
+<span class="g g-Whitespace">    </span><span class="mi">103</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_var_groups</span> <span class="o">=</span> <span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">104</span>     <span class="kc">True</span>
+<span class="g g-Whitespace">    </span><span class="mi">105</span>     <span class="k">if</span> <span class="n">var_group_positions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">var_group_positions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="g g-Whitespace">    </span><span class="mi">106</span>     <span class="k">else</span> <span class="kc">False</span>
+<span class="g g-Whitespace">    </span><span class="mi">107</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">109</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_var_groups</span><span class="p">()</span>
+<span class="ne">--&gt; </span><span class="mi">111</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_tidy</span> <span class="o">=</span> <span class="n">_prepare_dataframe</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">112</span>     <span class="n">adata</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">113</span>     <span class="bp">self</span><span class="o">.</span><span class="n">var_names</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">114</span>     <span class="n">groupby</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">115</span>     <span class="n">use_raw</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">116</span>     <span class="n">log</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">117</span>     <span class="n">num_categories</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">118</span>     <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">119</span>     <span class="n">gene_symbols</span><span class="o">=</span><span class="n">gene_symbols</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">120</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">121</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_NUM_CATEGORIES</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">122</span>     <span class="n">warn</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">123</span>         <span class="sa">f</span><span class="s2">&quot;Over </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">MAX_NUM_CATEGORIES</span><span class="si">}</span><span class="s2"> categories found. &quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">124</span>         <span class="s2">&quot;Plot would be very large.&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">125</span>     <span class="p">)</span>
+
+<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:1927,</span> in <span class="ni">_prepare_dataframe</span><span class="nt">(adata, var_names, groupby, use_raw, log, num_categories, layer, gene_symbols)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1925</span>     <span class="n">groupby</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">groupby_index</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1926</span> <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">var_names</span><span class="p">))</span>
+<span class="ne">-&gt; </span><span class="mi">1927</span> <span class="n">obs_tidy</span> <span class="o">=</span> <span class="n">get</span><span class="o">.</span><span class="n">obs_df</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1928</span>     <span class="n">adata</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span> <span class="n">use_raw</span><span class="o">=</span><span class="n">use_raw</span><span class="p">,</span> <span class="n">gene_symbols</span><span class="o">=</span><span class="n">gene_symbols</span>
+<span class="g g-Whitespace">   </span><span class="mi">1929</span> <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1930</span> <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obs_tidy</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+<span class="g g-Whitespace">   </span><span class="mi">1932</span> <span class="k">if</span> <span class="n">groupby_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1933</span>     <span class="c1"># reset index to treat all columns the same way.</span>
+
+<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:272,</span> in <span class="ni">obs_df</span><span class="nt">(adata, keys, obsm_keys, layer, gene_symbols, use_raw)</span>
+<span class="g g-Whitespace">    </span><span class="mi">269</span> <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">270</span>     <span class="n">alias_index</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="ne">--&gt; </span><span class="mi">272</span> <span class="n">obs_cols</span><span class="p">,</span> <span class="n">var_idx_keys</span><span class="p">,</span> <span class="n">var_symbols</span> <span class="o">=</span> <span class="n">_check_indices</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">273</span>     <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">274</span>     <span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">275</span>     <span class="s2">&quot;obs&quot;</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">276</span>     <span class="n">keys</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">277</span>     <span class="n">alias_index</span><span class="o">=</span><span class="n">alias_index</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">278</span>     <span class="n">use_raw</span><span class="o">=</span><span class="n">use_raw</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">279</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">281</span> <span class="c1"># Make df</span>
+<span class="g g-Whitespace">    </span><span class="mi">282</span> <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span><span class="p">)</span>
+
+<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:167,</span> in <span class="ni">_check_indices</span><span class="nt">(dim_df, alt_index, dim, keys, alias_index, use_raw)</span>
+<span class="g g-Whitespace">    </span><span class="mi">165</span>         <span class="n">not_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">166</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_found</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">167</span>     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">168</span>         <span class="sa">f</span><span class="s2">&quot;Could not find keys &#39;</span><span class="si">{</span><span class="n">not_found</span><span class="si">}</span><span class="s2">&#39; in columns of `adata.</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">` or in&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">169</span>         <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">alt_repr</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">alt_search_repr</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">170</span>     <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">172</span> <span class="k">return</span> <span class="n">col_keys</span><span class="p">,</span> <span class="n">index_keys</span><span class="p">,</span> <span class="n">index_aliases</span>
+
+<span class="ne">KeyError</span>: &quot;Could not find keys &#39;[&#39;CD68&#39;, &#39;EPCAM&#39;, &#39;MS4A1&#39;, &#39;PDGFRA&#39;]&#39; in columns of `adata.obs` or in adata.var_names.&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cell_type_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;T cells&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;B cells&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;Macrophages&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="s2">&quot;Dendritic cells&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="s2">&quot;Fibroblasts&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;Epithelial cells&quot;</span>
+<span class="p">}</span>
+<span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">cell_type_map</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 </section>
@@ -1790,19 +3064,27 @@ to
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geenrs">geenrs</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filters">Filters</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization">Data Normalization</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#select-the-most-highly-variable-genes">Select the most highly variable genes</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-wise-scaling">Feature wise scaling</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#inspection-the-doublets-manually">Inspection the doublets manually</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-the-doublets-manually">Inspecting the doublets manually</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lowering-the-tresholds-manually">Lowering the tresholds manually</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization">Data Normalization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#select-the-most-highly-variable-genes">Select the most highly variable genes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-wise-scaling">Feature wise scaling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-ledein-and-louvain">Clustering - ledein and Louvain</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-with-louvain">Compare with louvain</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-comparation">Cluster comparation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#markers-genes-for-each-cluster">Markers genes for each cluster</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-top-marker-genes-per-cluster">Extracting top marker genes per cluster</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a></li>
 </ul>
 </li>
 </ul>
