@@ -415,7 +415,11 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#inspection-the-doublets-manually">Inspection the doublets manually</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lowering-the-tresholds-manually">Lowering the tresholds manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -1542,47 +1546,170 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install scikit-misc
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw_copy</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="n">min_genes</span> <span class="o">=</span> <span class="mi">200</span>    
+<span class="n">max_genes</span> <span class="o">=</span> <span class="mi">5000</span>   
+<span class="n">min_UMI</span> <span class="o">=</span> <span class="mi">500</span>      
+<span class="n">max_mito</span> <span class="o">=</span> <span class="mi">10</span>      
+
+<span class="n">filtered_cells</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_genes</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_genes</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_UMI</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;pct_mito&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_mito</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">adata_filtered_copy</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw_copy</span><span class="p">[</span><span class="n">filtered_cells</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">adata_glioblastoma_filtered</span> <span class="o">=</span> <span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting scikit-misc
-  Downloading scikit_misc-0.3.1-cp39-cp39-win_amd64.whl.metadata (4.9 kB)
-Requirement already satisfied: numpy&gt;=1.22.3 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from scikit-misc) (1.24.3)
-Downloading scikit_misc-0.3.1-cp39-cp39-win_amd64.whl (10.0 MB)
-   ---------------------------------------- 0.0/10.0 MB ? eta -:--:--
-   - -------------------------------------- 0.3/10.0 MB ? eta -:--:--
-   --- ------------------------------------ 0.8/10.0 MB 2.8 MB/s eta 0:00:04
-   ----- ---------------------------------- 1.3/10.0 MB 2.8 MB/s eta 0:00:04
-   -------- ------------------------------- 2.1/10.0 MB 2.8 MB/s eta 0:00:03
-   --------- ------------------------------ 2.4/10.0 MB 2.9 MB/s eta 0:00:03
-   ------------ --------------------------- 3.1/10.0 MB 2.8 MB/s eta 0:00:03
-   --------------- ------------------------ 3.9/10.0 MB 2.9 MB/s eta 0:00:03
-   ---------------- ----------------------- 4.2/10.0 MB 3.0 MB/s eta 0:00:02
-   ---------------------- ----------------- 5.5/10.0 MB 3.1 MB/s eta 0:00:02
-   ------------------------ --------------- 6.0/10.0 MB 3.1 MB/s eta 0:00:02
-   -------------------------- ------------- 6.6/10.0 MB 3.1 MB/s eta 0:00:02
-   ----------------------------- ---------- 7.3/10.0 MB 3.0 MB/s eta 0:00:01
-   ------------------------------- -------- 7.9/10.0 MB 3.0 MB/s eta 0:00:01
-   ---------------------------------- ----- 8.7/10.0 MB 3.1 MB/s eta 0:00:01
-   ------------------------------------- -- 9.4/10.0 MB 3.1 MB/s eta 0:00:01
-   ---------------------------------------  10.0/10.0 MB 3.1 MB/s eta 0:00:01
-   ---------------------------------------- 10.0/10.0 MB 3.0 MB/s eta 0:00:00
-Installing collected packages: scikit-misc
-Successfully installed scikit-misc-0.3.1
-Note: you may need to restart the kernel to use updated packages.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Original number of cells: 1853
+Number of cells after filtering: 1825
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># sc.pp.highly_variable_genes(adata_test, n_top_genes=2000, subset=True, flavor=&quot;seurat_v3&quot;)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counts_matrix</span> <span class="o">=</span> <span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">X</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Automatically set threshold at doublet score = 0.57</p>
+<p>Scrublet sets a cutoff score to classify cells as doublets or singlets.</p>
+<p>Cells above this score are considered doublets, and cells below it are considered singlets.</p>
+<p>Detected doublet rate = 0.0%</p>
+<p>No doublets were detected in the dataset, meaning that all cells had doublet scores below 0.57.</p>
+<p>Estimated detectable doublet fraction = 16.6%</p>
+<p>This means that 16.6% of true doublets in the dataset should be detectable with the current settings. If the fraction was much lower, Scrublet might be missing doublets.</p>
+<p>Overall doublet rate:</p>
+<p>Expected = 10.0% → This is the theoretical doublet rate based on experimental parameters (e.g., cell concentration).</p>
+<p>Estimated = 0.0% → Scrublet found no actual doublets in the dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run Scrublet on the raw (unnormalized) filtered dataset</span>
+<span class="n">scrub</span> <span class="o">=</span> <span class="n">scr</span><span class="o">.</span><span class="n">Scrublet</span><span class="p">(</span><span class="n">counts_matrix</span><span class="p">)</span>
+<span class="n">doublet_scores</span><span class="p">,</span> <span class="n">predicted_doublets</span> <span class="o">=</span> <span class="n">scrub</span><span class="o">.</span><span class="n">scrub_doublets</span><span class="p">()</span>
+
+<span class="c1"># Store results in adata_filtered_copy for further analysis</span>
+<span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;doublet_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doublet_scores</span>
+<span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;predicted_doublet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted_doublets</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Preprocessing...
+Simulating doublets...
+Embedding transcriptomes using PCA...
+Calculating doublet scores...
+Automatically set threshold at doublet score = 0.57
+Detected doublet rate = 0.0%
+Estimated detectable doublet fraction = 16.6%
+Overall doublet rate:
+	Expected   = 10.0%
+	Estimated  = 0.0%
+Elapsed time: 12.5 seconds
+</pre></div>
+</div>
+</div>
+</div>
+<section id="inspection-the-doublets-manually">
+<h4>Inspection the doublets manually<a class="headerlink" href="#inspection-the-doublets-manually" title="Link to this heading">#</a></h4>
+<p>Scrublet is likely too strict, and it is not detecting doublets because all your scores are too low. Your dataset may have a naturally low doublet rate, but it’s uncommon to have 0% doublets in a real scRNA-seq dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Doublet Score&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Doublet Scores&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/588c376149d4dc24bbd451d72033fd2936e4eb5227d9a727475ab9d78aa37d3e.png" src="_images/588c376149d4dc24bbd451d72033fd2936e4eb5227d9a727475ab9d78aa37d3e.png" />
+</div>
+</div>
+</section>
+<section id="lowering-the-tresholds-manually">
+<h4>Lowering the tresholds manually<a class="headerlink" href="#lowering-the-tresholds-manually" title="Link to this heading">#</a></h4>
+<p>The vertical black line represents the doublet score threshold (around 0.2–0.3) that Scrublet set to classify doublets.</p>
+<p>Only a small fraction of observed cells have doublet scores above this threshold.</p>
+<p>Right Plot: Simulated Doublets
+This histogram shows the distribution of doublet scores for simulated doublets.</p>
+<p>Simulated doublets generally have higher scores than the observed cells.</p>
+<p>The doublet score threshold (black line) is placed at the intersection between real cells and simulated doublets.</p>
+<p>Key Metrics Explained
+Detected doublet rate = 1.4%</p>
+<p>This means that only 1.4% of cells in your dataset were classified as doublets based on the threshold.</p>
+<p>Estimated detectable doublet fraction = 38.1%</p>
+<p>Scrublet estimates that 38.1% of actual doublets could be detected using its method.</p>
+<p>Some doublets might be missed because they are too similar to singlets.</p>
+<p>Expected doublet rate = 10.0%</p>
+<p>This is an estimate based on your experimental settings (e.g., cell loading density).</p>
+<p>It suggests that around 10% of cells might be doublets in reality.</p>
+<p>Estimated overall doublet rate = 3.7%</p>
+<p>This is Scrublet’s final estimate of the actual number of doublets in your dataset, accounting for undetected doublets.</p>
+<p><strong>What Does This Mean for Your Data?</strong></p>
+<p>You likely have fewer doublets than expected (3.7% vs. 10%).</p>
+<p>Some doublets might be missed due to the doublet score distribution.</p>
+<p>The doublet score threshold may be too strict, leading to fewer detected doublets than expected.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span><span class="o">.</span><span class="n">call_doublets</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>  <span class="c1"># Adjust the threshold down</span>
+<span class="n">scrub</span><span class="o">.</span><span class="n">plot_histogram</span><span class="p">()</span>  <span class="c1"># Plot the histogram of doublet scores</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Detected doublet rate = 1.4%
+Estimated detectable doublet fraction = 38.1%
+Overall doublet rate:
+	Expected   = 10.0%
+	Estimated  = 3.7%
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&lt;Figure size 800x300 with 2 Axes&gt;,
+ array([&lt;Axes: title={&#39;center&#39;: &#39;Observed transcriptomes&#39;}, xlabel=&#39;Doublet score&#39;, ylabel=&#39;Prob. density&#39;&gt;,
+        &lt;Axes: title={&#39;center&#39;: &#39;Simulated doublets&#39;}, xlabel=&#39;Doublet score&#39;, ylabel=&#39;Prob. density&#39;&gt;],
+       dtype=object))
+</pre></div>
+</div>
+<img alt="_images/dd480e81624572d5f04053bff842b96c878f63f354e4b9ac4dd72327a59f4a0a.png" src="_images/dd480e81624572d5f04053bff842b96c878f63f354e4b9ac4dd72327a59f4a0a.png" />
+</div>
+</div>
+<p>Observed transcriptomes (left plot): Uses a log scale (values range from
+10
+1
+10
+1
+to
+10
+−
+1
+10
+−1
+), making the distribution more spread out.</p>
+<p>Simulated doublets (right plot): Uses a linear scale (values range from 0 to 5), meaning the bar heights represent raw counts.</p>
+<p>This difference happens because Scrublet automatically applies a log scale to the observed transcriptomes to better visualize the spread of scores. Meanwhile, the simulated doublets are usually plotted on a normal scale.</p>
+<p>to see how the estimated doublet rate changes compared to your previous results. If needed, we can adjust the threshold again based on what we see.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span><span class="o">.</span><span class="n">detected_doublet_rate_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.033424657534246574
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 </section>
@@ -1671,7 +1798,11 @@ Note: you may need to restart the kernel to use updated packages.
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#inspection-the-doublets-manually">Inspection the doublets manually</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lowering-the-tresholds-manually">Lowering the tresholds manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
