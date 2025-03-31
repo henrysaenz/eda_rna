@@ -403,10 +403,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering">Cell Filtering</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-the-doublets-manually">Inspecting the doublets manually</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lowering-the-tresholds-manually">Lowering the tresholds manually</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization">Data Normalization</a><ul class="nav section-nav flex-column">
@@ -1785,80 +1781,32 @@ C:\Users\henry\AppData\Local\Temp\ipykernel_1796\2847459098.py:24: UserWarning: 
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if raw exists</span>
-<span class="k">if</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No .raw attribute found! Did you filter without preserving raw data?&quot;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="c1"># Check data characteristics</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Raw data status:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Is raw data integers? </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Raw data range: </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Raw data type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
-    <span class="c1"># Check if raw matches your expectations</span>
-    <span class="k">if</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">WARNING: Raw matrix shape </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> doesn&#39;t match filtered matrix </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
-    <span class="c1"># Check for common normalization markers</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">var</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">WARNING: Raw data appears normalized (constant total counts per cell)&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Raw data status:
-- Is raw data integers? False
-- Raw data range: 0.0 - 130162.484375
-- Raw data type: &lt;class &#39;numpy.ndarray&#39;&gt;
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract counts matrix (assuming adata_filtered.X contains raw counts)</span>
+<span class="n">counts_matrix</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">X</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scrublet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">scr</span>
-
-<span class="c1"># Check if the raw attribute is set</span>
-<span class="k">if</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-	<span class="c1"># Initialize the raw attribute with the current data</span>
-	<span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">adata_filtered</span>
-
-<span class="c1"># Verify raw attribute</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Raw matrix shape: </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Raw matrix type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Get raw counts (preserved during filtering)</span>
-<span class="n">raw_counts</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Raw matrix shape: (1823, 7683)
-Raw matrix type: &lt;class &#39;numpy.ndarray&#39;&gt;
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span> <span class="o">=</span> <span class="n">scr</span><span class="o">.</span><span class="n">Scrublet</span><span class="p">(</span><span class="n">counts_matrix</span><span class="p">,</span> <span class="n">expected_doublet_rate</span><span class="o">=</span><span class="mf">0.015</span><span class="p">)</span> <span class="c1"># Question for achim abut this range</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Expected Doublet Rate Calculation</p>
+<p>For droplet-based single-cell RNA sequencing (e.g., 10x Genomics), the expected doublet rate follows a linear relationship with cell loading density:<strong>Recommended Doublet Detection Threshold for Your Data</strong>, Where:</p>
+<ul class="simple">
+<li><p><strong>0.0008</strong> is the empirical coefficient representing ~0.8% doublets per 1,000 cells</p></li>
+<li><p>This value comes from controlled experimental measurements</p></li>
+</ul>
+<p><strong>1. Expected Doublet Rate Calculation</strong></p>
+<p>For <strong>1,853 cells</strong>, the estimated doublet rate is:</p>
+<div class="math notranslate nohighlight">
+\[\text{Expected Doublet Rate} = 1,853 \times 0.008 = 1.5\% \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate adaptive doublet rate (6% for ~1800 cells)</span>
-<span class="n">expected_doublet_rate</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.008</span> <span class="o">*</span> <span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">n_obs</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">))</span>  <span class="c1"># Cap at 10%</span>
-
-<span class="c1"># Initialize Scrublet</span>
-<span class="n">scrub</span> <span class="o">=</span> <span class="n">scr</span><span class="o">.</span><span class="n">Scrublet</span><span class="p">(</span>
-    <span class="n">counts_matrix</span><span class="o">=</span><span class="n">raw_counts</span><span class="p">,</span>
-    <span class="n">expected_doublet_rate</span><span class="o">=</span><span class="n">expected_doublet_rate</span><span class="p">,</span>
-    <span class="n">sim_doublet_ratio</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>  <span class="c1"># Increased for better sensitivity</span>
-    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
-<span class="p">)</span>
-
-<span class="c1"># Run detection</span>
-<span class="n">doublet_scores</span><span class="p">,</span> <span class="n">predicted_doublets</span> <span class="o">=</span> <span class="n">scrub</span><span class="o">.</span><span class="n">scrub_doublets</span><span class="p">(</span>
-    <span class="n">min_counts</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">min_cells</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">min_gene_variability_pctl</span><span class="o">=</span><span class="mi">85</span><span class="p">,</span>
-    <span class="n">n_prin_comps</span><span class="o">=</span><span class="mi">30</span>  <span class="c1"># Match your PCA setting</span>
-<span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">doublet_scores</span><span class="p">,</span> <span class="n">predicted_doublets</span> <span class="o">=</span> <span class="n">scrub</span><span class="o">.</span><span class="n">scrub_doublets</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1867,21 +1815,20 @@ Raw matrix type: &lt;class &#39;numpy.ndarray&#39;&gt;
 Simulating doublets...
 Embedding transcriptomes using PCA...
 Calculating doublet scores...
-Automatically set threshold at doublet score = 0.14
+Automatically set threshold at doublet score = 0.16
 Detected doublet rate = 0.0%
-Estimated detectable doublet fraction = 18.0%
+Estimated detectable doublet fraction = 15.4%
 Overall doublet rate:
 	Expected   = 1.5%
 	Estimated  = 0.0%
-Elapsed time: 4.1 seconds
+Elapsed time: 2.6 seconds
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Store results</span>
-<span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doublet_scores</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doublet_scores</span>
 <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;predicted_doublet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted_doublets</span>
 </pre></div>
 </div>
@@ -1889,161 +1836,77 @@ Elapsed time: 4.1 seconds
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if values are integers (raw counts) or floats (normalized)</span>
-<span class="n">is_integer_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matrix contains integers (raw counts): </span><span class="si">{</span><span class="n">is_integer_matrix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value range: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Matrix contains integers (raw counts): False
-Value range: 0.0 - 130162.484375
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># If not, try accessing the raw counts differently</span>
-<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;layers&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;counts&#39;</span> <span class="ow">in</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-    <span class="n">raw_counts</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Automatically set threshold at doublet score = 0.57</p>
-<p>Scrublet sets a cutoff score to classify cells as doublets or singlets.</p>
-<p>Cells above this score are considered doublets, and cells below it are considered singlets.</p>
-<p>Detected doublet rate = 0.0%</p>
-<p>No doublets were detected in the dataset, meaning that all cells had doublet scores below 0.57.</p>
-<p>Estimated detectable doublet fraction = 16.6%</p>
-<p>This means that 16.6% of true doublets in the dataset should be detectable with the current settings. If the fraction was much lower, Scrublet might be missing doublets.</p>
-<p>Overall doublet rate:</p>
-<p>Expected = 10.0% → This is the theoretical doublet rate based on experimental parameters (e.g., cell concentration).</p>
-<p>Estimated = 0.0% → Scrublet found no actual doublets in the dataset.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run Scrublet on the raw (unnormalized) filtered dataset</span>
-<span class="n">scrub</span> <span class="o">=</span> <span class="n">scr</span><span class="o">.</span><span class="n">Scrublet</span><span class="p">(</span><span class="n">counts_matrix</span><span class="p">)</span>
-<span class="n">doublet_scores</span><span class="p">,</span> <span class="n">predicted_doublets</span> <span class="o">=</span> <span class="n">scrub</span><span class="o">.</span><span class="n">scrub_doublets</span><span class="p">()</span>
-
-<span class="c1"># Store results in adata_filtered_copy for further analysis</span>
-<span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;doublet_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doublet_scores</span>
-<span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;predicted_doublet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted_doublets</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Preprocessing...
-Simulating doublets...
-Embedding transcriptomes using PCA...
-Calculating doublet scores...
-Automatically set threshold at doublet score = 0.57
-Detected doublet rate = 0.0%
-Estimated detectable doublet fraction = 16.6%
-Overall doublet rate:
-	Expected   = 10.0%
-	Estimated  = 0.0%
-Elapsed time: 1.9 seconds
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="inspecting-the-doublets-manually">
-<h3>Inspecting the doublets manually<a class="headerlink" href="#inspecting-the-doublets-manually" title="Link to this heading">#</a></h3>
-<p>Scrublet is likely too strict, and it is not detecting doublets because all your scores are too low. Your dataset may have a naturally low doublet rate, but it’s uncommon to have 0% doublets in a real scRNA-seq dataset.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Doublet Score&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Doublet Scores&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span><span class="o">.</span><span class="n">plot_histogram</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/588c376149d4dc24bbd451d72033fd2936e4eb5227d9a727475ab9d78aa37d3e.png" src="_images/588c376149d4dc24bbd451d72033fd2936e4eb5227d9a727475ab9d78aa37d3e.png" />
+<img alt="_images/380f609420b6c09ff838355757699fd28b7c65a290a881b43b7cff4b82e6f566.png" src="_images/380f609420b6c09ff838355757699fd28b7c65a290a881b43b7cff4b82e6f566.png" />
 </div>
 </div>
-<section id="lowering-the-tresholds-manually">
-<h4>Lowering the tresholds manually<a class="headerlink" href="#lowering-the-tresholds-manually" title="Link to this heading">#</a></h4>
-<p>The vertical black line represents the doublet score threshold (around 0.2–0.3) that Scrublet set to classify doublets.</p>
-<p>Only a small fraction of observed cells have doublet scores above this threshold.</p>
-<p>Right Plot: Simulated Doublets
-This histogram shows the distribution of doublet scores for simulated doublets.</p>
-<p>Simulated doublets generally have higher scores than the observed cells.</p>
-<p>The doublet score threshold (black line) is placed at the intersection between real cells and simulated doublets.</p>
-<p>Key Metrics Explained
-Detected doublet rate = 1.4%</p>
-<p>This means that only 1.4% of cells in your dataset were classified as doublets based on the threshold.</p>
-<p>Estimated detectable doublet fraction = 38.1%</p>
-<p>Scrublet estimates that 38.1% of actual doublets could be detected using its method.</p>
-<p>Some doublets might be missed because they are too similar to singlets.</p>
-<p>Expected doublet rate = 10.0%</p>
-<p>This is an estimate based on your experimental settings (e.g., cell loading density).</p>
-<p>It suggests that around 10% of cells might be doublets in reality.</p>
-<p>Estimated overall doublet rate = 3.7%</p>
-<p>This is Scrublet’s final estimate of the actual number of doublets in your dataset, accounting for undetected doublets.</p>
-<p><strong>What Does This Mean for Your Data?</strong></p>
-<p>You likely have fewer doublets than expected (3.7% vs. 10%).</p>
-<p>Some doublets might be missed due to the doublet score distribution.</p>
-<p>The doublet score threshold may be too strict, leading to fewer detected doublets than expected.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span><span class="o">.</span><span class="n">call_doublets</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>  <span class="c1"># Adjust the threshold down</span>
-<span class="n">scrub</span><span class="o">.</span><span class="n">plot_histogram</span><span class="p">()</span>  <span class="c1"># Plot the histogram of doublet scores</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected doublet rate: </span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="n">predicted_doublets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of predicted doublets: </span><span class="si">{</span><span class="n">predicted_doublets</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Detected doublet rate = 1.4%
-Estimated detectable doublet fraction = 38.1%
-Overall doublet rate:
-	Expected   = 10.0%
-	Estimated  = 3.7%
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Detected doublet rate: 0.0%
+Number of predicted doublets: 0
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&lt;Figure size 800x300 with 2 Axes&gt;,
- array([&lt;Axes: title={&#39;center&#39;: &#39;Observed transcriptomes&#39;}, xlabel=&#39;Doublet score&#39;, ylabel=&#39;Prob. density&#39;&gt;,
-        &lt;Axes: title={&#39;center&#39;: &#39;Simulated doublets&#39;}, xlabel=&#39;Doublet score&#39;, ylabel=&#39;Prob. density&#39;&gt;],
-       dtype=object))
-</pre></div>
-</div>
-<img alt="_images/dd480e81624572d5f04053bff842b96c878f63f354e4b9ac4dd72327a59f4a0a.png" src="_images/dd480e81624572d5f04053bff842b96c878f63f354e4b9ac4dd72327a59f4a0a.png" />
 </div>
 </div>
-<p>Observed transcriptomes (left plot): Uses a log scale (values range from
-10
-1
-10
-1
-to
-10
-−
-1
-10
-−1
-), making the distribution more spread out.</p>
-<p>Simulated doublets (right plot): Uses a linear scale (values range from 0 to 5), meaning the bar heights represent raw counts.</p>
-<p>This difference happens because Scrublet automatically applies a log scale to the observed transcriptomes to better visualize the spread of scores. Meanwhile, the simulated doublets are usually plotted on a normal scale.</p>
-<p>To see how the estimated doublet rate changes compared to your previous results. If needed, we can adjust the threshold again based on what we see.</p>
+<p>Visual inspection of scores vs. QC metrics</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scrub</span><span class="o">.</span><span class="n">detected_doublet_rate_</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;total_counts&#39;</span><span class="p">],</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Total counts&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Doublet score&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.033424657534246574
+<img alt="_images/2f1c2fbfd68da5f2c0450e16a131acebc177737493a45c8b669b91a4ee39ae55.png" src="_images/2f1c2fbfd68da5f2c0450e16a131acebc177737493a45c8b669b91a4ee39ae55.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filtering and visualization</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Before filtering doublets: </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">n_obs</span><span class="si">}</span><span class="s2"> cells&quot;</span><span class="p">)</span>
+<span class="n">adata_filtered</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="p">[</span><span class="o">~</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;predicted_doublet&#39;</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;After filtering doublets: </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">n_obs</span><span class="si">}</span><span class="s2"> cells&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Before filtering doublets: 1823 cells
+After filtering doublets: 1823 cells
 </pre></div>
 </div>
 </div>
 </div>
-</section>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize remaining cells in UMAP</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">)</span>
+
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> 
+           <span class="n">color</span><span class="o">=</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">,</span> 
+           <span class="n">color_map</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> 
+           <span class="n">title</span><span class="o">=</span><span class="s1">&#39;UMAP: Doublet Scores (post-filtering)&#39;</span><span class="p">,</span>
+           <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/8c5e7e516b76aaa15cb356bc0e73050d7f2569062e7fc865ab6171c13e1a0bf4.png" src="_images/8c5e7e516b76aaa15cb356bc0e73050d7f2569062e7fc865ab6171c13e1a0bf4.png" />
+</div>
+</div>
 </section>
 </section>
 <section id="data-normalization">
@@ -4098,10 +3961,6 @@ Find biological functions of differentially expressed genes:</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering">Cell Filtering</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-the-doublets-manually">Inspecting the doublets manually</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lowering-the-tresholds-manually">Lowering the tresholds manually</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization">Data Normalization</a><ul class="nav section-nav flex-column">
