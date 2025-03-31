@@ -405,9 +405,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization">Data Normalization</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#select-the-most-highly-variable-genes">Select the most highly variable genes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-wise-scaling">Feature wise scaling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization-transformation-and-standarization">Data Normalization, Transformation and Standarization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transformation"><strong>Transformation</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#select-the-most-highly-variable-genes"><strong>Select the most highly variable genes</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standarization"><strong>Standarization</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-ledein-and-louvain">Clustering - ledein and Louvain</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-with-louvain">Compare with louvain</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-comparation">Cluster comparation</a></li>
@@ -476,6 +480,18 @@ document.write(`
 <span class="n">adata_glioblastoma_norm</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">glioblastoma_norm_file</span><span class="p">)</span>
 <span class="n">adata_glioblastoma_raw</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">glioblastoma_raw_file</span><span class="p">)</span>
 <span class="n">adata_pbmc3k</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">pbmc3k_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\compat\__init__.py:311: FutureWarning: Moving element from .uns[&#39;neighbors&#39;][&#39;distances&#39;] to .obsp[&#39;distances&#39;].
+
+This is where adjacency matrices should go now.
+  warn(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\compat\__init__.py:311: FutureWarning: Moving element from .uns[&#39;neighbors&#39;][&#39;connectivities&#39;] to .obsp[&#39;connectivities&#39;].
+
+This is where adjacency matrices should go now.
+  warn(
 </pre></div>
 </div>
 </div>
@@ -1166,7 +1182,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
   ax = sns.violinplot(
 </pre></div>
 </div>
-<img alt="_images/692be58340927e6c2e05ff32658745ca6fd403af29172a121d9a0bc3f733be4c.png" src="_images/692be58340927e6c2e05ff32658745ca6fd403af29172a121d9a0bc3f733be4c.png" />
+<img alt="_images/df12b4cdd3b0da75422c3157714b71e2c73e9ece7b7bab87c96e4dca25f780ef.png" src="_images/df12b4cdd3b0da75422c3157714b71e2c73e9ece7b7bab87c96e4dca25f780ef.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1656,7 +1672,7 @@ max    514206.000000      8995.002930     3.961021
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.JointGrid at 0x17510710430&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.JointGrid at 0x17522cc8be0&gt;
 </pre></div>
 </div>
 <img alt="_images/8627d3cd661377270657acaabd803fe6f34f198f614a8cea0ea328098118af28.png" src="_images/8627d3cd661377270657acaabd803fe6f34f198f614a8cea0ea328098118af28.png" />
@@ -1821,7 +1837,7 @@ Estimated detectable doublet fraction = 15.4%
 Overall doublet rate:
 	Expected   = 1.5%
 	Estimated  = 0.0%
-Elapsed time: 2.6 seconds
+Elapsed time: 2.5 seconds
 </pre></div>
 </div>
 </div>
@@ -1904,19 +1920,44 @@ After filtering doublets: 1823 cells
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: You’re trying to run this on 7683 dimensions of `.X`, if you really want this, set `use_rep=&#39;X&#39;`.
+         Falling back to preprocessing with `sc.pp.pca` and default params.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\_core\anndata.py:430: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+  warnings.warn(
+</pre></div>
+</div>
 <img alt="_images/8c5e7e516b76aaa15cb356bc0e73050d7f2569062e7fc865ab6171c13e1a0bf4.png" src="_images/8c5e7e516b76aaa15cb356bc0e73050d7f2569062e7fc865ab6171c13e1a0bf4.png" />
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># adata_filtered.write(&#39;your_cleaned_data.h5ad&#39;)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
-<section id="data-normalization">
-<h2>Data Normalization<a class="headerlink" href="#data-normalization" title="Link to this heading">#</a></h2>
+<section id="data-normalization-transformation-and-standarization">
+<h2>Data Normalization, Transformation and Standarization<a class="headerlink" href="#data-normalization-transformation-and-standarization" title="Link to this heading">#</a></h2>
 <p>In this step we have to normalize the <strong>total UMI counts per cell</strong>. This means each cell’s total count is rescaled to <strong>10,000</strong>, ensuring comparability across cells.  To get that we apply a <strong>log transformation</strong> to all gene expression values in <code class="docutils literal notranslate"><span class="pre">adata_glioblastoma_filtered.X</span></code>.</p>
 <p><em><strong>Variables normalized</strong></em></p>
 <ul class="simple">
 <li><p>The <strong>gene expression values</strong> (UMI counts) were normalized.</p></li>
-<li><p>Other metadata variables (such as <code class="docutils literal notranslate"><span class="pre">n_genes_by_cell</span></code>, <code class="docutils literal notranslate"><span class="pre">total_UMI_counts</span></code>, or <code class="docutils literal notranslate"><span class="pre">pct_mito</span></code>) were <strong>not modified</strong>—these remain in <code class="docutils literal notranslate"><span class="pre">adata_glioblastoma_filtered.obs</span></code>.</p></li>
+<li><p>Other metadata variables (such as <code class="docutils literal notranslate"><span class="pre">n_counts_by_cell</span></code>, <code class="docutils literal notranslate"><span class="pre">total_counts</span></code>, or <code class="docutils literal notranslate"><span class="pre">pct_mito</span></code>) were <strong>not modified</strong>—these remain in <code class="docutils literal notranslate"><span class="pre">adata_filtered.obs</span></code>.</p></li>
 </ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Normalize to median total counts (CPM-like normalization)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">normalize_total</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">target_sum</span><span class="o">=</span><span class="mf">1e4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="transformation">
+<h3><strong>Transformation</strong><a class="headerlink" href="#transformation" title="Link to this heading">#</a></h3>
 <p><em><strong>Log Transformation Formula</strong></em></p>
 <p>The log transformation used is:</p>
 <div class="math notranslate nohighlight">
@@ -1924,98 +1965,155 @@ After filtering doublets: 1823 cells
 <p>This helps stabilize variance and make the data more normally distributed.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Normalize total UMI counts per cell and log-transform</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">normalize_total</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">target_sum</span><span class="o">=</span><span class="mf">1e4</span><span class="p">)</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<section id="select-the-most-highly-variable-genes">
-<h3>Select the most highly variable genes<a class="headerlink" href="#select-the-most-highly-variable-genes" title="Link to this heading">#</a></h3>
-<p>Uses the Seurat v3 method to find highly variable genes. It selects the top 2,000 most variable genes for further analysis.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">flavor</span><span class="o">=</span><span class="s2">&quot;seurat_v3&quot;</span><span class="p">,</span> <span class="n">n_top_genes</span><span class="o">=</span><span class="mi">2500</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of highly variable genes: </span><span class="si">{</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;highly_variable&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\preprocessing\_highly_variable_genes.py:62: UserWarning: `flavor=&#39;seurat_v3&#39;` expects raw count data, but non-integers were found.
-  warnings.warn(
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of highly variable genes: 2500
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/459399a1b62f399cc9be919820dece585cdd37aca9c382f9a830e07c5746a962.png" src="_images/459399a1b62f399cc9be919820dece585cdd37aca9c382f9a830e07c5746a962.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_hgv</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">adata_hgv</span><span class="p">[</span><span class="s1">&#39;means&#39;</span><span class="p">]),</span> <span class="n">adata_hgv</span><span class="p">[</span><span class="s1">&#39;variances_norm&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">adata_hgv</span><span class="p">[</span><span class="s1">&#39;highly_variable&#39;</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Log(1 + Mean expression)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Normalized Variance&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Highly Variable Genes (HVGs)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Highly Variable&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/2ee0d95ad448611d9f784804829f5d2eec2dd0b9d8499c4e5e3f7d4a4f5cf774.png" src="_images/2ee0d95ad448611d9f784804829f5d2eec2dd0b9d8499c4e5e3f7d4a4f5cf774.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_reduced</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="p">[:,</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">highly_variable</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_reduced</span> 
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 1825 × 2500
-    obs: &#39;disease_state&#39;, &#39;plate_id&#39;, &#39;tissue&#39;, &#39;patient_id&#39;, &#39;cell_type&#39;, &#39;neoplastic_state&#39;, &#39;diagnosis&#39;, &#39;n_genes_by_cell&#39;, &#39;total_UMI_counts&#39;, &#39;mito_UMI_counts&#39;, &#39;pct_mito&#39;
-    var: &#39;gene_count&#39;, &#39;Mapped_Gene&#39;, &#39;Is_Mitochondrial&#39;, &#39;highly_variable&#39;, &#39;highly_variable_rank&#39;, &#39;means&#39;, &#39;variances&#39;, &#39;variances_norm&#39;
-    uns: &#39;log1p&#39;, &#39;hvg&#39;
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Log-transform the normalized data (log1p = log(1+x))</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 </section>
-<section id="feature-wise-scaling">
-<h3>Feature wise scaling<a class="headerlink" href="#feature-wise-scaling" title="Link to this heading">#</a></h3>
-<p>For each gene:</p>
-<div class="math notranslate nohighlight">
-\[X'_{g} = \frac{X_{g} - \mu_g}{\sigma_g}
-\]</div>
-<p>Scaling ensures that all genes contribute equally to downstream analyses like <strong>Principal Component Analysis (PCA)</strong> and <strong>clustering</strong> by standardizing their expression values.</p>
+<section id="select-the-most-highly-variable-genes">
+<h3><strong>Select the most highly variable genes</strong><a class="headerlink" href="#select-the-most-highly-variable-genes" title="Link to this heading">#</a></h3>
+<p>Uses the Seurat v3 method to find highly variable genes. It selects the top 2,000 most variable genes for further analysis.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Identify highly variable genes (HVGs)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span>
+    <span class="n">n_top_genes</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>          <span class="c1"># Keep top 2.500 variable genes</span>
+    <span class="n">flavor</span><span class="o">=</span><span class="s1">&#39;seurat&#39;</span><span class="p">,</span>           <span class="c1"># Method used by Seurat (mean-variance relationship)</span>
+    <span class="n">subset</span><span class="o">=</span><span class="kc">True</span>                <span class="c1"># Keep only HVGs for downstream analysis</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\preprocessing\_highly_variable_genes.py:216: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  disp_grouped = df.groupby(&#39;mean_bin&#39;)[&#39;dispersions&#39;]
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="standarization">
+<h3><strong>Standarization</strong><a class="headerlink" href="#standarization" title="Link to this heading">#</a></h3>
+<div class="admonition-why-standardize admonition">
+<p class="admonition-title">Why Standardize?</p>
+<p>Standardization transforms gene expression values to:</p>
+<ul class="simple">
+<li><p>Center and scale features: Each gene has mean = 0 and variance = 1</p></li>
+<li><p>Prevents highly expressed genes from dominating analysis:</p></li>
+<li><p>Improve PCA performance: Ensures all genes contribute equally to principal components</p></li>
+<li><p>Enable distance-based methods: Clustering (e.g., Leiden) and visualization (UMAP/t-SNE) require comparable feature scales</p></li>
+</ul>
+</div>
+<p>For each gene g:</p>
+<div class="math notranslate nohighlight">
+\[\text{Scaled Expression} = \frac{X_{g} - \mu_{g}}{\sigma_{g}}\]</div>
+<p>Where:
+$<span class="math notranslate nohighlight">\(X_{g}: \text{Log-normalized expression}\)</span><span class="math notranslate nohighlight">\( 
+\)</span><span class="math notranslate nohighlight">\(\mu_{g}: \text{Mean expression across cells}\)</span><span class="math notranslate nohighlight">\(  
+\)</span><span class="math notranslate nohighlight">\(\sigma_{g}: \text{Standard deviation}\)</span>$</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Scale to unit variance and zero mean (z-score)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Verify results</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of HVGs selected: </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">n_vars</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 1823 × 2000
+    obs: &#39;disease_state&#39;, &#39;plate_id&#39;, &#39;tissue&#39;, &#39;patient_id&#39;, &#39;cell_type&#39;, &#39;neoplastic_state&#39;, &#39;diagnosis&#39;, &#39;n_genes_by_counts&#39;, &#39;log1p_n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;log1p_total_counts&#39;, &#39;pct_counts_in_top_50_genes&#39;, &#39;pct_counts_in_top_100_genes&#39;, &#39;pct_counts_in_top_200_genes&#39;, &#39;mito_UMI_counts&#39;, &#39;pct_mito&#39;, &#39;doublet_score&#39;, &#39;predicted_doublet&#39;
+    var: &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;log1p_mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;log1p_total_counts&#39;, &#39;Mapped_Gene&#39;, &#39;Is_Mitochondrial&#39;, &#39;highly_variable&#39;, &#39;means&#39;, &#39;dispersions&#39;, &#39;dispersions_norm&#39;, &#39;mean&#39;, &#39;std&#39;
+    uns: &#39;neighbors&#39;, &#39;umap&#39;, &#39;log1p&#39;, &#39;hvg&#39;
+    obsm: &#39;X_pca&#39;, &#39;X_umap&#39;
+    obsp: &#39;distances&#39;, &#39;connectivities&#39;
+Number of HVGs selected: 2000
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/44fb41c0a9ee502f777ca07bb586ff4ec7754de13fcf7fadc7fe3ac34549951b.png" src="_images/44fb41c0a9ee502f777ca07bb586ff4ec7754de13fcf7fadc7fe3ac34549951b.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a publication-quality HVG plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># Plot non-HVGs in light gray</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="o">~</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;highly_variable&#39;</span><span class="p">]][</span><span class="s1">&#39;means&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="o">~</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;highly_variable&#39;</span><span class="p">]][</span><span class="s1">&#39;dispersions_norm&#39;</span><span class="p">],</span>
+    <span class="n">c</span><span class="o">=</span><span class="s1">&#39;lightgray&#39;</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Non-HVGs (n=</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">n_vars</span> <span class="o">-</span> <span class="mi">2000</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Plot HVGs with dispersion-based coloring</span>
+<span class="n">hvg_subset</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;highly_variable&#39;</span><span class="p">]]</span>
+<span class="n">scatter</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">hvg_subset</span><span class="p">[</span><span class="s1">&#39;means&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">hvg_subset</span><span class="p">[</span><span class="s1">&#39;dispersions_norm&#39;</span><span class="p">],</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">hvg_subset</span><span class="p">[</span><span class="s1">&#39;dispersions_norm&#39;</span><span class="p">],</span>  <span class="c1"># Color by dispersion value</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;HVGs (n=2000)&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Add colorbar for dispersion values</span>
+<span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">scatter</span><span class="p">)</span>
+<span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Normalized Dispersion&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">270</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="c1"># Formatting</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Highly Variable Genes Selection (n=2000)&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Mean Expression (log1p)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Normalized Dispersion&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c1"># Highlight the top 10% most dispersed genes</span>
+<span class="n">top_10_pct</span> <span class="o">=</span> <span class="n">hvg_subset</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;dispersions_norm&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">top_10_pct</span><span class="p">[</span><span class="s1">&#39;means&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">top_10_pct</span><span class="p">[</span><span class="s1">&#39;dispersions_norm&#39;</span><span class="p">],</span>
+    <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
+    <span class="n">facecolors</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">linewidths</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Top 10% HVGs&#39;</span>
+<span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/9d0b619777a0a91b1541cad83da29ae6d4a98113d7c455d9476799fa7c1af140.png" src="_images/9d0b619777a0a91b1541cad83da29ae6d4a98113d7c455d9476799fa7c1af140.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="dimensionality-reduction">
+<h2>Dimensionality reduction<a class="headerlink" href="#dimensionality-reduction" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform PCA on the scaled data</span>
@@ -2165,7 +2263,6 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 <img alt="_images/7acbee9ddfb2d3793c93a79a04f2cce7ea16416af617026ef8b311574a8c67a0.png" src="_images/7acbee9ddfb2d3793c93a79a04f2cce7ea16416af617026ef8b311574a8c67a0.png" />
 </div>
 </div>
-</section>
 <section id="clustering-ledein-and-louvain">
 <h3>Clustering - ledein and Louvain<a class="headerlink" href="#clustering-ledein-and-louvain" title="Link to this heading">#</a></h3>
 <p>Map the genes</p>
@@ -3963,9 +4060,13 @@ Find biological functions of differentially expressed genes:</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization">Data Normalization</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#select-the-most-highly-variable-genes">Select the most highly variable genes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-wise-scaling">Feature wise scaling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization-transformation-and-standarization">Data Normalization, Transformation and Standarization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transformation"><strong>Transformation</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#select-the-most-highly-variable-genes"><strong>Select the most highly variable genes</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standarization"><strong>Standarization</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-ledein-and-louvain">Clustering - ledein and Louvain</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-with-louvain">Compare with louvain</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-comparation">Cluster comparation</a></li>
