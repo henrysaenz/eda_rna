@@ -2432,6 +2432,25 @@ c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\
 <img alt="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" src="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" />
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">][:,:</span><span class="mi">30</span><span class="p">],</span> 
+        <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resolution </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2">: Silhouette = </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Resolution 0.4: Silhouette = 0.157
+Resolution 0.6: Silhouette = 0.176
+Resolution 0.8: Silhouette = 0.197
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="comparation-between-clusters">
 <h4>Comparation between clusters<a class="headerlink" href="#comparation-between-clusters" title="Link to this heading">#</a></h4>
@@ -2624,65 +2643,6 @@ louvain r=0.8: ARI = 0.369
 </div>
 </div>
 <p>Biological clasification</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a dictionary of gene symbol to var_name (index)</span>
-<span class="n">gene_symbol_to_var</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;Mapped_Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-
-<span class="c1"># Define your markers (using mapped symbols)</span>
-<span class="n">marker_genes</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;T cells&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;CD3D&#39;</span><span class="p">,</span> <span class="s1">&#39;CD8A&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;B cells&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;CD19&#39;</span><span class="p">,</span> <span class="s1">&#39;MS4A1&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;Myeloid&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;CD14&#39;</span><span class="p">,</span> <span class="s1">&#39;FCGR3A&#39;</span><span class="p">]</span>
-<span class="p">}</span>
-
-<span class="c1"># Convert symbols to var_names (ENSG IDs)</span>
-<span class="n">var_names</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">gene_list</span> <span class="ow">in</span> <span class="n">marker_genes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">gene_list</span><span class="p">:</span>
-        <span class="c1"># Find the var_name corresponding to this symbol</span>
-        <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">gene_symbol_to_var</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">gene</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">var_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">gene</span><span class="si">}</span><span class="s2"> not found in Mapped_Gene&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning: CD3D not found in Mapped_Gene
-Warning: CD8A not found in Mapped_Gene
-Warning: CD19 not found in Mapped_Gene
-Warning: MS4A1 not found in Mapped_Gene
-Warning: CD14 not found in Mapped_Gene
-Warning: FCGR3A not found in Mapped_Gene
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check what gene identifiers you actually have</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-<span class="c1"># Look for columns like: &#39;gene_symbols&#39;, &#39;gene_names&#39;, &#39;feature_name&#39;</span>
-
-<span class="c1"># Example check for CD3D in all var columns</span>
-<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-    <span class="k">if</span> <span class="s1">&#39;CD3D&#39;</span> <span class="ow">in</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;CD3D&#39; found in column: </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;log1p_mean_counts&#39;,
-       &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;log1p_total_counts&#39;,
-       &#39;Mapped_Gene&#39;, &#39;Is_Mitochondrial&#39;, &#39;highly_variable&#39;, &#39;means&#39;,
-       &#39;dispersions&#39;, &#39;dispersions_norm&#39;, &#39;mean&#39;, &#39;std&#39;],
-      dtype=&#39;object&#39;)
-</pre></div>
-</div>
-</div>
-</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top 10 HVGs</span>
