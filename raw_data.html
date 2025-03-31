@@ -412,6 +412,13 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-leidein">Clustering with leidein</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-louvain">Clustering with louvain</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#comparation-between-clusters">Comparation between clusters</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-ledein-and-louvain">Clustering - ledein and Louvain</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-with-louvain">Compare with louvain</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-comparation">Cluster comparation</a></li>
@@ -2114,119 +2121,752 @@ Number of HVGs selected: 2000
 </section>
 <section id="dimensionality-reduction">
 <h2>Dimensionality reduction<a class="headerlink" href="#dimensionality-reduction" title="Link to this heading">#</a></h2>
+<section id="using-pca">
+<h3>Using PCA<a class="headerlink" href="#using-pca" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform PCA on the scaled data</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">pca</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_comps</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run PCA (using ARPACK for reproducibility)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">pca</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> 
+          <span class="n">n_comps</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> 
+          <span class="n">svd_solver</span><span class="o">=</span><span class="s1">&#39;arpack&#39;</span><span class="p">,</span>  <span class="c1"># Best for reproducibility</span>
+          <span class="n">use_highly_variable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Use the 2000 HVGs</span>
 
-<span class="c1"># Visualize the explained variance ratio</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">pca_variance_ratio</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Plot variance explained</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">pca_variance_ratio</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/a02538cc28d8c595a5d3f38eb5bea436cd70e321d1493092ac158a814d8d0c01.png" src="_images/a02538cc28d8c595a5d3f38eb5bea436cd70e321d1493092ac158a814d8d0c01.png" />
+<img alt="_images/0fe0654b3576442d86476460c9be07cb8c32bf5060b539d1b3abed58e96cc5f7.png" src="_images/0fe0654b3576442d86476460c9be07cb8c32bf5060b539d1b3abed58e96cc5f7.png" />
 </div>
 </div>
-<ol class="arabic simple">
-<li><p>High-Dimensional and Noisy Data
-scRNA-seq data is highly sparse and contains a lot of technical noise (e.g., dropout effects, sequencing biases).</p></li>
-</ol>
-<p>In such cases, variance is distributed across many dimensions rather than being concentrated in a few principal components.</p>
-<ol class="arabic simple" start="2">
-<li><p>Biological Heterogeneity
-If the dataset contains multiple cell populations with subtle transcriptional differences, the variance gets spread across many PCs.</p></li>
-</ol>
-<p>This suggests that no single or small group of PCs dominates in explaining variation, making PCA less effective at dimensionality reduction.</p>
-<ol class="arabic simple" start="3">
-<li><p>Choice of Highly Variable Genes (HVGs)
-You selected 2,500 highly variable genes out of 7,800 total. If these genes still include a lot of technical noise, they may not optimally capture meaningful biological variation.</p></li>
-</ol>
-<p>A better filtering strategy (e.g., increasing the threshold for variability) might help focus PCA on the most informative features.</p>
-<ol class="arabic simple" start="4">
-<li><p>Log-Transformation and Normalization Effects
-The scaling and normalization methods applied to the dataset before PCA might have influenced variance distribution.</p></li>
-</ol>
-<p>Log-normalization tends to reduce the dynamic range of gene expression values, potentially flattening variance across PCs.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute cumulative explained variance</span>
-<span class="n">explained_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;pca&#39;</span><span class="p">][</span><span class="s1">&#39;variance_ratio&#39;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;pca&#39;</span><span class="p">][</span><span class="s1">&#39;variance_ratio&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.02982847, 0.04353569, 0.05346748, 0.06150167, 0.06939692,
+       0.07571188, 0.08177834, 0.08763345, 0.0927624 , 0.09718897,
+       0.10155123, 0.10531367, 0.10880655, 0.11208755, 0.11517072,
+       0.1181948 , 0.12108763, 0.12385831, 0.12657325, 0.1292035 ,
+       0.13181   , 0.13437724, 0.13689183, 0.13937438, 0.14182696,
+       0.14426735, 0.14666456, 0.1490276 , 0.1513867 , 0.15372701,
+       0.15605642, 0.15835232, 0.1606443 , 0.16291156, 0.16516818,
+       0.16741069, 0.16963258, 0.17184472, 0.17403935, 0.17621432,
+       0.1783824 , 0.18053292, 0.18266788, 0.18479818, 0.18692067,
+       0.18902257, 0.19111818, 0.19321093, 0.19529848, 0.19737191],
+      dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative_variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;pca&#39;</span><span class="p">][</span><span class="s1">&#39;variance_ratio&#39;</span><span class="p">])</span>
 
-<span class="c1"># Plot cumulative explained variance</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span> <span class="n">explained_var</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cumulative_variance</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">cumulative_variance</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+<span class="c1"># Labels and title</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Principal Components&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Cumulative Explained Variance&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Cumulative Explained Variance vs. Number of PCs&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.90</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;90% variance&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Cumulative Variance Explained&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Cumulative Variance Explained by PCA&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;80% Variance&#39;</span><span class="p">)</span>  <span class="c1"># Mark 80% threshold</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;90% Variance&#39;</span><span class="p">)</span>  <span class="c1"># Mark 90% threshold</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+<span class="c1"># Show plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/5bf13041d7f2ed595c402d2ea73d6f2253ca5d84623286869b06a7c5d675764a.png" src="_images/5bf13041d7f2ed595c402d2ea73d6f2253ca5d84623286869b06a7c5d675764a.png" />
+<img alt="_images/8d7b1b581fb705a3e6ca3d476ecd18d45a501a99b0c7cdc965707be4281af129.png" src="_images/8d7b1b581fb705a3e6ca3d476ecd18d45a501a99b0c7cdc965707be4281af129.png" />
 </div>
 </div>
+<p><strong>Selecting the best numbers of neighbors</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;X_pca&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]:</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;clust_k</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Calculate silhouette score</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">][:,:</span><span class="mi">30</span><span class="p">],</span> 
+                            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;clust_k</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: Silhouette = </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1825, 50)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k=10: Silhouette = 0.191
+k=15: Silhouette = 0.182
+k=20: Silhouette = 0.180
+k=30: Silhouette = 0.160
+</pre></div>
+</div>
+</div>
+</div>
+<p>Neighbourhood Graph</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build graph with optimal k=15</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span>
+    <span class="n">n_pcs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>       <span class="c1"># From variance plot</span>
+    <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># From silhouette</span>
+    <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="clustering-with-leidein">
+<h4>Clustering with leidein<a class="headerlink" href="#clustering-with-leidein" title="Link to this heading">#</a></h4>
+<p>The resolution parameter in Leiden clustering controls how granular your clusters will be:</p>
+<p>Resolution	Effect	Typical Use Case
+0.4	Fewer, broader clusters	Identifying major cell types
+0.6	Moderate clustering (default)	Balancing specificity/size
+0.8	More, finer clusters	Detecting rare subtypes</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cluster at multiple resolutions</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="o">=</span><span class="n">res</span><span class="p">,</span>
+        <span class="n">key_added</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+    
+<span class="c1"># Get cluster counts for each resolution</span>
+<span class="n">cluster_counts_r06</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden_r0.4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cluster_counts_r04</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden_r0.6&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cluster_counts_r08</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden_r0.8&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># Create a DataFrame</span>
+<span class="n">df_clusters</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Leiden (r=0.4)&#39;</span><span class="p">:</span> <span class="n">cluster_counts_r04</span><span class="p">,</span>
+    <span class="s1">&#39;Leiden (r=0.6)&#39;</span><span class="p">:</span> <span class="n">cluster_counts_r06</span><span class="p">,</span>
+    <span class="s1">&#39;Leiden (r=0.8)&#39;</span><span class="p">:</span> <span class="n">cluster_counts_r08</span>
+<span class="p">})</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># Fill missing values with 0 and convert to integer</span>
+
+<span class="c1"># Display table</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_clusters</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    Leiden (r=0.4)  Leiden (r=0.6)  Leiden (r=0.8)
+0              315             324             228
+1              296             323             223
+10              42              11              56
+11              22               5              47
+12              11               0              42
+13               5               0              27
+14               0               0              22
+15               0               0              11
+16               0               0               5
+2              238             315             220
+3              223             259             215
+4              220             220             195
+5              191             190             165
+6               76              56             139
+7               72              56              96
+8               56              42              76
+9               56              22              56
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">neighbors_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbors_values</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">neighbors_values</span><span class="p">):</span>
-    <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-    <span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">)</span>
-    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;n_neighbors=</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a 3-panel plot comparing resolutions</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]):</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Resolution=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+        <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
   cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
   cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
   cax = scatter(
 </pre></div>
 </div>
-<img alt="_images/8aede81c61d2e7f1904dfe2b115daba057d429cb29444f8bab6e4e0020580b53.png" src="_images/8aede81c61d2e7f1904dfe2b115daba057d429cb29444f8bab6e4e0020580b53.png" />
+<img alt="_images/917a88bceb79d8353579d3aa42fc9944b8856f759e5eddf9f72e5f108eeedda6.png" src="_images/917a88bceb79d8353579d3aa42fc9944b8856f759e5eddf9f72e5f108eeedda6.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;X_umap&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
+
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">][:,:</span><span class="mi">30</span><span class="p">],</span> 
+        <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resolution </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2">: Silhouette = </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[16.517435  ,  5.6945176 ],
-       [15.507761  ,  6.2970905 ],
-       [18.261425  ,  6.3878975 ],
-       ...,
-       [14.265519  ,  5.638751  ],
-       [15.449312  , -0.28743708],
-       [15.592542  , -0.338449  ]], dtype=float32)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Resolution 0.4: Silhouette = 0.177
+Resolution 0.6: Silhouette = 0.191
+Resolution 0.8: Silhouette = 0.161
 </pre></div>
 </div>
+</div>
+</div>
+</section>
+<section id="clustering-with-louvain">
+<h4>Clustering with louvain<a class="headerlink" href="#clustering-with-louvain" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">louvain</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="o">=</span><span class="n">res</span><span class="p">,</span>
+        <span class="n">key_added</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get cluster counts for each resolution</span>
+<span class="n">louvain_counts_r04</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;louvain_r0.4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">louvain_counts_r06</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;louvain_r0.6&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">louvain_counts_r08</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;louvain_r0.8&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create a DataFrame</span>
+<span class="n">df_louvain</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Louvain (r=0.4)&#39;</span><span class="p">:</span> <span class="n">louvain_counts_r04</span><span class="p">,</span>
+    <span class="s1">&#39;Louvain (r=0.6)&#39;</span><span class="p">:</span> <span class="n">louvain_counts_r06</span><span class="p">,</span>
+    <span class="s1">&#39;Louvain (r=0.8)&#39;</span><span class="p">:</span> <span class="n">louvain_counts_r08</span>
+<span class="p">})</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># Fill missing values with 0 and convert to integer</span>
+
+<span class="c1"># Display table</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_louvain</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    Louvain (r=0.4)  Louvain (r=0.6)  Louvain (r=0.8)
+0               348              350              350
+1               285              320              291
+10                0               23               42
+11                0               11               23
+12                0                0               11
+2               270              268              230
+3               241              235              223
+4               220              220              220
+5               215              192              192
+6               135               56               79
+7                67               56               56
+8                42               50               56
+9                 0               42               50
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a 3-panel plot comparing resolutions</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]):</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Resolution=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+        <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+</pre></div>
+</div>
+<img alt="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" src="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" />
+</div>
+</div>
+</section>
+<section id="comparation-between-clusters">
+<h4>Comparation between clusters<a class="headerlink" href="#comparation-between-clusters" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Create comparison plots</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+<span class="c1"># Leiden results</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]):</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Leiden (r=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+<span class="c1"># Louvain results</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]):</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Louvain (r=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+</pre></div>
+</div>
+<img alt="_images/6302608f385e3f2c62f9303efe2193ee0f6815270b274d8ad9c8e9c3f9746265.png" src="_images/6302608f385e3f2c62f9303efe2193ee0f6815270b274d8ad9c8e9c3f9746265.png" />
+</div>
+</div>
+<p>Cluster sizes</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot cluster sizes</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="s1">&#39;louvain&#39;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="se">\n</span><span class="s1">r=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">),</span>
+            <span class="n">counts</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span>
+        <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Cluster Size (log)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Cluster Size Distribution&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/d263de89ed84db9a1513981ad1fb4671c03720a46991d6361e7d334c68f05c0a.png" src="_images/d263de89ed84db9a1513981ad1fb4671c03720a46991d6361e7d334c68f05c0a.png" />
+</div>
+</div>
+<p>Silhoutte scores</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
+
+<span class="c1"># Calculate for all resolutions</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="s1">&#39;louvain&#39;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span>
+            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">][:,:</span><span class="mi">30</span><span class="p">],</span>
+            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">&#39;Method&#39;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
+            <span class="s1">&#39;Resolution&#39;</span><span class="p">:</span> <span class="n">res</span><span class="p">,</span>
+            <span class="s1">&#39;Silhouette&#39;</span><span class="p">:</span> <span class="n">score</span>
+        <span class="p">})</span>
+
+<span class="c1"># Display as table</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;Resolution&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;Method&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Silhouette&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Method</th>
+      <th>leiden</th>
+      <th>louvain</th>
+    </tr>
+    <tr>
+      <th>Resolution</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.4</th>
+      <td>0.177232</td>
+      <td>0.156801</td>
+    </tr>
+    <tr>
+      <th>0.6</th>
+      <td>0.190543</td>
+      <td>0.175585</td>
+    </tr>
+    <tr>
+      <th>0.8</th>
+      <td>0.161260</td>
+      <td>0.196528</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>ARI</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">adjusted_rand_score</span>
+
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="s1">&#39;louvain&#39;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+        <span class="n">ari</span> <span class="o">=</span> <span class="n">adjusted_rand_score</span><span class="p">(</span>
+            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">],</span>
+            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> r=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2">: ARI = </span><span class="si">{</span><span class="n">ari</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>leiden r=0.4: ARI = 0.417
+leiden r=0.6: ARI = 0.362
+leiden r=0.8: ARI = 0.283
+louvain r=0.4: ARI = 0.380
+louvain r=0.6: ARI = 0.397
+louvain r=0.8: ARI = 0.369
+</pre></div>
+</div>
+</div>
+</div>
+<p>Biological clasification</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a dictionary of gene symbol to var_name (index)</span>
+<span class="n">gene_symbol_to_var</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;Mapped_Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+<span class="c1"># Define your markers (using mapped symbols)</span>
+<span class="n">marker_genes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;T cells&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;CD3D&#39;</span><span class="p">,</span> <span class="s1">&#39;CD8A&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;B cells&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;CD19&#39;</span><span class="p">,</span> <span class="s1">&#39;MS4A1&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Myeloid&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;CD14&#39;</span><span class="p">,</span> <span class="s1">&#39;FCGR3A&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Convert symbols to var_names (ENSG IDs)</span>
+<span class="n">var_names</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">gene_list</span> <span class="ow">in</span> <span class="n">marker_genes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">gene_list</span><span class="p">:</span>
+        <span class="c1"># Find the var_name corresponding to this symbol</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">gene_symbol_to_var</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">gene</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">var_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">gene</span><span class="si">}</span><span class="s2"> not found in Mapped_Gene&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning: CD3D not found in Mapped_Gene
+Warning: CD8A not found in Mapped_Gene
+Warning: CD19 not found in Mapped_Gene
+Warning: MS4A1 not found in Mapped_Gene
+Warning: CD14 not found in Mapped_Gene
+Warning: FCGR3A not found in Mapped_Gene
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check what gene identifiers you actually have</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="c1"># Look for columns like: &#39;gene_symbols&#39;, &#39;gene_names&#39;, &#39;feature_name&#39;</span>
+
+<span class="c1"># Example check for CD3D in all var columns</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">&#39;CD3D&#39;</span> <span class="ow">in</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;CD3D&#39; found in column: </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;log1p_mean_counts&#39;,
+       &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;log1p_total_counts&#39;,
+       &#39;Mapped_Gene&#39;, &#39;Is_Mitochondrial&#39;, &#39;highly_variable&#39;, &#39;means&#39;,
+       &#39;dispersions&#39;, &#39;dispersions_norm&#39;, &#39;mean&#39;, &#39;std&#39;],
+      dtype=&#39;object&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top 10 HVGs</span>
+<span class="n">top_hvgs</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;dispersions_norm&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="c1"># Create a mapping dictionary from your var table</span>
+<span class="n">gene_id_to_name</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;Mapped_Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>  <span class="c1"># Or appropriate column</span>
+
+<span class="c1"># Print top HVGs with their names</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top HVGs:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">gene_id</span> <span class="ow">in</span> <span class="n">top_hvgs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">gene_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">gene_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">gene_id</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;unnamed&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top HVGs:
+ENSG00000134339: SAA2
+ENSG00000060069: CTDP1
+ENSG00000258659: TRIM34
+ENSG00000204542: C6orf15
+ENSG00000213551: DNAJC9
+ENSG00000215183: MSMP
+ENSG00000156804: FBXO32
+ENSG00000111341: MGP
+ENSG00000143546: S100A8
+ENSG00000213625: LEPROT
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check which of your marker genes actually exist in Mapped_Gene</span>
+<span class="n">available_markers</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;S100A8&#39;</span><span class="p">,</span> <span class="s1">&#39;SAA2&#39;</span><span class="p">,</span> <span class="s1">&#39;MSMP&#39;</span><span class="p">,</span> <span class="s1">&#39;FBXO32&#39;</span><span class="p">,</span> <span class="s1">&#39;MGP&#39;</span><span class="p">,</span> <span class="s1">&#39;DNAJC9&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;Mapped_Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+        <span class="n">available_markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">gene</span><span class="si">}</span><span class="s2">&#39; not found in Mapped_Gene column&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available markers:&quot;</span><span class="p">,</span> <span class="n">available_markers</span><span class="p">)</span>
+
+<span class="n">marker_genes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Inflammatory&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;S100A8&#39;</span><span class="p">,</span> <span class="s1">&#39;SAA2&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">available_markers</span><span class="p">],</span>
+    <span class="s1">&#39;Proliferative&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MSMP&#39;</span><span class="p">,</span> <span class="s1">&#39;FBXO32&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">available_markers</span><span class="p">],</span>
+    <span class="s1">&#39;Structural&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MGP&#39;</span><span class="p">,</span> <span class="s1">&#39;DNAJC9&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">available_markers</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Available markers: [&#39;S100A8&#39;, &#39;SAA2&#39;, &#39;MSMP&#39;, &#39;FBXO32&#39;, &#39;MGP&#39;, &#39;DNAJC9&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Map gene symbols to var_names (Ensembl IDs) in adata_filtered.var</span>
+<span class="n">mapped_var_names</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">gene_list</span> <span class="ow">in</span> <span class="n">marker_genes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">gene_list</span><span class="p">:</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Mapped_Gene&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">gene</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="n">mapped_var_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">gene</span><span class="si">}</span><span class="s2"> not found in Mapped_Gene&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot using the mapped var_names</span>
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="s1">&#39;louvain&#39;</span><span class="p">]:</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">var_names</span><span class="o">=</span><span class="n">mapped_var_names</span><span class="p">,</span>  <span class="c1"># Use mapped var_names</span>
+        <span class="n">groupby</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r0.6&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1"> Clusters&#39;</span><span class="p">,</span>
+        <span class="n">dendrogram</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">swap_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span>
+        <span class="n">standard_scale</span><span class="o">=</span><span class="s1">&#39;var&#39;</span><span class="p">,</span>
+        <span class="n">use_raw</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: dendrogram data not found (using key=dendrogram_leiden_r0.6). Running `sc.tl.dendrogram` with default parameters. For fine tuning it is recommended to run `sc.tl.dendrogram` independently.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:169: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  obs_bool.groupby(level=0).sum() / obs_bool.groupby(level=0).count()
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:179: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  dot_color_df = self.obs_tidy.groupby(level=0).mean()
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_dendrogram.py:133: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  mean_df = rep_df.groupby(level=0).mean()
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:749: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
+  dot_ax.scatter(x, y, **kwds)
+</pre></div>
+</div>
+<img alt="_images/44fc65333a5f2879d9794646769b538f9242257a25a1b6a21487bc911a8dd804.png" src="_images/44fc65333a5f2879d9794646769b538f9242257a25a1b6a21487bc911a8dd804.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: dendrogram data not found (using key=dendrogram_louvain_r0.6). Running `sc.tl.dendrogram` with default parameters. For fine tuning it is recommended to run `sc.tl.dendrogram` independently.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:169: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  obs_bool.groupby(level=0).sum() / obs_bool.groupby(level=0).count()
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:179: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  dot_color_df = self.obs_tidy.groupby(level=0).mean()
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_dendrogram.py:133: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  mean_df = rep_df.groupby(level=0).mean()
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:749: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
+  dot_ax.scatter(x, y, **kwds)
+</pre></div>
+</div>
+<img alt="_images/9e312843fe12b93b1ba9438e7a519134e7e3338ca7f21af55b171b8334beb222.png" src="_images/9e312843fe12b93b1ba9438e7a519134e7e3338ca7f21af55b171b8334beb222.png" />
+</div>
+</div>
+<p>Mitochondrial content</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span>
+    <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pct_mito&#39;</span><span class="p">],</span>
+    <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;leiden_r0.6&#39;</span><span class="p">,</span>
+    <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Mitochondrial % by Leiden Cluster&#39;</span><span class="p">)</span>  <span class="c1"># Set the title using plt.title()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:843: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  ax = sns.violinplot(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:843: FutureWarning: 
+
+The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `density_norm=&#39;width&#39;` for the same effect.
+  ax = sns.violinplot(
+</pre></div>
+</div>
+<img alt="_images/991805399ab10ef17c5a2071c477dae630e8ee1e5c32bc6d8d680471f6b654bf.png" src="_images/991805399ab10ef17c5a2071c477dae630e8ee1e5c32bc6d8d680471f6b654bf.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Mitochondrial % by Leiden Cluster&#39;)
+</pre></div>
+</div>
+<img alt="_images/378ab9bfa09b8a4b483c2d3452cda762f1781da09a20b130a2399c6d701a82bf.png" src="_images/378ab9bfa09b8a4b483c2d3452cda762f1781da09a20b130a2399c6d701a82bf.png" />
+</div>
+</div>
+</section>
+<section id="best-cluster-method">
+<h4>Best cluster method<a class="headerlink" href="#best-cluster-method" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Select best resolution based on metrics</span>
+<span class="n">best_method</span> <span class="o">=</span> <span class="s1">&#39;leiden&#39;</span>  <span class="c1"># or &#39;louvain&#39;</span>
+<span class="n">best_res</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;final_clusters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">best_method</span><span class="si">}</span><span class="s1">_r</span><span class="si">{</span><span class="n">best_res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+
+<span class="c1"># Visualize final choice</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;final_clusters&#39;</span><span class="p">,</span> <span class="s1">&#39;cell_type&#39;</span><span class="p">],</span>
+    <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+    <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Final Clusters (</span><span class="si">{</span><span class="n">best_method</span><span class="si">}</span><span class="s1">, r=</span><span class="si">{</span><span class="n">best_res</span><span class="si">}</span><span class="s1">)&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
+  color_vector = pd.Categorical(values.map(color_map))
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+</pre></div>
+</div>
+<img alt="_images/486d6d57a5da02c377347fb4b2b93bacbc618ea85a176056a07f1b6bb12cb944.png" src="_images/486d6d57a5da02c377347fb4b2b93bacbc618ea85a176056a07f1b6bb12cb944.png" />
 </div>
 </div>
 <div class="admonition-what-is-umap admonition">
@@ -2263,230 +2903,13 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 <img alt="_images/7acbee9ddfb2d3793c93a79a04f2cce7ea16416af617026ef8b311574a8c67a0.png" src="_images/7acbee9ddfb2d3793c93a79a04f2cce7ea16416af617026ef8b311574a8c67a0.png" />
 </div>
 </div>
+</section>
+</section>
 <section id="clustering-ledein-and-louvain">
 <h3>Clustering - ledein and Louvain<a class="headerlink" href="#clustering-ledein-and-louvain" title="Link to this heading">#</a></h3>
 <p>Map the genes</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mg</span> <span class="o">=</span> <span class="n">mygene</span><span class="o">.</span><span class="n">MyGeneInfo</span><span class="p">()</span>
-<span class="n">ensembl_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="n">gene_info</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">querymany</span><span class="p">(</span><span class="n">ensembl_ids</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="s2">&quot;ensembl.gene&quot;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="s2">&quot;symbol&quot;</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="s2">&quot;human&quot;</span><span class="p">)</span> <span class="c1"># Query MyGeneInfo for gene symbols</span>
-<span class="n">gene_mappings</span> <span class="o">=</span> <span class="p">{</span><span class="n">gene</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">]:</span> <span class="n">gene</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">,</span> <span class="n">gene</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">gene_info</span> <span class="k">if</span> <span class="s2">&quot;query&quot;</span> <span class="ow">in</span> <span class="n">gene</span><span class="p">}</span> <span class="c1"># Create a mapping dictionary</span>
-<span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;gene_symbol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">gene_mappings</span><span class="p">)</span> <span class="c1"># Replace Ensembl IDs with Gene Symbols in AnnData</span>
-<span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;gene_symbol&quot;</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Input sequence provided is already in string format. No operation performed
-Input sequence provided is already in string format. No operation performed
-1 input query terms found dup hits:	[(&#39;ENSG00000268674&#39;, 3)]
-58 input query terms found no hit:	[&#39;ENSG00000130489&#39;, &#39;ENSG00000133808&#39;, &#39;ENSG00000139656&#39;, &#39;ENSG00000168078&#39;, &#39;ENSG00000170647&#39;, &#39;ENS
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updated gene symbols:&quot;</span><span class="p">,</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Updated gene symbols: Index([&#39;TNMD&#39;, &#39;ENPP4&#39;, &#39;ANKIB1&#39;, &#39;HS3ST1&#39;, &#39;TMEM176A&#39;, &#39;M6PR&#39;, &#39;CYP26B1&#39;,
-       &#39;FKBP4&#39;, &#39;NDUFAB1&#39;, &#39;PDK4&#39;],
-      dtype=&#39;object&#39;, name=&#39;gene_symbol&#39;)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">leidenalg</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: You’re trying to run this on 7683 dimensions of `.X`, if you really want this, set `use_rep=&#39;X&#39;`.
-         Falling back to preprocessing with `sc.pp.pca` and default params.
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\_core\anndata.py:430: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
-  warnings.warn(
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">)</span>  <span class="c1"># Recompute UMAP</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>  <span class="c1"># Run clustering</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Leiden Clustering&quot;</span><span class="p">)</span>  <span class="c1"># Plot results</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-</pre></div>
-</div>
-<img alt="_images/e05f24d1291722e05a2b1e7802824f5c2f7e3d172c2c5337c4971f3f4e24f5b3.png" src="_images/e05f24d1291722e05a2b1e7802824f5c2f7e3d172c2c5337c4971f3f4e24f5b3.png" />
-</div>
-</div>
-<p>How to Interpret Each Cluster’s Top Genes
-Each subplot represents a cluster of cells, and the genes shown are the most specific for that cluster. This helps identify cell types or biological states in single-cell RNA sequencing (scRNA-seq) data.</p>
-<p>Example Interpretation for Some Clusters
-Cluster 0 (“0 vs. rest”)</p>
-<p>IFI30, HLA-DRB5, HLA-DRB4</p>
-<p>These genes are associated with antigen presentation and immune response, suggesting that Cluster 0 could represent immune cells (e.g., dendritic cells, macrophages, or microglia).</p>
-<p>Cluster 1 (“1 vs. rest”)</p>
-<p>COX1, COX2, COX3, ATP8, ND5</p>
-<p>These genes are involved in mitochondrial function and oxidative phosphorylation, meaning this cluster could represent highly metabolic cells, such as neuronal or glial cells.</p>
-<p>Cluster 2 (“2 vs. rest”)</p>
-<p>APOD, MARCKSL1, PCDHGC3</p>
-<p>APOD is involved in lipid metabolism and neuroprotection, suggesting a glial cell identity (astrocytes or oligodendrocytes).</p>
-<p>Cluster 3 (“3 vs. rest”)</p>
-<p>CCL3, CCL4, CCL13</p>
-<p>These are chemokines involved in immune cell recruitment, indicating that this cluster could represent inflammatory cells like microglia or infiltrating immune cells.</p>
-<p>Cluster 4 (“4 vs. rest”)</p>
-<p>Some genes are still in Ensembl ID format, meaning they are either less studied or not mapped correctly.</p>
-<p>S100B is a well-known astrocyte marker, suggesting this cluster could be astrocytes.</p>
-<p>Cluster 5 (“5 vs. rest”)</p>
-<p>ETNPPL, PLPBP, GLUL</p>
-<p>These genes are related to glutamate metabolism, which suggests a role in neurotransmitter regulation.</p>
-<p>Possible cell type: neurons or glial cells.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;wilcoxon&#39;</span><span class="p">)</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_genes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\numpy\core\fromnumeric.py:86: FutureWarning: The behavior of DataFrame.sum with axis=None is deprecated, in a future version this will reduce over both axes and return a scalar. To retain the old behavior, pass axis=0 (or do not pass axis)
-  return reduction(axis=axis, out=out, **passkwargs)
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-</pre></div>
-</div>
-<img alt="_images/aba30c2549547a794ed431d37645ddd8c0ed80a482279e0386c90f1ff407c804.png" src="_images/aba30c2549547a794ed431d37645ddd8c0ed80a482279e0386c90f1ff407c804.png" />
-</div>
-</div>
 <section id="compare-with-louvain">
 <h4>Compare with louvain<a class="headerlink" href="#compare-with-louvain" title="Link to this heading">#</a></h4>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install louvain
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting louvain
-  Downloading louvain-0.8.2-cp39-cp39-win_amd64.whl.metadata (1.5 kB)
-Requirement already satisfied: igraph&lt;0.12,&gt;=0.10.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from louvain) (0.11.8)
-Requirement already satisfied: texttable&gt;=1.6.2 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from igraph&lt;0.12,&gt;=0.10.0-&gt;louvain) (1.7.0)
-Downloading louvain-0.8.2-cp39-cp39-win_amd64.whl (89 kB)
-Installing collected packages: louvain
-Successfully installed louvain-0.8.2
-Note: you may need to restart the kernel to use updated packages.
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">)</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">louvain</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>The Louvain clustering (left UMAP plot) results in 13 clusters, showing a more granular subdivision of cells.</p>
-<p>The Leiden clustering (right UMAP plot) generates 6 broader clusters, grouping more cells together.</p>
-<p>This suggests that Leiden enforces stricter connectivity constraints, leading to fewer but larger clusters, while Louvain allows for more fragmented groupings.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-</pre></div>
-</div>
-<img alt="_images/4ea3a31e9f9c0ec131b6ebe29a21bbfaee98e8ff6d9a6598196a177eaa3b5871.png" src="_images/4ea3a31e9f9c0ec131b6ebe29a21bbfaee98e8ff6d9a6598196a177eaa3b5871.png" />
-</div>
-</div>
 </section>
 <section id="cluster-comparation">
 <h4>Cluster comparation<a class="headerlink" href="#cluster-comparation" title="Link to this heading">#</a></h4>
@@ -2506,255 +2929,13 @@ c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\
 <li><p>Higher NMI indicates strong agreement between Leiden and Louvain.</p></li>
 </ul>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract Leiden and Louvain cluster labels</span>
-<span class="n">leiden_labels</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;leiden&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-<span class="n">louvain_labels</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;louvain&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute ARI (Adjusted Rand Index)</span>
-<span class="n">ari_score</span> <span class="o">=</span> <span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">leiden_labels</span><span class="p">,</span> <span class="n">louvain_labels</span><span class="p">)</span>
-
-<span class="c1"># Compute NMI (Normalized Mutual Information)</span>
-<span class="n">nmi_score</span> <span class="o">=</span> <span class="n">normalized_mutual_info_score</span><span class="p">(</span><span class="n">leiden_labels</span><span class="p">,</span> <span class="n">louvain_labels</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>This means the cluster assignments are somewhat similar, but Leiden and Louvain still differ significantly in how they assign cells to clusters. A score of 0.6434 suggests that Leiden and Louvain have substantial overlap in their cluster assignments, but they still capture different underlying structures in the data.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ARI Score (Leiden vs. Louvain): </span><span class="si">{</span><span class="n">ari_score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NMI Score (Leiden vs. Louvain): </span><span class="si">{</span><span class="n">nmi_score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ARI Score (Leiden vs. Louvain): 0.4478
-NMI Score (Leiden vs. Louvain): 0.6434
-</pre></div>
-</div>
-</div>
-</div>
 </section>
 <section id="markers-genes-for-each-cluster">
 <h4>Markers genes for each cluster<a class="headerlink" href="#markers-genes-for-each-cluster" title="Link to this heading">#</a></h4>
 <p>Use Wilcoxon rank-sum test (or another suitable test) to find genes significantly upregulated in each cluster and the select top marker genes per cluster based on log fold change (logFC) and adjusted p-value (FDR).</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute marker genes for Leiden clusters</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="s2">&quot;rank_genes_leiden&quot;</span><span class="p">)</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_genes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="c1"># Compute marker genes for Louvain clusters</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="s2">&quot;rank_genes_louvain&quot;</span><span class="p">)</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">n_genes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\numpy\core\fromnumeric.py:86: FutureWarning: The behavior of DataFrame.sum with axis=None is deprecated, in a future version this will reduce over both axes and return a scalar. To retain the old behavior, pass axis=0 (or do not pass axis)
-  return reduction(axis=axis, out=out, **passkwargs)
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-</pre></div>
-</div>
-<img alt="_images/04939c86be6838810dd38df26503036835bcbef5e5b45280620eb6172db90c6e.png" src="_images/04939c86be6838810dd38df26503036835bcbef5e5b45280620eb6172db90c6e.png" />
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\numpy\core\fromnumeric.py:86: FutureWarning: The behavior of DataFrame.sum with axis=None is deprecated, in a future version this will reduce over both axes and return a scalar. To retain the old behavior, pass axis=0 (or do not pass axis)
-  return reduction(axis=axis, out=out, **passkwargs)
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: divide by zero encountered in log2
-  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
-  self.expm1_func(mean_rest) + 1e-9
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:417: RuntimeWarning: invalid value encountered in divide
-  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
-</pre></div>
-</div>
-<img alt="_images/04939c86be6838810dd38df26503036835bcbef5e5b45280620eb6172db90c6e.png" src="_images/04939c86be6838810dd38df26503036835bcbef5e5b45280620eb6172db90c6e.png" />
-</div>
-</div>
 </section>
 <section id="extracting-top-marker-genes-per-cluster">
 <h4>Extracting top marker genes per cluster<a class="headerlink" href="#extracting-top-marker-genes-per-cluster" title="Link to this heading">#</a></h4>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top marker genes for Leiden</span>
-<span class="n">marker_genes_leiden</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;rank_genes_leiden&quot;</span><span class="p">][</span><span class="s2">&quot;names&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">marker_genes_louvain</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;rank_genes_louvain&quot;</span><span class="p">][</span><span class="s2">&quot;names&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-
-<span class="c1"># print(&quot;Top marker genes for Leiden clusters:\n&quot;, leiden_markers)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Leiden clustering has identified genes that are involved in immune response, oxidative phosphorylation, and neuronal differentiation. Some notable genes:</p>
-<p>IFI30 (Gamma-interferon-inducible lysosomal thiol reductase)</p>
-<p>Highly expressed in antigen-presenting cells (APCs) like macrophages and dendritic cells.</p>
-<p>Plays a role in processing antigens for MHC class II presentation.</p>
-<p>HLA-DRB5, HLA-DRB4 (Human leukocyte antigen genes)</p>
-<p>Indicate the presence of immune cells, likely dendritic cells or monocytes.</p>
-<p>Involved in antigen presentation via the MHC class II pathway.</p>
-<p>LAPTM5 (Lysosomal-associated protein transmembrane 5)</p>
-<p>Expressed in hematopoietic cells and linked to B-cell and T-cell function.</p>
-<p>APOC1 (Apolipoprotein C1)</p>
-<p>Involved in lipid metabolism and may suggest microglial activation in the brain.</p>
-<p>COX genes (COX1, COX2, COX3, ATP8, ATP5MF)</p>
-<p>These genes are part of the mitochondrial respiratory chain, indicating a possible population of metabolically active cells.</p>
-<p>PCSK1N (Proprotein convertase subtilisin/kexin type 1 inhibitor)</p>
-<p>Found in neural tissues, involved in neuropeptide processing.</p>
-<p>SYT11 (Synaptotagmin 11)</p>
-<p>Associated with neuronal vesicle trafficking, possibly marking a neuronal or glial cell population.</p>
-<p>Leiden Clustering Interpretation
-Cluster 0, 1, 2, 3: Likely immune-related clusters (macrophages, monocytes, dendritic cells) due to HLA genes, IFI30, and LAPTM5.</p>
-<p>Cluster 4, 5: Potential neuronal clusters (presence of PCSK1N, SYT11, and COX genes).</p>
-<p>Cluster 6, 7: Could be microglia or metabolically active cells, as seen from APOC1 and mitochondrial genes.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top marker genes for Leiden clusters:&quot;</span><span class="p">)</span>
@@ -4067,6 +4248,13 @@ Find biological functions of differentially expressed genes:</p></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-leidein">Clustering with leidein</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-louvain">Clustering with louvain</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#comparation-between-clusters">Comparation between clusters</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-ledein-and-louvain">Clustering - ledein and Louvain</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-with-louvain">Compare with louvain</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-comparation">Cluster comparation</a></li>
