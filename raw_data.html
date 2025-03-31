@@ -563,9 +563,11 @@ Number of genes: 7683
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;gene_count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">X</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-<span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;n_genes_by_cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">X</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;total_UMI_counts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">calculate_qc_metrics</span><span class="p">(</span>
+    <span class="n">adata_glioblastoma_raw</span><span class="p">,</span>
+    <span class="n">percent_top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Puedes especificar [50, 100, 200] para % en genes más expresados</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -573,7 +575,21 @@ Number of genes: 7683
 <p>gene level metrics</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[[</span><span class="s2">&quot;gene_count&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>  <span class="c1"># Show first 5 genes</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Métricas por gen (adata.var):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Métricas por gen (adata.var):
+[&#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;log1p_mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;log1p_total_counts&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[[</span><span class="s1">&#39;n_cells_by_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;mean_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;log1p_mean_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_dropout_by_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;total_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;log1p_total_counts&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>  <span class="c1"># Show first 5 genes</span>
 </pre></div>
 </div>
 </div>
@@ -596,10 +612,20 @@ Number of genes: 7683
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>gene_count</th>
+      <th>n_cells_by_counts</th>
+      <th>mean_counts</th>
+      <th>log1p_mean_counts</th>
+      <th>pct_dropout_by_counts</th>
+      <th>total_counts</th>
+      <th>log1p_total_counts</th>
     </tr>
     <tr>
       <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
       <th></th>
     </tr>
   </thead>
@@ -607,22 +633,47 @@ Number of genes: 7683
     <tr>
       <th>ENSG00000000005</th>
       <td>2</td>
+      <td>0.033459</td>
+      <td>0.032912</td>
+      <td>99.892067</td>
+      <td>62.000000</td>
+      <td>4.143135</td>
     </tr>
     <tr>
       <th>ENSG00000001561</th>
       <td>245</td>
+      <td>17.581758</td>
+      <td>2.922180</td>
+      <td>86.778198</td>
+      <td>32579.000000</td>
+      <td>10.391454</td>
     </tr>
     <tr>
       <th>ENSG00000001629</th>
       <td>715</td>
+      <td>29.176739</td>
+      <td>3.407071</td>
+      <td>61.413923</td>
+      <td>54064.496094</td>
+      <td>10.897951</td>
     </tr>
     <tr>
       <th>ENSG00000002587</th>
       <td>1268</td>
+      <td>22.115810</td>
+      <td>3.140517</td>
+      <td>31.570426</td>
+      <td>40980.597656</td>
+      <td>10.620878</td>
     </tr>
     <tr>
       <th>ENSG00000002933</th>
       <td>548</td>
+      <td>45.389587</td>
+      <td>3.837075</td>
+      <td>70.426336</td>
+      <td>84106.906250</td>
+      <td>11.339856</td>
     </tr>
   </tbody>
 </table>
@@ -631,7 +682,22 @@ Number of genes: 7683
 <p>cell level metrics</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">,</span> <span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>  <span class="c1"># Show first 5 cells</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ver las nuevas columnas añadidas a adata.obs y adata.var</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Métricas por célula (adata.obs):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># Mostrar columnas añadidas</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Métricas por célula (adata.obs):
+[&#39;disease_state&#39;, &#39;plate_id&#39;, &#39;tissue&#39;, &#39;patient_id&#39;, &#39;cell_type&#39;, &#39;neoplastic_state&#39;, &#39;diagnosis&#39;, &#39;n_genes_by_counts&#39;, &#39;log1p_n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;log1p_total_counts&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s1">&#39;disease_state&#39;</span><span class="p">,</span> <span class="s1">&#39;plate_id&#39;</span><span class="p">,</span> <span class="s1">&#39;tissue&#39;</span><span class="p">,</span> <span class="s1">&#39;patient_id&#39;</span><span class="p">,</span> <span class="s1">&#39;cell_type&#39;</span><span class="p">,</span> <span class="s1">&#39;neoplastic_state&#39;</span><span class="p">,</span> <span class="s1">&#39;diagnosis&#39;</span><span class="p">,</span> <span class="s1">&#39;n_genes_by_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;log1p_n_genes_by_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;total_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;log1p_total_counts&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>  <span class="c1"># Show first 5 cells</span>
 </pre></div>
 </div>
 </div>
@@ -654,11 +720,29 @@ Number of genes: 7683
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>n_genes_by_cell</th>
-      <th>total_UMI_counts</th>
+      <th>disease_state</th>
+      <th>plate_id</th>
+      <th>tissue</th>
+      <th>patient_id</th>
+      <th>cell_type</th>
+      <th>neoplastic_state</th>
+      <th>diagnosis</th>
+      <th>n_genes_by_counts</th>
+      <th>log1p_n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>log1p_total_counts</th>
     </tr>
     <tr>
       <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
       <th></th>
       <th></th>
     </tr>
@@ -666,108 +750,79 @@ Number of genes: 7683
   <tbody>
     <tr>
       <th>GSM2243439</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
       <td>1341</td>
+      <td>7.201916</td>
       <td>159262.312500</td>
+      <td>11.978314</td>
     </tr>
     <tr>
       <th>GSM2243444</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
       <td>1456</td>
+      <td>7.284135</td>
       <td>326321.875000</td>
+      <td>12.695642</td>
     </tr>
     <tr>
       <th>GSM2243445</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
       <td>1849</td>
+      <td>7.522941</td>
       <td>196996.859375</td>
+      <td>12.190948</td>
     </tr>
     <tr>
       <th>GSM2243447</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
       <td>100</td>
+      <td>4.615121</td>
       <td>90933.562500</td>
+      <td>11.417895</td>
     </tr>
     <tr>
       <th>GSM2243452</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
       <td>1788</td>
+      <td>7.489412</td>
       <td>208278.578125</td>
+      <td>12.246636</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
 <p>Summary statistics</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">,</span> <span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>n_genes_by_cell</th>
-      <th>total_UMI_counts</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>1853.000000</td>
-      <td>1853.000000</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>1268.398273</td>
-      <td>144684.312500</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>378.551631</td>
-      <td>78055.953125</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>41.000000</td>
-      <td>48.202415</td>
-    </tr>
-    <tr>
-      <th>25%</th>
-      <td>1054.000000</td>
-      <td>88120.328125</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>1271.000000</td>
-      <td>133640.687500</td>
-    </tr>
-    <tr>
-      <th>75%</th>
-      <td>1512.000000</td>
-      <td>192708.296875</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>2513.000000</td>
-      <td>514206.531250</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
 <p>plots</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -901,9 +956,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Input sequence provided is already in string format. No operation performed
 Input sequence provided is already in string format. No operation performed
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1 input query terms found dup hits:	[(&#39;ENSG00000268674&#39;, 3)]
+1 input query terms found dup hits:	[(&#39;ENSG00000268674&#39;, 3)]
 58 input query terms found no hit:	[&#39;ENSG00000130489&#39;, &#39;ENSG00000133808&#39;, &#39;ENSG00000139656&#39;, &#39;ENSG00000168078&#39;, &#39;ENSG00000170647&#39;, &#39;ENS
 </pre></div>
 </div>
@@ -1426,30 +1479,130 @@ C:\Users\henry\AppData\Local\Temp\ipykernel_13704\477905966.py:24: UserWarning: 
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scrublet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">scr</span>
-<span class="n">adata_glioblastoma_raw_copy</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-<span class="n">min_genes</span> <span class="o">=</span> <span class="mi">200</span>    
-<span class="n">max_genes</span> <span class="o">=</span> <span class="mi">5000</span>   
-<span class="n">min_UMI</span> <span class="o">=</span> <span class="mi">500</span>      
-<span class="n">max_mito</span> <span class="o">=</span> <span class="mi">10</span>      
-
-<span class="n">filtered_cells</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_genes</span><span class="p">)</span> <span class="o">&amp;</span>
-    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_genes</span><span class="p">)</span> <span class="o">&amp;</span>
-    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_UMI</span><span class="p">)</span> <span class="o">&amp;</span>
-    <span class="p">(</span><span class="n">adata_glioblastoma_raw_copy</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;pct_mito&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_mito</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="n">adata_filtered_copy</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw_copy</span><span class="p">[</span><span class="n">filtered_cells</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">adata_glioblastoma_filtered</span> <span class="o">=</span> <span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if raw exists</span>
+<span class="k">if</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No .raw attribute found! Did you filter without preserving raw data?&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># Check data characteristics</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Raw data status:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Is raw data integers? </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Raw data range: </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- Raw data type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Check if raw matches your expectations</span>
+    <span class="k">if</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">WARNING: Raw matrix shape </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> doesn&#39;t match filtered matrix </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Check for common normalization markers</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">var</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">WARNING: Raw data appears normalized (constant total counts per cell)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Raw data status:
+- Is raw data integers? False
+- Raw data range: 0.0 - 130162.484375
+- Raw data type: &lt;class &#39;numpy.ndarray&#39;&gt;
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counts_matrix</span> <span class="o">=</span> <span class="n">adata_filtered_copy</span><span class="o">.</span><span class="n">X</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scrublet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">scr</span>
+
+<span class="c1"># Check if the raw attribute is set</span>
+<span class="k">if</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+	<span class="c1"># Initialize the raw attribute with the current data</span>
+	<span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">adata_filtered</span>
+
+<span class="c1"># Verify raw attribute</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Raw matrix shape: </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Raw matrix type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get raw counts (preserved during filtering)</span>
+<span class="n">raw_counts</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Raw matrix shape: (1823, 7683)
+Raw matrix type: &lt;class &#39;numpy.ndarray&#39;&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate adaptive doublet rate (6% for ~1800 cells)</span>
+<span class="n">expected_doublet_rate</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.008</span> <span class="o">*</span> <span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">n_obs</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">))</span>  <span class="c1"># Cap at 10%</span>
+
+<span class="c1"># Initialize Scrublet</span>
+<span class="n">scrub</span> <span class="o">=</span> <span class="n">scr</span><span class="o">.</span><span class="n">Scrublet</span><span class="p">(</span>
+    <span class="n">counts_matrix</span><span class="o">=</span><span class="n">raw_counts</span><span class="p">,</span>
+    <span class="n">expected_doublet_rate</span><span class="o">=</span><span class="n">expected_doublet_rate</span><span class="p">,</span>
+    <span class="n">sim_doublet_ratio</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>  <span class="c1"># Increased for better sensitivity</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Run detection</span>
+<span class="n">doublet_scores</span><span class="p">,</span> <span class="n">predicted_doublets</span> <span class="o">=</span> <span class="n">scrub</span><span class="o">.</span><span class="n">scrub_doublets</span><span class="p">(</span>
+    <span class="n">min_counts</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">min_cells</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">min_gene_variability_pctl</span><span class="o">=</span><span class="mi">85</span><span class="p">,</span>
+    <span class="n">n_prin_comps</span><span class="o">=</span><span class="mi">30</span>  <span class="c1"># Match your PCA setting</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Preprocessing...
+Simulating doublets...
+Embedding transcriptomes using PCA...
+Calculating doublet scores...
+Automatically set threshold at doublet score = 0.14
+Detected doublet rate = 0.0%
+Estimated detectable doublet fraction = 18.0%
+Overall doublet rate:
+	Expected   = 1.5%
+	Estimated  = 0.0%
+Elapsed time: 4.1 seconds
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Store results</span>
+<span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doublet_scores</span>
+<span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;predicted_doublet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted_doublets</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if values are integers (raw counts) or floats (normalized)</span>
+<span class="n">is_integer_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matrix contains integers (raw counts): </span><span class="si">{</span><span class="n">is_integer_matrix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value range: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Matrix contains integers (raw counts): False
+Value range: 0.0 - 130162.484375
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># If not, try accessing the raw counts differently</span>
+<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;layers&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;counts&#39;</span> <span class="ow">in</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+    <span class="n">raw_counts</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
