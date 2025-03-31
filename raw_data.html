@@ -441,20 +441,8 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pip install scanpy anndata scrublet matplotlib seaborn numpy pandas scipy scikit-learn</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>scrublet
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
+<span class="c1"># !pip install scrublet</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">anndata</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ad</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scrublet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">scr</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -465,19 +453,7 @@ document.write(`
 <span class="c1"># from sklearn.decomposition import PCA</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.core.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_13704\284488194.py:10: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
-  from IPython.core.display import display, HTML
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">adjusted_rand_score</span><span class="p">,</span> <span class="n">normalized_mutual_info_score</span>
+<span class="c1"># from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score</span>
 </pre></div>
 </div>
 </div>
@@ -505,50 +481,10 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\compat\__init__.py:311: FutureWarning: Moving element from .uns[&#39;neighbors&#39;][&#39;distances&#39;] to .obsp[&#39;distances&#39;].
-
-This is where adjacency matrices should go now.
-  warn(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\compat\__init__.py:311: FutureWarning: Moving element from .uns[&#39;neighbors&#39;][&#39;connectivities&#39;] to .obsp[&#39;connectivities&#39;].
-
-This is where adjacency matrices should go now.
-  warn(
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 <section id="quality-control-qc">
 <h2><strong>Quality Control (QC)</strong><a class="headerlink" href="#quality-control-qc" title="Link to this heading">#</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 1853 × 7683
-    obs: &#39;disease_state&#39;, &#39;plate_id&#39;, &#39;tissue&#39;, &#39;patient_id&#39;, &#39;cell_type&#39;, &#39;neoplastic_state&#39;, &#39;diagnosis&#39;
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The data contains the following cells and gene count: </span><span class="se">\n</span><span class="s1">Number of cells: </span><span class="si">{</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">n_obs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of genes: </span><span class="si">{</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">n_vars</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The data contains the following cells and gene count: 
-Number of cells: 1853
-Number of genes: 7683
-</pre></div>
-</div>
-</div>
-</div>
 <section id="quality-control-metrics">
 <h3>Quality control metrics<a class="headerlink" href="#quality-control-metrics" title="Link to this heading">#</a></h3>
 <p>We use <strong>three key QC metrics</strong>:</p>
@@ -596,6 +532,34 @@ Number of genes: 7683
 <li><p><strong>High counts</strong> can indicate doublets or highly active cells.</p></li>
 </ul>
 <p>🔍 <em><strong>These metrics help identify low-quality cells before filtering.</strong></em></p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 1853 × 7683
+    obs: &#39;disease_state&#39;, &#39;plate_id&#39;, &#39;tissue&#39;, &#39;patient_id&#39;, &#39;cell_type&#39;, &#39;neoplastic_state&#39;, &#39;diagnosis&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The data contains the following cells and gene count: </span><span class="se">\n</span><span class="s1">Number of cells: </span><span class="si">{</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">n_obs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of genes: </span><span class="si">{</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">n_vars</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The data contains the following cells and gene count: 
+Number of cells: 1853
+Number of genes: 7683
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -912,8 +876,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 <h4>Gene maping<a class="headerlink" href="#gene-maping" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">mygene</span>
-<span class="c1"># Initialize MyGeneInfo</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize MyGeneInfo</span>
 <span class="n">mg</span> <span class="o">=</span> <span class="n">mygene</span><span class="o">.</span><span class="n">MyGeneInfo</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -938,7 +901,9 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Input sequence provided is already in string format. No operation performed
 Input sequence provided is already in string format. No operation performed
-1 input query terms found dup hits:	[(&#39;ENSG00000268674&#39;, 3)]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1 input query terms found dup hits:	[(&#39;ENSG00000268674&#39;, 3)]
 58 input query terms found no hit:	[&#39;ENSG00000130489&#39;, &#39;ENSG00000133808&#39;, &#39;ENSG00000139656&#39;, &#39;ENSG00000168078&#39;, &#39;ENSG00000170647&#39;, &#39;ENS
 </pre></div>
 </div>
@@ -1201,25 +1166,145 @@ max        8995.002930     514206.531250     3.961011
 <img alt="_images/1f436bd4cd364ef880973bbdf87f9f7bf092896347cf6f1bd3e7a196a9e1056d.png" src="_images/1f436bd4cd364ef880973bbdf87f9f7bf092896347cf6f1bd3e7a196a9e1056d.png" />
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display the first few rows of the .obs attribute as an HTML table</span>
+<span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">to_html</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>disease_state</th>
+      <th>plate_id</th>
+      <th>tissue</th>
+      <th>patient_id</th>
+      <th>cell_type</th>
+      <th>neoplastic_state</th>
+      <th>diagnosis</th>
+      <th>n_genes_by_cell</th>
+      <th>total_UMI_counts</th>
+      <th>mito_UMI_counts</th>
+      <th>pct_mito</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>GSM2243439</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+      <td>1341</td>
+      <td>159262.312500</td>
+      <td>129.850235</td>
+      <td>0.081532</td>
+    </tr>
+    <tr>
+      <th>GSM2243444</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+      <td>1456</td>
+      <td>326321.875000</td>
+      <td>2255.449219</td>
+      <td>0.691173</td>
+    </tr>
+    <tr>
+      <th>GSM2243445</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+      <td>1849</td>
+      <td>196996.859375</td>
+      <td>1588.646240</td>
+      <td>0.806432</td>
+    </tr>
+    <tr>
+      <th>GSM2243447</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+      <td>100</td>
+      <td>90933.562500</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>GSM2243452</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+      <td>1788</td>
+      <td>208278.578125</td>
+      <td>615.426880</td>
+      <td>0.295483</td>
+    </tr>
+  </tbody>
+</table></div></div>
+</div>
 </section>
 <section id="correlation">
 <h4>Correlation<a class="headerlink" href="#correlation" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="p">,</span> 
-              <span class="s1">&#39;n_genes_by_cell&#39;</span><span class="p">,</span> <span class="s1">&#39;total_UMI_counts&#39;</span><span class="p">,</span> 
-              <span class="n">color</span><span class="o">=</span><span class="s1">&#39;pct_mito&#39;</span><span class="p">,</span> 
-              <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Total UMI vs Number of genes by cell&quot;</span><span class="p">,</span> 
-              <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">,</span> <span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">:</span> <span class="s2">&quot;Number of genes by cell&quot;</span><span class="p">,</span> 
+                   <span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">:</span> <span class="s2">&quot;Total UMI counts&quot;</span><span class="p">,</span> 
+                   <span class="s2">&quot;pct_mito&quot;</span><span class="p">:</span> <span class="s2">&quot;Percentage mitochondrial&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Number of genes by cell&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total UMI counts&quot;</span><span class="p">,</span>
+    <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;Percentage mitochondrial&quot;</span><span class="p">,</span>
+    <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coowarm&quot;</span><span class="p">,</span>
+    <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;scatter&quot;</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_utils.py:715: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
-  color = color[sort]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.JointGrid at 0x22e6260c2e0&gt;
 </pre></div>
 </div>
-<img alt="_images/04eda850a5d2faba65d1eaebea409b6497d373fe92fcd2468b63825e7e952626.png" src="_images/04eda850a5d2faba65d1eaebea409b6497d373fe92fcd2468b63825e7e952626.png" />
+<img alt="_images/50c999d732ff94cabbaffe4acd4df89cbfd4736791a5aba689dabd2053da33c8.png" src="_images/50c999d732ff94cabbaffe4acd4df89cbfd4736791a5aba689dabd2053da33c8.png" />
 </div>
 </div>
 </section>
@@ -1234,41 +1319,98 @@ max        8995.002930     514206.531250     3.961011
 2️⃣ <strong>Potential doublets</strong> → Abnormally high UMI counts (two cells captured together).<br />
 3️⃣ <strong>Stressed or apoptotic</strong> → High percentage of mitochondrial RNA.</p>
 </div>
+<p>Why These Thresholds?
+min_genes = 200</p>
+<p>Balances removing empty droplets (which typically have &lt;100 genes) while retaining viable cells.</p>
+<p>Conservative given your median genes/cell likely falls between 1,000–3,000.</p>
+<p>max_genes = 5000</p>
+<p>For glioblastoma, tumor cells often show high transcriptional complexity.</p>
+<p>Prevents excluding genuine high-gene-count tumor cells while filtering obvious doublets (which would have extreme gene counts, e.g., &gt;6,000).</p>
+<p>min_counts = 1000</p>
+<p>Ensures cells have enough UMIs for reliable gene expression quantification.</p>
+<p>Typical 10x Genomics datasets average 10,000–50,000 UMIs/cell, so this is lenient.</p>
+<p>max_mito = 20%</p>
+<p>Cancer cells (especially glioblastoma) often have elevated mitochondrial activity.</p>
+<p>Standard thresholds (5–10%) are too strict for tumor microenvironments.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define filtering criteria</span>
-<span class="n">min_genes</span> <span class="o">=</span> <span class="mi">200</span>    
-<span class="n">max_genes</span> <span class="o">=</span> <span class="mi">5000</span>   
-<span class="n">min_UMI</span> <span class="o">=</span> <span class="mi">500</span>      
-<span class="n">max_mito</span> <span class="o">=</span> <span class="mi">10</span>      
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filtering thresholds (adjusted for your dataset size)</span>
+<span class="n">min_genes</span> <span class="o">=</span> <span class="mi">200</span>       <span class="c1"># Minimum genes per cell (removes low-quality cells)</span>
+<span class="n">max_genes</span> <span class="o">=</span> <span class="mi">5000</span>      <span class="c1"># Upper limit (captures tumor cell complexity while excluding doublets)</span>
+<span class="n">min_counts</span> <span class="o">=</span> <span class="mi">1000</span>     <span class="c1"># Minimum UMIs/cell (ensures sufficient sequencing depth)</span>
+<span class="n">max_mito</span> <span class="o">=</span> <span class="mi">20</span>         <span class="c1"># Max mitochondrial % (higher tolerance for cancer cells)</span>
 
-<span class="c1"># Create a boolean mask for filtering</span>
+<span class="c1"># Apply filters</span>
 <span class="n">filtered_cells</span> <span class="o">=</span> <span class="p">(</span>
     <span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_genes</span><span class="p">)</span> <span class="o">&amp;</span>
     <span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_genes</span><span class="p">)</span> <span class="o">&amp;</span>
-    <span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_UMI</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_counts</span><span class="p">)</span> <span class="o">&amp;</span>
     <span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;pct_mito&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_mito</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="n">adata_filtered</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="p">[</span><span class="n">filtered_cells</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apply filtering</span>
-<span class="n">adata_glioblastoma_filtered</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="p">[</span><span class="n">filtered_cells</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-<span class="c1"># Print the number of cells before and after filtering</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original number of cells: </span><span class="si">{</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">n_obs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of cells after filtering: </span><span class="si">{</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">n_obs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check retained cells/genes</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cells pre-filter: </span><span class="si">{</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">n_obs</span><span class="si">}</span><span class="s2">, post-filter: </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">n_obs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Genes pre-filter: </span><span class="si">{</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">n_vars</span><span class="si">}</span><span class="s2">, post-filter: </span><span class="si">{</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">n_vars</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Original number of cells: 1853
-Number of cells after filtering: 1825
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Cells pre-filter: 1853, post-filter: 1823
+Genes pre-filter: 7683, post-filter: 7683
 </pre></div>
 </div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert relevant data from adata_filtered to DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;n_genes_by_cell&#39;</span><span class="p">:</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;n_genes_by_cell&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;total_UMI_counts&#39;</span><span class="p">:</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;total_UMI_counts&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;pct_mito&#39;</span><span class="p">:</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;pct_mito&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;cell_type&#39;</span><span class="p">:</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Plot each metric </span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;n_genes_by_cell&#39;</span><span class="p">,</span> <span class="s1">&#39;total_UMI_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_mito&#39;</span><span class="p">]):</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="s1">&#39;cell_type&#39;</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span>
+        <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;cell_type&#39;</span><span class="p">,</span>  <span class="c1"># Needed for palette</span>
+        <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span>
+        <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>     <span class="c1"># Disables legend</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+        <span class="n">density_norm</span><span class="o">=</span><span class="s1">&#39;width&#39;</span><span class="p">,</span>  <span class="c1"># Replaces deprecated &#39;scale&#39;</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span>       <span class="c1"># Makes violin borders more visible</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">())</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_13704\477905966.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+C:\Users\henry\AppData\Local\Temp\ipykernel_13704\477905966.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+C:\Users\henry\AppData\Local\Temp\ipykernel_13704\477905966.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+</pre></div>
+</div>
+<img alt="_images/e6838e220a734bf0a5537f09a3e529031685e69e0dcd5a01367fbbd45698b283.png" src="_images/e6838e220a734bf0a5537f09a3e529031685e69e0dcd5a01367fbbd45698b283.png" />
 </div>
 </div>
 </section>
