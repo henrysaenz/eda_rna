@@ -389,26 +389,18 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-libraries-and-data">Import Libraries and data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-load">Data Load</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-qc"><strong>Quality Control (QC)</strong></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-metrics">Quality control metrics</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-qc-metrics-in-scrna-seq">📌 Quality Control (QC) Metrics in scRNA-seq</a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-metrics">Quality control metrics</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unique-molecular-identifiers-umis">🧬 Unique Molecular Identifiers (UMIs)</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-umi">What is a UMI?</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-are-umis-important">Why Are UMIs Important?</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#how-are-umis-used-in-scrna-seq">How Are UMIs Used in scRNA-seq?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-list">Gene list</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-maping">Gene maping</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering"><strong>Cell filtering</strong></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-do-we-filter-cells">Why Do We Filter Cells?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-we-define-filtering-thresholds">📊 How Do We Define Filtering Thresholds?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geenrs">geenrs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filters">Filters</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering">Cell Filtering</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-the-doublets-manually">Inspecting the doublets manually</a><ul class="nav section-nav flex-column">
@@ -477,7 +469,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_23128\284488194.py:10: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_13704\284488194.py:10: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
   from IPython.core.display import display, HTML
 </pre></div>
 </div>
@@ -559,8 +551,32 @@ Number of genes: 7683
 </div>
 <section id="quality-control-metrics">
 <h3>Quality control metrics<a class="headerlink" href="#quality-control-metrics" title="Link to this heading">#</a></h3>
-<section id="quality-control-qc-metrics-in-scrna-seq">
-<h4>📌 Quality Control (QC) Metrics in scRNA-seq<a class="headerlink" href="#quality-control-qc-metrics-in-scrna-seq" title="Link to this heading">#</a></h4>
+<p>We use <strong>three key QC metrics</strong>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Metric</strong></p></th>
+<th class="head"><p><strong>Issue Detected</strong></p></th>
+<th class="head"><p><strong>Filtering Rule</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Total UMI Counts</strong></p></td>
+<td><p>Low = Empty droplets, debris<br>High = Possible doublets</p></td>
+<td><p>Keep cells with a <strong>moderate range</strong> of UMI counts</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Number of Genes per Cell</strong></p></td>
+<td><p>Low = Dead/low-quality cells<br>High = Doublets</p></td>
+<td><p>Set <strong>lower/upper cutoffs</strong> based on distribution</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Mitochondrial Gene Percentage</strong></p></td>
+<td><p>High = Cell stress, apoptosis</p></td>
+<td><p>Remove cells with <strong>too high mito RNA%</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition-quality-control-qc-metrics-in-scrna-seq admonition">
+<p class="admonition-title">Quality Control (QC) Metrics in scRNA-seq</p>
 <p>1️⃣ <strong>Number of Cells Expressing Each Gene (<code class="docutils literal notranslate"><span class="pre">gene_counts</span></code>)</strong></p>
 <ul class="simple">
 <li><p>Measures how <strong>widely expressed</strong> each gene is across cells.</p></li>
@@ -579,7 +595,8 @@ Number of genes: 7683
 <li><p><strong>Low counts</strong> suggest poor RNA capture or damaged cells.</p></li>
 <li><p><strong>High counts</strong> can indicate doublets or highly active cells.</p></li>
 </ul>
-<p>🔍 <strong>These metrics help identify low-quality cells before filtering.</strong></p>
+<p>🔍 <em><strong>These metrics help identify low-quality cells before filtering.</strong></em></p>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;gene_count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">X</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
@@ -804,14 +821,13 @@ Number of genes: 7683
 </div>
 </div>
 </section>
-</section>
 <section id="unique-molecular-identifiers-umis">
 <h3>🧬 Unique Molecular Identifiers (UMIs)<a class="headerlink" href="#unique-molecular-identifiers-umis" title="Link to this heading">#</a></h3>
-<section id="what-is-a-umi">
-<h4>What is a UMI?<a class="headerlink" href="#what-is-a-umi" title="Link to this heading">#</a></h4>
+<div class="admonition-what-is-a-umi admonition">
+<p class="admonition-title">What is a UMI?</p>
 <p>A <strong>Unique Molecular Identifier (UMI)</strong> is a short <strong>random barcode</strong> added to RNA molecules before sequencing.<br />
 UMIs help correct for <strong>PCR amplification bias</strong> and improve the accuracy of gene expression quantification in single-cell RNA sequencing (<strong>scRNA-seq</strong>).</p>
-</section>
+</div>
 <section id="why-are-umis-important">
 <h4>Why Are UMIs Important?<a class="headerlink" href="#why-are-umis-important" title="Link to this heading">#</a></h4>
 <p>1️⃣ <strong>Reduce PCR Bias</strong> → Prevents artificially inflated gene expression caused by PCR duplicates.<br />
@@ -825,7 +841,7 @@ UMIs help correct for <strong>PCR amplification bias</strong> and improve the ac
 <li><p><strong>High UMI counts</strong> → Could indicate doublets (two cells captured together).</p></li>
 <li><p><strong>UMI filtering</strong> ensures that only high-quality data is used in downstream analysis.</p></li>
 </ul>
-<p><strong>UMIs improve scRNA-seq accuracy by eliminating technical biases.</strong> 🚀</p>
+<p><strong>UMIs improve scRNA-seq accuracy by eliminating technical biases.</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot histogram of total UMI counts per cell</span>
@@ -859,45 +875,6 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 <img alt="_images/553015efc5a3494cf9fe39131090f914fad8be7b6a0452c3e73ab8488092f66e.png" src="_images/553015efc5a3494cf9fe39131090f914fad8be7b6a0452c3e73ab8488092f66e.png" />
 </div>
 </div>
-</section>
-</section>
-</section>
-<section id="cell-filtering">
-<h2><strong>Cell filtering</strong><a class="headerlink" href="#cell-filtering" title="Link to this heading">#</a></h2>
-<section id="why-do-we-filter-cells">
-<h3>Why Do We Filter Cells?<a class="headerlink" href="#why-do-we-filter-cells" title="Link to this heading">#</a></h3>
-<p>We remove cells that are:<br />
-1️⃣ <strong>Low-quality or dead</strong> → Few detected genes or low UMI counts.<br />
-2️⃣ <strong>Potential doublets</strong> → Abnormally high UMI counts (two cells captured together).<br />
-3️⃣ <strong>Stressed or apoptotic</strong> → High percentage of mitochondrial RNA.</p>
-<hr class="docutils" />
-</section>
-<section id="how-do-we-define-filtering-thresholds">
-<h3>📊 How Do We Define Filtering Thresholds?<a class="headerlink" href="#how-do-we-define-filtering-thresholds" title="Link to this heading">#</a></h3>
-<p>We use <strong>three key QC metrics</strong>:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p><strong>Metric</strong></p></th>
-<th class="head"><p><strong>Issue Detected</strong></p></th>
-<th class="head"><p><strong>Filtering Rule</strong></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Total UMI Counts</strong></p></td>
-<td><p>Low = Empty droplets, debris<br>High = Possible doublets</p></td>
-<td><p>Keep cells with a <strong>moderate range</strong> of UMI counts</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Number of Genes per Cell</strong></p></td>
-<td><p>Low = Dead/low-quality cells<br>High = Doublets</p></td>
-<td><p>Set <strong>lower/upper cutoffs</strong> based on distribution</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Mitochondrial Gene Percentage</strong></p></td>
-<td><p>High = Cell stress, apoptosis</p></td>
-<td><p>Remove cells with <strong>too high mito RNA%</strong></p></td>
-</tr>
-</tbody>
-</table>
-</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print a sample of gene names to manually inspect for mitochondrial genes</span>
@@ -920,8 +897,8 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </div>
 </section>
-<section id="geenrs">
-<h3>geenrs<a class="headerlink" href="#geenrs" title="Link to this heading">#</a></h3>
+<section id="gene-list">
+<h4>Gene list<a class="headerlink" href="#gene-list" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mg</span> <span class="o">=</span> <span class="n">mygene</span><span class="o">.</span><span class="n">MyGeneInfo</span><span class="p">()</span>
@@ -930,6 +907,9 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </div>
 </div>
+</section>
+<section id="gene-maping">
+<h4>Gene maping<a class="headerlink" href="#gene-maping" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">mygene</span>
@@ -1223,7 +1203,7 @@ max        8995.002930     514206.531250     3.961011
 </div>
 </section>
 <section id="correlation">
-<h3>Correlation<a class="headerlink" href="#correlation" title="Link to this heading">#</a></h3>
+<h4>Correlation<a class="headerlink" href="#correlation" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">adata_glioblastoma_raw</span><span class="p">,</span> 
@@ -1243,8 +1223,17 @@ max        8995.002930     514206.531250     3.961011
 </div>
 </div>
 </section>
-<section id="filters">
-<h3>Filters<a class="headerlink" href="#filters" title="Link to this heading">#</a></h3>
+</section>
+</section>
+<section id="cell-filtering">
+<h2>Cell Filtering<a class="headerlink" href="#cell-filtering" title="Link to this heading">#</a></h2>
+<div class="tip admonition">
+<p class="admonition-title">Why Do We Filter Cells?</p>
+<p>We remove cells that are:<br />
+1️⃣ <strong>Low-quality or dead</strong> → Few detected genes or low UMI counts.<br />
+2️⃣ <strong>Potential doublets</strong> → Abnormally high UMI counts (two cells captured together).<br />
+3️⃣ <strong>Stressed or apoptotic</strong> → High percentage of mitochondrial RNA.</p>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define filtering criteria</span>
@@ -1282,7 +1271,6 @@ Number of cells after filtering: 1825
 </div>
 </div>
 </div>
-</section>
 </section>
 <section id="doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">
 <h2>Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)<a class="headerlink" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq" title="Link to this heading">#</a></h2>
@@ -2773,6 +2761,79 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 <img alt="_images/247e85082a596d8a676115c7e5556ddacae610692f8340452fcb9b4c562a95e5.png" src="_images/247e85082a596d8a676115c7e5556ddacae610692f8340452fcb9b4c562a95e5.png" />
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;rank_genes_groups&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dict_keys([&#39;params&#39;, &#39;names&#39;, &#39;scores&#39;, &#39;pvals&#39;, &#39;pvals_adj&#39;, &#39;logfoldchanges&#39;])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>  <span class="c1"># Check if the DataFrame contains the correct columns</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      names     scores  logfoldchanges          pvals      pvals_adj
+0     IFI30  22.074551             inf  5.551306e-108  2.132534e-104
+1  HLA-DRB5  20.591650      153.087463   3.260779e-94   3.578938e-91
+2    LAPTM5  19.385525             inf   1.022579e-83   5.611766e-81
+3      SRGN  19.297819      408.317078   5.602495e-83   2.690248e-80
+4  HLA-DRB4  19.012533      217.197891   1.343061e-80   5.732631e-78
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:66: FutureWarning: The previous implementation of stack is deprecated and will be removed in a future version of pandas. See the What&#39;s New notes for pandas 2.1.0 for details. Specify future_stack=True to adopt the new implementation and silence this warning.
+  d = d.stack(level=1).reset_index()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>  <span class="c1"># Remove NaN values</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">])]</span>  <span class="c1"># Remove infinite values</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Keep values in range [0,1]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-10</span><span class="p">),</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>  <span class="c1"># Significance threshold</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Log Fold Change&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;-log10(p-value)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Volcano Plot for Cluster 0&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/0956a19b36779baaa1bdb13033e6658b0383a43d4a7c09fa045349ea93b1bc9a.png" src="_images/0956a19b36779baaa1bdb13033e6658b0383a43d4a7c09fa045349ea93b1bc9a.png" />
+</div>
+</div>
 <p>Dot plots summarize expression across clusters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2984,6 +3045,382 @@ Find biological functions of differentially expressed genes:</p></li>
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_path</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Single-cell RNASeq data from Mouse Brain&quot;</span>
+<span class="n">data_path2</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Theory - Intro to single-cell RNAseq Images&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">glioblastoma_norm_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s2">&quot;glioblastoma_normalized.h5ad&quot;</span><span class="p">)</span>
+<span class="n">glioblastoma_raw_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s2">&quot;glioblastoma_raw.h5ad&quot;</span><span class="p">)</span>
+<span class="n">pbmc3k_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s2">&quot;pbmc3k.h5ad&quot;</span><span class="p">)</span>
+
+<span class="n">adata_glioblastoma_norm</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">glioblastoma_norm_file</span><span class="p">)</span>
+<span class="n">adata_glioblastoma_raw</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">glioblastoma_raw_file</span><span class="p">)</span>
+<span class="n">adata_pbmc3k</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">pbmc3k_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path2</span><span class="p">,</span> <span class="s2">&quot;brain_raw.h5ad&quot;</span><span class="p">)</span>
+<span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">adata_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cell_ontology_class</th>
+      <th>subtissue</th>
+      <th>mouse.sex</th>
+      <th>mouse.id</th>
+      <th>plate.barcode</th>
+    </tr>
+    <tr>
+      <th>cell</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>A1.B003290.3_38_F.1.1</th>
+      <td>astrocyte</td>
+      <td>Striatum</td>
+      <td>F</td>
+      <td>3_38_F</td>
+      <td>B003290</td>
+    </tr>
+    <tr>
+      <th>A1.B003728.3_56_F.1.1</th>
+      <td>astrocyte</td>
+      <td>Striatum</td>
+      <td>F</td>
+      <td>3_56_F</td>
+      <td>B003728</td>
+    </tr>
+    <tr>
+      <th>A1.MAA000560.3_10_M.1.1</th>
+      <td>oligodendrocyte</td>
+      <td>Cortex</td>
+      <td>M</td>
+      <td>3_10_M</td>
+      <td>MAA000560</td>
+    </tr>
+    <tr>
+      <th>A1.MAA000564.3_10_M.1.1</th>
+      <td>endothelial cell</td>
+      <td>Striatum</td>
+      <td>M</td>
+      <td>3_10_M</td>
+      <td>MAA000564</td>
+    </tr>
+    <tr>
+      <th>A1.MAA000923.3_9_M.1.1</th>
+      <td>astrocyte</td>
+      <td>Hippocampus</td>
+      <td>M</td>
+      <td>3_9_M</td>
+      <td>MAA000923</td>
+    </tr>
+    <tr>
+      <th>A1.MAA000930.3_8_M.1.1</th>
+      <td>oligodendrocyte</td>
+      <td>Cortex</td>
+      <td>M</td>
+      <td>3_8_M</td>
+      <td>MAA000930</td>
+    </tr>
+    <tr>
+      <th>A1.MAA000932.3_11_M.1.1</th>
+      <td>endothelial cell</td>
+      <td>Hippocampus</td>
+      <td>M</td>
+      <td>3_11_M</td>
+      <td>MAA000932</td>
+    </tr>
+    <tr>
+      <th>A1.MAA000940.3_8_M.1.1</th>
+      <td>neuron</td>
+      <td>Striatum</td>
+      <td>M</td>
+      <td>3_8_M</td>
+      <td>MAA000940</td>
+    </tr>
+    <tr>
+      <th>A1.MAA001854.3_38_F.1.1</th>
+      <td>oligodendrocyte</td>
+      <td>Cerebellum</td>
+      <td>F</td>
+      <td>3_38_F</td>
+      <td>MAA001854</td>
+    </tr>
+    <tr>
+      <th>A1.MAA001894.3_39_F.1.1</th>
+      <td>endothelial cell</td>
+      <td>Cortex</td>
+      <td>F</td>
+      <td>3_39_F</td>
+      <td>MAA001894</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>disease_state</th>
+      <th>plate_id</th>
+      <th>tissue</th>
+      <th>patient_id</th>
+      <th>cell_type</th>
+      <th>neoplastic_state</th>
+      <th>diagnosis</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>GSM2243439</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+    </tr>
+    <tr>
+      <th>GSM2243444</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+    </tr>
+    <tr>
+      <th>GSM2243445</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+    </tr>
+    <tr>
+      <th>GSM2243447</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+    </tr>
+    <tr>
+      <th>GSM2243452</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+    </tr>
+    <tr>
+      <th>GSM2243455</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Oligodendrocyte</td>
+      <td>neoplastic: Regular</td>
+      <td>Oligodendrocyte</td>
+    </tr>
+    <tr>
+      <th>GSM2243456</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+    </tr>
+    <tr>
+      <th>GSM2243457</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+    </tr>
+    <tr>
+      <th>GSM2243459</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+    </tr>
+    <tr>
+      <th>GSM2243460</th>
+      <td>diagnosis: glioblastoma</td>
+      <td>plate id: 1001000173</td>
+      <td>tissue: Tumor</td>
+      <td>patient id: BT_S2</td>
+      <td>cell type: Neoplastic</td>
+      <td>neoplastic: Neoplastic</td>
+      <td>Neoplastic</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ERCC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0610005C13Rik</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>0610007C21Rik</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>0610007L01Rik</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>0610007N19Rik</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>0610007P08Rik</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>0610007P14Rik</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>0610007P22Rik</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>0610008F07Rik</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>0610009B14Rik</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>0610009B22Rik</th>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
 </section>
 </section>
 </section>
@@ -3046,26 +3483,18 @@ Find biological functions of differentially expressed genes:</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-libraries-and-data">Import Libraries and data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-load">Data Load</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-qc"><strong>Quality Control (QC)</strong></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-metrics">Quality control metrics</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-qc-metrics-in-scrna-seq">📌 Quality Control (QC) Metrics in scRNA-seq</a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-metrics">Quality control metrics</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unique-molecular-identifiers-umis">🧬 Unique Molecular Identifiers (UMIs)</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-umi">What is a UMI?</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-are-umis-important">Why Are UMIs Important?</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#how-are-umis-used-in-scrna-seq">How Are UMIs Used in scRNA-seq?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-list">Gene list</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-maping">Gene maping</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering"><strong>Cell filtering</strong></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-do-we-filter-cells">Why Do We Filter Cells?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-we-define-filtering-thresholds">📊 How Do We Define Filtering Thresholds?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geenrs">geenrs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filters">Filters</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering">Cell Filtering</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-the-doublets-manually">Inspecting the doublets manually</a><ul class="nav section-nav flex-column">
