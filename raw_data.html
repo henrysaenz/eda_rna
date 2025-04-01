@@ -437,6 +437,7 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-vae-gat">Using VAE + GAT</a></li>
 </ul>
 </li>
 </ul>
@@ -3302,9 +3303,6 @@ c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_gene
 
 <span class="c1"># Check for NaNs</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-
-<span class="c1"># Summary statistics</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -3316,35 +3314,26 @@ logfoldchanges    0
 pvals             0
 pvals_adj         0
 dtype: int64
-       logfoldchanges   pvals_adj
-count      431.000000  431.000000
-mean         1.259929    0.983609
-std          2.109867    0.075351
-min         -5.586777    0.243576
-25%          0.262969    0.999040
-50%          1.127348    0.999040
-75%          2.406521    0.999040
-max          7.970360    0.999906
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count    431.000000
-mean       0.838731
-std        0.168085
-min        0.065905
-25%        0.781395
-50%        0.897650
-75%        0.955655
-max        0.999249
-Name: pvals, dtype: float64
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       logfoldchanges     pvals_adj
+count      431.000000  4.310000e+02
+mean         1.259929  9.992488e-01
+std          2.109867  1.111513e-16
+min         -5.586777  9.992488e-01
+25%          0.262969  9.992488e-01
+50%          1.127348  9.992488e-01
+75%          2.406521  9.992488e-01
+max          7.970360  9.992488e-01
 </pre></div>
 </div>
 </div>
@@ -3377,18 +3366,6 @@ Name: pvals_adj, dtype: float64
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sig_degs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degs_df</span> <span class="o">=</span> <span class="n">degs_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">])</span>
 
 <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -3405,40 +3382,6 @@ Name: pvals_adj, dtype: float64
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">,</span> <span class="s1">&#39;pvals_adj&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       logfoldchanges     pvals_adj
-count      431.000000  4.310000e+02
-mean         1.259929  9.992488e-01
-std          2.109867  1.111513e-16
-min         -5.586777  9.992488e-01
-25%          0.262969  9.992488e-01
-50%          1.127348  9.992488e-01
-75%          2.406521  9.992488e-01
-max          7.970360  9.992488e-01
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degs_df</span> <span class="o">=</span> <span class="n">degs_df</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sig_degs</span> <span class="o">=</span> <span class="n">degs_df</span><span class="p">[(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.25</span><span class="p">)]</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Log2 Fold Change&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
@@ -3451,133 +3394,10 @@ max          7.970360  9.992488e-01
 <img alt="_images/b8341e6d423f9cdc3f7f82d67cf5962a11d8fce5b15b65dbd537fa9fcd75a4e5.png" src="_images/b8341e6d423f9cdc3f7f82d67cf5962a11d8fce5b15b65dbd537fa9fcd75a4e5.png" />
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure no NaN values in logfoldchanges</span>
-<span class="c1"># degs_df = degs_df.dropna(subset=[&quot;logfoldchanges&quot;])</span>
-<span class="n">cluster</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
-<span class="c1"># Create volcano plot</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-
-<span class="c1"># Plot all genes</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
-    <span class="n">data</span><span class="o">=</span><span class="n">degs_df</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
-    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">s</span><span class="o">=</span><span class="mi">10</span>
-<span class="p">)</span>
-
-<span class="c1"># Highlight significant genes</span>
-<span class="n">sig_degs</span> <span class="o">=</span> <span class="n">degs_df</span><span class="p">[(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)]</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
-    <span class="n">data</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sig_degs</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
-    <span class="n">hue</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span>
-    <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-    <span class="n">legend</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
-
-<span class="c1"># Label top significant genes</span>
-<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sig_degs</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">],</span>
-        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
-        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;gene_symbol&quot;</span><span class="p">],</span>
-        <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-        <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-        <span class="n">va</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span>
-    <span class="p">)</span>
-
-<span class="c1"># Add threshold lines</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># p = 0.05 cutoff</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Log2 Fold Change&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;-Log10(Adjusted p-value)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Volcano Plot: Cluster </span><span class="si">{</span><span class="n">cluster</span><span class="si">}</span><span class="s2"> vs Rest&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_4144\3307366062.py:19: UserWarning: Ignoring `palette` because no `hue` variable has been assigned.
-  sns.scatterplot(
-</pre></div>
-</div>
-<img alt="_images/4ec87351a36f92669a15dbd5b6ec84d048b109b1c7a23210f533d6fc2efad31c.png" src="_images/4ec87351a36f92669a15dbd5b6ec84d048b109b1c7a23210f533d6fc2efad31c.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
-<span class="c1"># Get DEG statistics for a specific cluster (e.g., cluster 0 vs rest)</span>
-<span class="n">cluster</span> <span class="o">=</span> <span class="s1">&#39;2&#39;</span>  <span class="c1"># Change to your cluster of interest</span>
-<span class="c1"># degs_df = sc.get.rank_genes_groups_df(adata_filtered, group=cluster, key=&#39;dea_results&#39;)</span>
-
-<span class="c1"># # Map Ensembl IDs to gene symbols</span>
-<span class="c1"># degs_df[&#39;gene_symbol&#39;] = degs_df[&#39;names&#39;].map(ensembl_to_gene)</span>
-
-<span class="c1"># Create volcano plot</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-
-<span class="c1"># Plot all genes</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
-    <span class="n">data</span><span class="o">=</span><span class="n">degs_df</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]),</span>
-    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
-    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">s</span><span class="o">=</span><span class="mi">10</span>
-<span class="p">)</span>
-
-<span class="c1"># Highlight significant genes (adjust thresholds as needed)</span>
-<span class="n">sig_degs</span> <span class="o">=</span> <span class="n">degs_df</span><span class="p">[(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)]</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
-    <span class="n">data</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sig_degs</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]),</span>
-    <span class="n">hue</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">},</span>
-    <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-    <span class="n">legend</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
-
-<span class="c1"># Label top significant genes</span>
-<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sig_degs</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;pvals_adj&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">],</span>
-        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]),</span>
-        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;gene_symbol&#39;</span><span class="p">],</span>
-        <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-        <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
-        <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span>
-    <span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># p=0.05 cutoff</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Log2 Fold Change&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;-Log10(Adjusted p-value)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Volcano Plot: Cluster </span><span class="si">{</span><span class="n">cluster</span><span class="si">}</span><span class="s1"> vs Rest&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_4144\1734314592.py:25: UserWarning: Ignoring `palette` because no `hue` variable has been assigned.
-  sns.scatterplot(
-</pre></div>
-</div>
-<img alt="_images/4962c0fe30b6726a887483cc1eb1f9334507d25c5d909f8f0d796099054b6f09.png" src="_images/4962c0fe30b6726a887483cc1eb1f9334507d25c5d909f8f0d796099054b6f09.png" />
-</div>
-</div>
 </section>
+</section>
+<section id="using-vae-gat">
+<h3>Using VAE + GAT<a class="headerlink" href="#using-vae-gat" title="Link to this heading">#</a></h3>
 </section>
 </section>
 </section>
@@ -3688,6 +3508,7 @@ max          7.970360  9.992488e-01
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-vae-gat">Using VAE + GAT</a></li>
 </ul>
 </li>
 </ul>
