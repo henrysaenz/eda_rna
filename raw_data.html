@@ -420,7 +420,23 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -469,6 +485,11 @@ document.write(`
                        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;The default value of &#39;ignore&#39; for the `na_action` parameter&quot;</span><span class="p">)</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">,</span> 
                        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;No data for colormapping provided via &#39;c&#39;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Suppress specific warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;invalid value encountered in log2&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2847,394 +2868,359 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get results as a DataFrame</span>
-<span class="n">deg_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;rank_genes_leiden&#39;</span><span class="p">][</span><span class="s1">&#39;names&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">deg_results</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute DEGs for all clusters (compared to the rest)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span> 
+    <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;final_clusters&#39;</span><span class="p">,</span>  <span class="c1"># Column with cluster labels</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;wilcoxon&#39;</span><span class="p">,</span>        <span class="c1"># Default method (alternatives: &#39;t-test&#39;, &#39;logreg&#39;)</span>
+    <span class="n">key_added</span><span class="o">=</span><span class="s1">&#39;dea_results&#39;</span><span class="p">,</span>  <span class="c1"># Stores results in `adata.uns[&#39;dea_results&#39;]`</span>
+    <span class="n">pts</span><span class="o">=</span><span class="kc">True</span>                 <span class="c1"># Add fraction of cells expressing each gene</span>
+<span class="p">)</span>
+
+<span class="c1"># Save top 10 DEGs per cluster</span>
+<span class="n">dea_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;dea_results&#39;</span><span class="p">][</span><span class="s1">&#39;names&#39;</span><span class="p">])</span>
+<span class="n">top_degs</span> <span class="o">=</span> <span class="n">dea_results</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">top_degs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\numpy\core\fromnumeric.py:86: FutureWarning: The behavior of DataFrame.sum with axis=None is deprecated, in a future version this will reduce over both axes and return a scalar. To retain the old behavior, pass axis=0 (or do not pass axis)
+  return reduction(axis=axis, out=out, **passkwargs)
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_rank_genes_groups.py:420: RuntimeWarning: invalid value encountered in log2
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                 0                1                2                3  \
+0  ENSG00000198502  ENSG00000277632  ENSG00000125148  ENSG00000197747   
+1  ENSG00000227357  ENSG00000275302  ENSG00000175183  ENSG00000090382   
+2  ENSG00000275395  ENSG00000276070  ENSG00000117318  ENSG00000160213   
+3  ENSG00000116741  ENSG00000277336  ENSG00000115457  ENSG00000147872   
+4  ENSG00000242574  ENSG00000179388  ENSG00000134531  ENSG00000258227   
+5  ENSG00000137393  ENSG00000276085  ENSG00000187193  ENSG00000110719   
+6  ENSG00000127951  ENSG00000171860  ENSG00000177606  ENSG00000143546   
+7  ENSG00000107968  ENSG00000169313  ENSG00000109846  ENSG00000240972   
+8  ENSG00000147872  ENSG00000204287  ENSG00000106211  ENSG00000115165   
+9  ENSG00000204287  ENSG00000266028  ENSG00000176907  ENSG00000159399   
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
+                 4                5                6                7  \
+0  ENSG00000189058  ENSG00000198804  ENSG00000164089  ENSG00000135452   
+1  ENSG00000102934  ENSG00000106211  ENSG00000135744  ENSG00000183735   
+2  ENSG00000187957  ENSG00000104267  ENSG00000134873  ENSG00000132434   
+3  ENSG00000184258  ENSG00000176076  ENSG00000162407  ENSG00000147588   
+4  ENSG00000240184  ENSG00000106538  ENSG00000148672  ENSG00000198576   
+5  ENSG00000173546  ENSG00000197061  ENSG00000104112  ENSG00000109846   
+6  ENSG00000170075  ENSG00000123496  ENSG00000277196  ENSG00000171951   
+7  ENSG00000104112  ENSG00000170439  ENSG00000170075  ENSG00000146006   
+8  ENSG00000148123  ENSG00000135744  ENSG00000170989  ENSG00000240184   
+9  ENSG00000157890  ENSG00000107438  ENSG00000167614  ENSG00000115461   
 
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-      <th>1</th>
-      <th>2</th>
-      <th>3</th>
-      <th>4</th>
-      <th>5</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>IFI30</td>
-      <td>ND4L</td>
-      <td>APOD</td>
-      <td>CCL3</td>
-      <td>ENSG00000255823</td>
-      <td>ENSG00000277196</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>HLA-DRB5</td>
-      <td>COX2</td>
-      <td>MARCKSL1</td>
-      <td>CCL4</td>
-      <td>ENSG00000232196</td>
-      <td>AGT</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>LAPTM5</td>
-      <td>COX1</td>
-      <td>DNER</td>
-      <td>CCL3L3</td>
-      <td>ENSG00000270672</td>
-      <td>ETNPPL</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>SRGN</td>
-      <td>COX3</td>
-      <td>PLLP</td>
-      <td>CCL4L2</td>
-      <td>ENSG00000269028</td>
-      <td>TTYH1</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>HLA-DRB4</td>
-      <td>ATP8</td>
-      <td>SYT11</td>
-      <td>CD83</td>
-      <td>ENSG00000256618</td>
-      <td>PLPP3</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>ALOX5AP</td>
-      <td>CYTB</td>
-      <td>FAIM2</td>
-      <td>CCL3L3</td>
-      <td>ENSG00000256045</td>
-      <td>GLUD1</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>APOC1</td>
-      <td>ND5</td>
-      <td>PCDHGC3</td>
-      <td>OLR1</td>
-      <td>S100B</td>
-      <td>SCG3</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>TMSB10</td>
-      <td>ND4</td>
-      <td>PCSK1N</td>
-      <td>EGR3</td>
-      <td>ATP1B2</td>
-      <td>ATP1B2</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>ARHGDIB</td>
-      <td>HSPB1</td>
-      <td>CHL1</td>
-      <td>FPR1</td>
-      <td>KCNJ10</td>
-      <td>CLDN10</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>RNF144B</td>
-      <td>ATP5MF</td>
-      <td>ENSG00000184258</td>
-      <td>LAPTM5</td>
-      <td>AGT</td>
-      <td>CST3</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
+                 8                9               10               11  
+0  ENSG00000244274  ENSG00000241978  ENSG00000136928  ENSG00000256229  
+1  ENSG00000109846  ENSG00000174807  ENSG00000174460  ENSG00000176907  
+2  ENSG00000099194  ENSG00000107438  ENSG00000137267  ENSG00000188636  
+3  ENSG00000250722  ENSG00000187479  ENSG00000100884  ENSG00000178301  
+4  ENSG00000102934  ENSG00000111341  ENSG00000171951  ENSG00000135245  
+5  ENSG00000189058  ENSG00000118523  ENSG00000107282  ENSG00000076662  
+6  ENSG00000169562  ENSG00000213694  ENSG00000130643  ENSG00000125148  
+7  ENSG00000104267  ENSG00000162998  ENSG00000248485  ENSG00000126243  
+8  ENSG00000126803  ENSG00000106211  ENSG00000103154  ENSG00000163421  
+9  ENSG00000158859  ENSG00000188783  ENSG00000168032  ENSG00000170345  
+</pre></div>
+</div>
+</div>
+</div>
+<section id="top-differentially-expressed-genes-degs-per-cluster-biological-interpretation">
+<h4><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong><a class="headerlink" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation" title="Link to this heading">#</a></h4>
+</section>
+<section id="cluster-0">
+<h4><strong>Cluster 0</strong><a class="headerlink" href="#cluster-0" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: HLA-DRB5, CCL3, MT2A, S100A10, APOD</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Immune/Inflammatory cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">HLA-DRB5</span></code> (MHC class II), <code class="docutils literal notranslate"><span class="pre">CCL3</span></code> (chemokine), and <code class="docutils literal notranslate"><span class="pre">S100A10</span></code> (calcium-binding protein) suggest antigen presentation and immune activation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MT2A</span></code> (metallothionein) indicates metal ion homeostasis/stress response.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">APOD</span></code> (lipocalin) may relate to lipid metabolism.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-1">
+<h4><strong>Cluster 1</strong><a class="headerlink" href="#cluster-1" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: HLA-DRB4, CCL4, CSRP2, LYZ, PLLP</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Macrophage/Myeloid lineage cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">LYZ</span></code> (lysozyme) and <code class="docutils literal notranslate"><span class="pre">CCL4</span></code> (chemokine) are myeloid cell markers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CSRP2</span></code> (cysteine-rich protein) links to smooth muscle differentiation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HLA-DRB4</span></code> reinforces antigen presentation roles.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-2">
+<h4><strong>Cluster 2</strong><a class="headerlink" href="#cluster-2" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: FCGBP, CCL4L2, ID3, CSTB, DNER</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Secretory/Epithelial cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">FCGBP</span></code> (mucin-binding protein) and <code class="docutils literal notranslate"><span class="pre">CSTB</span></code> (cystatin B) are enriched in mucosal/epithelial tissues.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ID3</span></code> (inhibitor of DNA binding) regulates cellular differentiation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-3">
+<h4><strong>Cluster 3</strong><a class="headerlink" href="#cluster-3" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: RGS2, CCL3L3, IGFBP2, PLIN2</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Lipid Metabolism/Adipocyte cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">PLIN2</span></code> (lipid droplet protein) and <code class="docutils literal notranslate"><span class="pre">IGFBP2</span></code> (insulin-like growth factor binding) suggest adipocyte/metabolic functions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RGS2</span></code> regulates G-protein signaling in metabolic pathways.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-4">
+<h4><strong>Cluster 4</strong><a class="headerlink" href="#cluster-4" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: HLA-DMB, EGR3, EMP1, CLEC5A</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Dendritic Cell/Immune Activation cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">HLA-DMB</span></code> (MHC class II chaperone) and <code class="docutils literal notranslate"><span class="pre">CLEC5A</span></code> (C-type lectin) indicate immune cell activation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EGR3</span></code> (early growth response) regulates T-cell differentiation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-5">
+<h4><strong>Cluster 5</strong><a class="headerlink" href="#cluster-5" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: RNF144B, CCL3L3, MT1X, TCIRG1</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Stress Response/Oxidative cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">MT1X</span></code> (metallothionein) and <code class="docutils literal notranslate"><span class="pre">TCIRG1</span></code> (proton pump subunit) respond to oxidative/metal stress.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RNF144B</span></code> (E3 ubiquitin ligase) links to protein degradation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-6">
+<h4><strong>Cluster 6</strong><a class="headerlink" href="#cluster-6" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: FGL2, C3AR1, JUN, S100A8</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Pro-inflammatory/Neutrophil cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">S100A8</span></code> (calgranulin A) and <code class="docutils literal notranslate"><span class="pre">C3AR1</span></code> (complement receptor) are neutrophil markers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">JUN</span></code> (AP-1 transcription factor) drives inflammatory signaling.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-7">
+<h4><strong>Cluster 7</strong><a class="headerlink" href="#cluster-7" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: MAP3K8, P2RY12, CRYAB, MIF</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Microglial/Neuroimmune cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">P2RY12</span></code> (purinergic receptor) and <code class="docutils literal notranslate"><span class="pre">CRYAB</span></code> (heat shock protein) are microglia markers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MIF</span></code> (macrophage migration inhibitory factor) regulates neuroinflammation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-8">
+<h4><strong>Cluster 8</strong><a class="headerlink" href="#cluster-8" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: PLIN2, HLA-DRA, HSPB1, CYTIP</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Lipid-Associated/Stress cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">PLIN2</span></code> (lipid droplet) and <code class="docutils literal notranslate"><span class="pre">HSPB1</span></code> (heat shock protein) indicate lipid storage/stress.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HLA-DRA</span></code> (MHC class II) suggests immune crosstalk.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-9">
+<h4><strong>Cluster 9</strong><a class="headerlink" href="#cluster-9" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: HLA-DRA, SRGAP2, TCIM, HK2</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Metabolic/Neuronal cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">HK2</span></code> (hexokinase) and <code class="docutils literal notranslate"><span class="pre">SRGAP2</span></code> (neuronal development) suggest glucose metabolism/neuronal roles.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TCIM</span></code> (TP53-regulated inhibitor) may link to apoptosis regulation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-10">
+<h4><strong>Cluster 10</strong><a class="headerlink" href="#cluster-10" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: GABBR2, ZCCHC12, TUBB2A, CPNE6</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Neuronal/Developmental cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GABBR2</span></code> (GABA receptor) and <code class="docutils literal notranslate"><span class="pre">TUBB2A</span></code> (neural tubulin) indicate neuronal signaling.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ZCCHC12</span></code> (zinc finger protein) is involved in neurodevelopment.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-11">
+<h4><strong>Cluster 11</strong><a class="headerlink" href="#cluster-11" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: ZNF486, TCIM, RTL6, AQP11</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Undefined/Niche cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">AQP11</span></code> (aquaporin) suggests transmembrane transport.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RTL6</span></code> (retrotransposon-like) has unclear biological relevance.</p></li>
+<li><p>Requires further investigation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="admonition-summary-of-genes-per-cluster admonition">
+<p class="admonition-title">Summary of genes per cluster</p>
+<ul class="simple">
+<li><p><strong>Immune Clusters</strong>: 0, 1, 4, 6, 7 (MHC/chemokine genes)</p></li>
+<li><p><strong>Metabolic/Lipid Clusters</strong>: 3, 8 (PLIN2, APOD)</p></li>
+<li><p><strong>Neuronal Clusters</strong>: 9, 10 (HK2, GABBR2)</p></li>
+<li><p><strong>Stress Response Clusters</strong>: 5 (MT1X, TCIRG1)</p></li>
+</ul>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">deg_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;rank_genes_louvain&#39;</span><span class="p">][</span><span class="s1">&#39;names&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">deg_results</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute DEGs for all clusters</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span> 
+    <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;final_clusters&#39;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;wilcoxon&#39;</span><span class="p">,</span>
+    <span class="n">key_added</span><span class="o">=</span><span class="s1">&#39;dea_results&#39;</span><span class="p">,</span>
+    <span class="n">pts</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Create a dictionary to map Ensembl IDs to gene symbols</span>
+<span class="n">ensembl_to_gene</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;Mapped_Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+<span class="c1"># Replace Ensembl IDs with gene symbols in the DEG results dataframe</span>
+<span class="n">top_degs_mapped</span> <span class="o">=</span> <span class="n">dea_results</span><span class="o">.</span><span class="n">applymap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ensembl_to_gene</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>  <span class="c1"># Fallback to Ensembl ID if no symbol exists</span>
+<span class="n">top_degs_mapped</span> <span class="o">=</span> <span class="n">top_degs_mapped</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top DEGs (Mapped to Gene Symbols):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">top_degs_mapped</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top DEGs (Mapped to Gene Symbols):
+          0        1       2        3        4        5        6        7  \
+0  HLA-DRB5     CCL3    MT2A  S100A10     APOD     COX1   ETNPPL  TSPAN31   
+1  HLA-DRB4     CCL4   CSRP2      LYZ     PLLP    HSPB1      AGT     TBK1   
+2     FCGBP   CCL4L2     ID3     CSTB     DNER      CA2   CLDN10   LANCL2   
+3      RGS2   CCL3L3  IGFBP2    PLIN2      NaN    KCNE5    PLPP3     PMP2   
+4   HLA-DMB     EGR3    EMP1   CLEC5A  PCDHGC3  RARRES2    GLUD1      ARC   
+5   RNF144B   CCL3L3    MT1X   TCIRG1    CSPG4     H4C3     SCG3    CRYAB   
+6      FGL2    C3AR1     JUN   S100A8  GPR37L1  IL13RA2      NaN     SCG2   
+7    MAP3K8   P2RY12   CRYAB      MIF     SCG3    TMT1B  GPR37L1   LRRTM2   
+8     PLIN2  HLA-DRA   HSPB1    CYTIP   PLPPR1      AGT    S1PR1  PCDHGC3   
+9   HLA-DRA   SRGAP2    TCIM      HK2   MEGF11   PDLIM1    TTYH1   IGFBP5   
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-      <th>1</th>
-      <th>2</th>
-      <th>3</th>
-      <th>4</th>
-      <th>5</th>
-      <th>6</th>
-      <th>7</th>
-      <th>8</th>
-      <th>9</th>
-      <th>10</th>
-      <th>11</th>
-      <th>12</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>IFI30</td>
-      <td>ND4L</td>
-      <td>APOD</td>
-      <td>CCL3</td>
-      <td>TMSB10</td>
-      <td>APOD</td>
-      <td>ENSG00000255823</td>
-      <td>CCL3</td>
-      <td>COX1</td>
-      <td>ACTG1</td>
-      <td>ETNPPL</td>
-      <td>HSPA1A</td>
-      <td>HLA-DRA</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>HLA-DRB5</td>
-      <td>HSPB1</td>
-      <td>PLLP</td>
-      <td>CCL4</td>
-      <td>IFI30</td>
-      <td>ENSG00000184258</td>
-      <td>ENSG00000232196</td>
-      <td>CD83</td>
-      <td>COX3</td>
-      <td>TSPAN31</td>
-      <td>AGT</td>
-      <td>HSPA1B</td>
-      <td>APOC1</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>GPR183</td>
-      <td>COX2</td>
-      <td>MARCKSL1</td>
-      <td>CCL4L2</td>
-      <td>LYZ</td>
-      <td>SOX8</td>
-      <td>ENSG00000270672</td>
-      <td>CCL4</td>
-      <td>CYTB</td>
-      <td>TBK1</td>
-      <td>PLPP3</td>
-      <td>DNAJB1</td>
-      <td>PFN1</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>HLA-DRB4</td>
-      <td>MT3</td>
-      <td>FOS</td>
-      <td>CCL3L3</td>
-      <td>BTG1</td>
-      <td>DNER</td>
-      <td>ENSG00000269028</td>
-      <td>SRGAP2</td>
-      <td>COX2</td>
-      <td>TUBB2B</td>
-      <td>SCG3</td>
-      <td>HSPA6</td>
-      <td>S100A11</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>ARHGDIB</td>
-      <td>COX1</td>
-      <td>DNER</td>
-      <td>CCL3L3</td>
-      <td>SRGN</td>
-      <td>CACNG4</td>
-      <td>ENSG00000256618</td>
-      <td>OLR1</td>
-      <td>ND4L</td>
-      <td>SRGAP1</td>
-      <td>S1PR1</td>
-      <td>BAG3</td>
-      <td>IFI30</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>SRGN</td>
-      <td>COX3</td>
-      <td>S100B</td>
-      <td>CD83</td>
-      <td>PLIN2</td>
-      <td>OLIG2</td>
-      <td>ENSG00000256045</td>
-      <td>CCL3L3</td>
-      <td>ND4</td>
-      <td>MARCHF9</td>
-      <td>CLDN10</td>
-      <td>DDIT4</td>
-      <td>GPX1</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>FCGBP</td>
-      <td>ATP8</td>
-      <td>SYT11</td>
-      <td>OLR1</td>
-      <td>HLA-DRB5</td>
-      <td>ARFGEF3</td>
-      <td>S100B</td>
-      <td>SELPLG</td>
-      <td>ATP8</td>
-      <td>NACAD</td>
-      <td>GLUD1</td>
-      <td>HSPB1</td>
-      <td>APOE</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>MAP3K8</td>
-      <td>ATP5MF</td>
-      <td>FAIM2</td>
-      <td>EGR3</td>
-      <td>LAPTM5</td>
-      <td>ANKRD20A1</td>
-      <td>ND4</td>
-      <td>LAPTM5</td>
-      <td>ATP6</td>
-      <td>CCND2</td>
-      <td>ENSG00000277196</td>
-      <td>HCST</td>
-      <td>HLA-DPA1</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>HLA-DPA1</td>
-      <td>CYTB</td>
-      <td>ENSG00000184258</td>
-      <td>FPR1</td>
-      <td>ALOX5AP</td>
-      <td>GABBR1</td>
-      <td>KCNJ10</td>
-      <td>CCL4L2</td>
-      <td>ND5</td>
-      <td>PCSK1N</td>
-      <td>ATP1B2</td>
-      <td>HAMP</td>
-      <td>FPR1</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>LAIR1</td>
-      <td>ND5</td>
-      <td>PEBP1</td>
-      <td>PLEK</td>
-      <td>S100A11</td>
-      <td>LRP4</td>
-      <td>ENSG00000184258</td>
-      <td>EGR3</td>
-      <td>ND2</td>
-      <td>LANCL2</td>
-      <td>FXYD1</td>
-      <td>ENSG00000268864</td>
-      <td>ND6</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure unique variable names in adata_glioblastoma_filtered</span>
-<span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var_names_make_unique</span><span class="p">()</span>
-
-<span class="c1"># Plot the violin plot</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SYT11&quot;</span><span class="p">],</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">)</span>
+         8         9       10      11  
+0   DBNDD2       NaN   GABBR2  ZNF486  
+1    CRYAB     CD248  ZCCHC12    TCIM  
+2      SCD    PDLIM1   TUBB2A    RTL6  
+3  SELENOP  C11orf96    CPNE6   AQP11  
+4     PLLP       MGP     SCG2  HILPDA  
+5     APOD      CCN2    APBA1   ICAM3  
+6     GJB1     S1PR3     CALY    MT2A  
+7      CA2      FRZB   PCP4L1   LRFN3  
+8    HSPA2     HSPB1   NECAB2   PROK2  
+9  ADAMTS4     PRELP   ENTPD3     FOS  
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:843: FutureWarning: 
-
-Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
-
-  ax = sns.violinplot(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:843: FutureWarning: 
-
-The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `density_norm=&#39;width&#39;` for the same effect.
-  ax = sns.violinplot(
-</pre></div>
-</div>
-<img alt="_images/e2631ecd967726bf7afb6e17d67bda367b61f0e9160d78edec20fe051892caf3.png" src="_images/e2631ecd967726bf7afb6e17d67bda367b61f0e9160d78edec20fe051892caf3.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;rank_genes_leiden&#39;</span><span class="p">][</span><span class="s1">&#39;names&#39;</span><span class="p">][</span><span class="s1">&#39;0&#39;</span><span class="p">][:</span><span class="mi">10</span><span class="p">],</span> 
-              <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span> <span class="n">swap_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/328cf188ed69c48349068bf48284b28506220b0fa3170ab422370aa2c0b537eb.png" src="_images/328cf188ed69c48349068bf48284b28506220b0fa3170ab422370aa2c0b537eb.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">)</span>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_4144\320458301.py:14: FutureWarning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.
+  top_degs_mapped = dea_results.applymap(lambda x: ensembl_to_gene.get(x, x))  # Fallback to Ensembl ID if no symbol exists
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="volcano-plot">
+<h4>Volcano Plot<a class="headerlink" href="#volcano-plot" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">filter_rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">min_fold_change</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">min_in_group_fraction</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Volcano plot</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span> 
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden_r0.4&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="s2">&quot;dea_results&quot;</span><span class="p">)</span>
+<span class="n">degs_df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;dea_results&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -3247,716 +3233,351 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)]</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="p">[</span><span class="n">df_filtered</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;significant&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">]),</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;significant&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">})</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Axes: xlabel=&#39;logfoldchanges&#39;, ylabel=&#39;pvals&#39;&gt;
-</pre></div>
-</div>
-<img alt="_images/434bb7fa185dd3d704f49aec5f9db0bfd867f91b3a466ff2a8334bd6d10d0746.png" src="_images/434bb7fa185dd3d704f49aec5f9db0bfd867f91b3a466ff2a8334bd6d10d0746.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract results</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span> 
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Drop NaNs and ensure numeric values</span>
+<span class="n">degs_df</span> <span class="o">=</span> <span class="n">degs_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">])</span>
+<span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
 
-<span class="c1"># Plot</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">]),</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>  <span class="c1"># Significance threshold</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Log Fold Change&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;-log10(p-value)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Volcano Plot for Cluster 0&quot;</span><span class="p">)</span>
+<span class="c1"># Create volcano plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># Plot all genes</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">degs_df</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+
+<span class="c1"># Highlight significant genes</span>
+<span class="n">sig_degs</span> <span class="o">=</span> <span class="n">degs_df</span><span class="p">[(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)]</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sig_degs</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
+    <span class="n">hue</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Label top significant genes</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sig_degs</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">],</span>
+        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;gene_symbol&quot;</span><span class="p">],</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+        <span class="n">va</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span>
+    <span class="p">)</span>
+
+<span class="c1"># Add threshold lines</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># p = 0.05 cutoff</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Log2 Fold Change&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;-Log10(Adjusted p-value)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Volcano Plot: Cluster 2 vs Rest&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:66: FutureWarning: The previous implementation of stack is deprecated and will be removed in a future version of pandas. See the What&#39;s New notes for pandas 2.1.0 for details. Specify future_stack=True to adopt the new implementation and silence this warning.
-  d = d.stack(level=1).reset_index()
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_4144\1449637912.py:24: UserWarning: Ignoring `palette` because no `hue` variable has been assigned.
+  sns.scatterplot(
 </pre></div>
 </div>
-<img alt="_images/247e85082a596d8a676115c7e5556ddacae610692f8340452fcb9b4c562a95e5.png" src="_images/247e85082a596d8a676115c7e5556ddacae610692f8340452fcb9b4c562a95e5.png" />
+<img alt="_images/28a112b0a33b534b4775bf472c08d3b109e3781b728e4b2895a5b7b7ebe09b5b.png" src="_images/28a112b0a33b534b4775bf472c08d3b109e3781b728e4b2895a5b7b7ebe09b5b.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;rank_genes_groups&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Ensure the columns exist</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+<span class="c1"># Check for NaNs</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+<span class="c1"># Summary statistics</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dict_keys([&#39;params&#39;, &#39;names&#39;, &#39;scores&#39;, &#39;pvals&#39;, &#39;pvals_adj&#39;, &#39;logfoldchanges&#39;])
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;names&#39;, &#39;scores&#39;, &#39;logfoldchanges&#39;, &#39;pvals&#39;, &#39;pvals_adj&#39;], dtype=&#39;object&#39;)
+names             0
+scores            0
+logfoldchanges    0
+pvals             0
+pvals_adj         0
+dtype: int64
+       logfoldchanges   pvals_adj
+count      431.000000  431.000000
+mean         1.259929    0.983609
+std          2.109867    0.075351
+min         -5.586777    0.243576
+25%          0.262969    0.999040
+50%          1.127348    0.999040
+75%          2.406521    0.999040
+max          7.970360    0.999906
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>  <span class="c1"># Check if the DataFrame contains the correct columns</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      names     scores  logfoldchanges          pvals      pvals_adj
-0     IFI30  22.074551             inf  5.551306e-108  2.132534e-104
-1  HLA-DRB5  20.591650      153.087463   3.260779e-94   3.578938e-91
-2    LAPTM5  19.385525             inf   1.022579e-83   5.611766e-81
-3      SRGN  19.297819      408.317078   5.602495e-83   2.690248e-80
-4  HLA-DRB4  19.012533      217.197891   1.343061e-80   5.732631e-78
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:66: FutureWarning: The previous implementation of stack is deprecated and will be removed in a future version of pandas. See the What&#39;s New notes for pandas 2.1.0 for details. Specify future_stack=True to adopt the new implementation and silence this warning.
-  d = d.stack(level=1).reset_index()
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>  <span class="c1"># Remove NaN values</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">])]</span>  <span class="c1"># Remove infinite values</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count    431.000000
+mean       0.838731
+std        0.168085
+min        0.065905
+25%        0.781395
+50%        0.897650
+75%        0.955655
+max        0.999249
+Name: pvals, dtype: float64
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Keep values in range [0,1]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.multitest</span><span class="w"> </span><span class="kn">import</span> <span class="n">multipletests</span>
+
+<span class="c1"># Apply Benjamini-Hochberg correction</span>
+<span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">multipletests</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fdr_bh&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># Check if values are more reasonable</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count    4.310000e+02
+mean     9.992488e-01
+std      1.111513e-16
+min      9.992488e-01
+25%      9.992488e-01
+50%      9.992488e-01
+75%      9.992488e-01
+max      9.992488e-01
+Name: pvals_adj, dtype: float64
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-10</span><span class="p">),</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>  <span class="c1"># Significance threshold</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Log Fold Change&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;-log10(p-value)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Volcano Plot for Cluster 0&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sig_degs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degs_df</span> <span class="o">=</span> <span class="n">degs_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">])</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Adjusted p-value&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Adjusted p-values&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/0956a19b36779baaa1bdb13033e6658b0383a43d4a7c09fa045349ea93b1bc9a.png" src="_images/0956a19b36779baaa1bdb13033e6658b0383a43d4a7c09fa045349ea93b1bc9a.png" />
+<img alt="_images/816af23172df1029a7dfbdff80d8e73794b07f7a049be3208b1b0ff205c4e10c.png" src="_images/816af23172df1029a7dfbdff80d8e73794b07f7a049be3208b1b0ff205c4e10c.png" />
 </div>
 </div>
-<p>Dot plots summarize expression across clusters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)[</span><span class="s2">&quot;names&quot;</span><span class="p">],</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">,</span> <span class="s1">&#39;pvals_adj&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:169: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  obs_bool.groupby(level=0).sum() / obs_bool.groupby(level=0).count()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:179: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  dot_color_df = self.obs_tidy.groupby(level=0).mean()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:749: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
-  dot_ax.scatter(x, y, **kwds)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       logfoldchanges     pvals_adj
+count      431.000000  4.310000e+02
+mean         1.259929  9.992488e-01
+std          2.109867  1.111513e-16
+min         -5.586777  9.992488e-01
+25%          0.262969  9.992488e-01
+50%          1.127348  9.992488e-01
+75%          2.406521  9.992488e-01
+max          7.970360  9.992488e-01
 </pre></div>
 </div>
-<img alt="_images/58da8bd441d63cb21e2d12b7b15d43560eabb55bc65549e380a6f55d25cef296.png" src="_images/58da8bd441d63cb21e2d12b7b15d43560eabb55bc65549e380a6f55d25cef296.png" />
 </div>
 </div>
-<ol class="arabic simple" start="5">
-<li><p>Gene Ontology (GO) &amp; Pathway Enrichment
-Find biological functions of differentially expressed genes:</p></li>
-</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">gseapy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gp</span>
-<span class="n">gp</span><span class="o">.</span><span class="n">enrichr</span><span class="p">(</span><span class="n">gene_list</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">gene_sets</span><span class="o">=</span><span class="s1">&#39;GO_Biological_Process_2021&#39;</span><span class="p">,</span> <span class="n">organism</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degs_df</span> <span class="o">=</span> <span class="n">degs_df</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sig_degs</span> <span class="o">=</span> <span class="n">degs_df</span><span class="p">[(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.25</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Log2 Fold Change&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Log2 Fold Changes&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;gseapy.enrichr.Enrichr at 0x22262477790&gt;
-</pre></div>
+<img alt="_images/b8341e6d423f9cdc3f7f82d67cf5962a11d8fce5b15b65dbd537fa9fcd75a4e5.png" src="_images/b8341e6d423f9cdc3f7f82d67cf5962a11d8fce5b15b65dbd537fa9fcd75a4e5.png" />
 </div>
 </div>
-</div>
-<p>cell identification</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">missing_genes</span> <span class="o">=</span> <span class="p">[</span><span class="n">gene</span> <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;CD3D&#39;</span><span class="p">,</span> <span class="s1">&#39;MS4A1&#39;</span><span class="p">,</span> <span class="s1">&#39;CD68&#39;</span><span class="p">,</span> <span class="s1">&#39;LYZ&#39;</span><span class="p">,</span> <span class="s1">&#39;EPCAM&#39;</span><span class="p">,</span> <span class="s1">&#39;PDGFRA&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">gene</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">var_names</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Missing genes:&quot;</span><span class="p">,</span> <span class="n">missing_genes</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure no NaN values in logfoldchanges</span>
+<span class="c1"># degs_df = degs_df.dropna(subset=[&quot;logfoldchanges&quot;])</span>
+<span class="n">cluster</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+<span class="c1"># Create volcano plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># Plot all genes</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">degs_df</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+
+<span class="c1"># Highlight significant genes</span>
+<span class="n">sig_degs</span> <span class="o">=</span> <span class="n">degs_df</span><span class="p">[(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)]</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sig_degs</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
+    <span class="n">hue</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Label top significant genes</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sig_degs</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">],</span>
+        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;gene_symbol&quot;</span><span class="p">],</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+        <span class="n">va</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span>
+    <span class="p">)</span>
+
+<span class="c1"># Add threshold lines</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># p = 0.05 cutoff</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Log2 Fold Change&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;-Log10(Adjusted p-value)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Volcano Plot: Cluster </span><span class="si">{</span><span class="n">cluster</span><span class="si">}</span><span class="s2"> vs Rest&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Missing genes: [&#39;MS4A1&#39;, &#39;CD68&#39;, &#39;EPCAM&#39;, &#39;PDGFRA&#39;]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_4144\3307366062.py:19: UserWarning: Ignoring `palette` because no `hue` variable has been assigned.
+  sns.scatterplot(
 </pre></div>
 </div>
+<img alt="_images/4ec87351a36f92669a15dbd5b6ec84d048b109b1c7a23210f533d6fc2efad31c.png" src="_images/4ec87351a36f92669a15dbd5b6ec84d048b109b1c7a23210f533d6fc2efad31c.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> 
-              <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CD3D&#39;</span><span class="p">,</span> <span class="s1">&#39;MS4A1&#39;</span><span class="p">,</span> <span class="s1">&#39;CD68&#39;</span><span class="p">,</span> <span class="s1">&#39;LYZ&#39;</span><span class="p">,</span> <span class="s1">&#39;EPCAM&#39;</span><span class="p">,</span> <span class="s1">&#39;PDGFRA&#39;</span><span class="p">],</span> 
-              <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="n">standard_scale</span><span class="o">=</span><span class="s1">&#39;var&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Get DEG statistics for a specific cluster (e.g., cluster 0 vs rest)</span>
+<span class="n">cluster</span> <span class="o">=</span> <span class="s1">&#39;2&#39;</span>  <span class="c1"># Change to your cluster of interest</span>
+<span class="c1"># degs_df = sc.get.rank_genes_groups_df(adata_filtered, group=cluster, key=&#39;dea_results&#39;)</span>
+
+<span class="c1"># # Map Ensembl IDs to gene symbols</span>
+<span class="c1"># degs_df[&#39;gene_symbol&#39;] = degs_df[&#39;names&#39;].map(ensembl_to_gene)</span>
+
+<span class="c1"># Create volcano plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># Plot all genes</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">degs_df</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]),</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+
+<span class="c1"># Highlight significant genes (adjust thresholds as needed)</span>
+<span class="n">sig_degs</span> <span class="o">=</span> <span class="n">degs_df</span><span class="p">[(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)]</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sig_degs</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]),</span>
+    <span class="n">hue</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">},</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Label top significant genes</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sig_degs</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;pvals_adj&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">],</span>
+        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">]),</span>
+        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;gene_symbol&#39;</span><span class="p">],</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+        <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span>
+    <span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># p=0.05 cutoff</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Log2 Fold Change&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;-Log10(Adjusted p-value)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Volcano Plot: Cluster </span><span class="si">{</span><span class="n">cluster</span><span class="si">}</span><span class="s1"> vs Rest&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">198</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> 
-<span class="g g-Whitespace">      </span><span class="mi">2</span>               <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CD3D&#39;</span><span class="p">,</span> <span class="s1">&#39;MS4A1&#39;</span><span class="p">,</span> <span class="s1">&#39;CD68&#39;</span><span class="p">,</span> <span class="s1">&#39;LYZ&#39;</span><span class="p">,</span> <span class="s1">&#39;EPCAM&#39;</span><span class="p">,</span> <span class="s1">&#39;PDGFRA&#39;</span><span class="p">],</span> 
-<span class="g g-Whitespace">      </span><span class="mi">3</span>               <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="n">standard_scale</span><span class="o">=</span><span class="s1">&#39;var&#39;</span><span class="p">)</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:942,</span> in <span class="ni">dotplot</span><span class="nt">(adata, var_names, groupby, use_raw, log, num_categories, expression_cutoff, mean_only_expressed, cmap, dot_max, dot_min, standard_scale, smallest_dot, title, colorbar_title, size_title, figsize, dendrogram, gene_symbols, var_group_positions, var_group_labels, var_group_rotation, layer, swap_axes, dot_color_df, show, save, ax, return_fig, vmin, vmax, vcenter, norm, **kwds)</span>
-<span class="g g-Whitespace">    </span><span class="mi">939</span> <span class="k">if</span> <span class="s1">&#39;color_map&#39;</span> <span class="ow">in</span> <span class="n">kwds</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">940</span>     <span class="k">del</span> <span class="n">kwds</span><span class="p">[</span><span class="s1">&#39;color_map&#39;</span><span class="p">]</span>
-<span class="ne">--&gt; </span><span class="mi">942</span> <span class="n">dp</span> <span class="o">=</span> <span class="n">DotPlot</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">943</span>     <span class="n">adata</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">944</span>     <span class="n">var_names</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">945</span>     <span class="n">groupby</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">946</span>     <span class="n">use_raw</span><span class="o">=</span><span class="n">use_raw</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">947</span>     <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">948</span>     <span class="n">num_categories</span><span class="o">=</span><span class="n">num_categories</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">949</span>     <span class="n">expression_cutoff</span><span class="o">=</span><span class="n">expression_cutoff</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">950</span>     <span class="n">mean_only_expressed</span><span class="o">=</span><span class="n">mean_only_expressed</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">951</span>     <span class="n">standard_scale</span><span class="o">=</span><span class="n">standard_scale</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">952</span>     <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">953</span>     <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">954</span>     <span class="n">gene_symbols</span><span class="o">=</span><span class="n">gene_symbols</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">955</span>     <span class="n">var_group_positions</span><span class="o">=</span><span class="n">var_group_positions</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">956</span>     <span class="n">var_group_labels</span><span class="o">=</span><span class="n">var_group_labels</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">957</span>     <span class="n">var_group_rotation</span><span class="o">=</span><span class="n">var_group_rotation</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">958</span>     <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">959</span>     <span class="n">dot_color_df</span><span class="o">=</span><span class="n">dot_color_df</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">960</span>     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">961</span>     <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">962</span>     <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">963</span>     <span class="n">vcenter</span><span class="o">=</span><span class="n">vcenter</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">964</span>     <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">965</span>     <span class="o">**</span><span class="n">kwds</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">966</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">968</span> <span class="k">if</span> <span class="n">dendrogram</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">969</span>     <span class="n">dp</span><span class="o">.</span><span class="n">add_dendrogram</span><span class="p">(</span><span class="n">dendrogram_key</span><span class="o">=</span><span class="n">dendrogram</span><span class="p">)</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:132,</span> in <span class="ni">DotPlot.__init__</span><span class="nt">(self, adata, var_names, groupby, use_raw, log, num_categories, categories_order, title, figsize, gene_symbols, var_group_positions, var_group_labels, var_group_rotation, layer, expression_cutoff, mean_only_expressed, standard_scale, dot_color_df, dot_size_df, ax, vmin, vmax, vcenter, norm, **kwds)</span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span> <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">105</span>     <span class="bp">self</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">106</span>     <span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">130</span>     <span class="o">**</span><span class="n">kwds</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">131</span> <span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">132</span>     <span class="n">BasePlot</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">133</span>         <span class="bp">self</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">134</span>         <span class="n">adata</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">135</span>         <span class="n">var_names</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">136</span>         <span class="n">groupby</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">137</span>         <span class="n">use_raw</span><span class="o">=</span><span class="n">use_raw</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">138</span>         <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">139</span>         <span class="n">num_categories</span><span class="o">=</span><span class="n">num_categories</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">140</span>         <span class="n">categories_order</span><span class="o">=</span><span class="n">categories_order</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">141</span>         <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">142</span>         <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">143</span>         <span class="n">gene_symbols</span><span class="o">=</span><span class="n">gene_symbols</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>         <span class="n">var_group_positions</span><span class="o">=</span><span class="n">var_group_positions</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>         <span class="n">var_group_labels</span><span class="o">=</span><span class="n">var_group_labels</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">146</span>         <span class="n">var_group_rotation</span><span class="o">=</span><span class="n">var_group_rotation</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>         <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">149</span>         <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">150</span>         <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">151</span>         <span class="n">vcenter</span><span class="o">=</span><span class="n">vcenter</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">152</span>         <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">153</span>         <span class="o">**</span><span class="n">kwds</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">154</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">156</span>     <span class="c1"># for if category defined by groupby (if any) compute for each var_name</span>
-<span class="g g-Whitespace">    </span><span class="mi">157</span>     <span class="c1"># 1. the fraction of cells in the category having a value &gt;expression_cutoff</span>
-<span class="g g-Whitespace">    </span><span class="mi">158</span>     <span class="c1"># 2. the mean value over the category</span>
-<span class="g g-Whitespace">    </span><span class="mi">159</span> 
-<span class="g g-Whitespace">    </span><span class="mi">160</span>     <span class="c1"># 1. compute fraction of cells having value &gt; expression_cutoff</span>
-<span class="g g-Whitespace">    </span><span class="mi">161</span>     <span class="c1"># transform obs_tidy into boolean matrix using the expression_cutoff</span>
-<span class="g g-Whitespace">    </span><span class="mi">162</span>     <span class="n">obs_bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_tidy</span> <span class="o">&gt;</span> <span class="n">expression_cutoff</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_baseplot_class.py:111,</span> in <span class="ni">BasePlot.__init__</span><span class="nt">(self, adata, var_names, groupby, use_raw, log, num_categories, categories_order, title, figsize, gene_symbols, var_group_positions, var_group_labels, var_group_rotation, layer, ax, vmin, vmax, vcenter, norm, **kwds)</span>
-<span class="g g-Whitespace">    </span><span class="mi">103</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_var_groups</span> <span class="o">=</span> <span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span>     <span class="kc">True</span>
-<span class="g g-Whitespace">    </span><span class="mi">105</span>     <span class="k">if</span> <span class="n">var_group_positions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">var_group_positions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-<span class="g g-Whitespace">    </span><span class="mi">106</span>     <span class="k">else</span> <span class="kc">False</span>
-<span class="g g-Whitespace">    </span><span class="mi">107</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">109</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_var_groups</span><span class="p">()</span>
-<span class="ne">--&gt; </span><span class="mi">111</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_tidy</span> <span class="o">=</span> <span class="n">_prepare_dataframe</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">112</span>     <span class="n">adata</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">113</span>     <span class="bp">self</span><span class="o">.</span><span class="n">var_names</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">114</span>     <span class="n">groupby</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">115</span>     <span class="n">use_raw</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">116</span>     <span class="n">log</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">117</span>     <span class="n">num_categories</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">118</span>     <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">119</span>     <span class="n">gene_symbols</span><span class="o">=</span><span class="n">gene_symbols</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">120</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">121</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_NUM_CATEGORIES</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">122</span>     <span class="n">warn</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">123</span>         <span class="sa">f</span><span class="s2">&quot;Over </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">MAX_NUM_CATEGORIES</span><span class="si">}</span><span class="s2"> categories found. &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">124</span>         <span class="s2">&quot;Plot would be very large.&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">125</span>     <span class="p">)</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:1927,</span> in <span class="ni">_prepare_dataframe</span><span class="nt">(adata, var_names, groupby, use_raw, log, num_categories, layer, gene_symbols)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1925</span>     <span class="n">groupby</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">groupby_index</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1926</span> <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">var_names</span><span class="p">))</span>
-<span class="ne">-&gt; </span><span class="mi">1927</span> <span class="n">obs_tidy</span> <span class="o">=</span> <span class="n">get</span><span class="o">.</span><span class="n">obs_df</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1928</span>     <span class="n">adata</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span> <span class="n">use_raw</span><span class="o">=</span><span class="n">use_raw</span><span class="p">,</span> <span class="n">gene_symbols</span><span class="o">=</span><span class="n">gene_symbols</span>
-<span class="g g-Whitespace">   </span><span class="mi">1929</span> <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1930</span> <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obs_tidy</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
-<span class="g g-Whitespace">   </span><span class="mi">1932</span> <span class="k">if</span> <span class="n">groupby_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1933</span>     <span class="c1"># reset index to treat all columns the same way.</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:272,</span> in <span class="ni">obs_df</span><span class="nt">(adata, keys, obsm_keys, layer, gene_symbols, use_raw)</span>
-<span class="g g-Whitespace">    </span><span class="mi">269</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">270</span>     <span class="n">alias_index</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="ne">--&gt; </span><span class="mi">272</span> <span class="n">obs_cols</span><span class="p">,</span> <span class="n">var_idx_keys</span><span class="p">,</span> <span class="n">var_symbols</span> <span class="o">=</span> <span class="n">_check_indices</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">273</span>     <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">274</span>     <span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">275</span>     <span class="s2">&quot;obs&quot;</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">276</span>     <span class="n">keys</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">277</span>     <span class="n">alias_index</span><span class="o">=</span><span class="n">alias_index</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">278</span>     <span class="n">use_raw</span><span class="o">=</span><span class="n">use_raw</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">279</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">281</span> <span class="c1"># Make df</span>
-<span class="g g-Whitespace">    </span><span class="mi">282</span> <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span><span class="p">)</span>
-
-<span class="nn">File c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:167,</span> in <span class="ni">_check_indices</span><span class="nt">(dim_df, alt_index, dim, keys, alias_index, use_raw)</span>
-<span class="g g-Whitespace">    </span><span class="mi">165</span>         <span class="n">not_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">166</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_found</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">167</span>     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">168</span>         <span class="sa">f</span><span class="s2">&quot;Could not find keys &#39;</span><span class="si">{</span><span class="n">not_found</span><span class="si">}</span><span class="s2">&#39; in columns of `adata.</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">` or in&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">169</span>         <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">alt_repr</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">alt_search_repr</span><span class="si">}</span><span class="s2">.&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">170</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">172</span> <span class="k">return</span> <span class="n">col_keys</span><span class="p">,</span> <span class="n">index_keys</span><span class="p">,</span> <span class="n">index_aliases</span>
-
-<span class="ne">KeyError</span>: &quot;Could not find keys &#39;[&#39;CD68&#39;, &#39;EPCAM&#39;, &#39;MS4A1&#39;, &#39;PDGFRA&#39;]&#39; in columns of `adata.obs` or in adata.var_names.&quot;
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_4144\1734314592.py:25: UserWarning: Ignoring `palette` because no `hue` variable has been assigned.
+  sns.scatterplot(
 </pre></div>
 </div>
+<img alt="_images/4962c0fe30b6726a887483cc1eb1f9334507d25c5d909f8f0d796099054b6f09.png" src="_images/4962c0fe30b6726a887483cc1eb1f9334507d25c5d909f8f0d796099054b6f09.png" />
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cell_type_map</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;T cells&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;B cells&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;Macrophages&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="s2">&quot;Dendritic cells&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="s2">&quot;Fibroblasts&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;Epithelial cells&quot;</span>
-<span class="p">}</span>
-<span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_glioblastoma_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">cell_type_map</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_path</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Single-cell RNASeq data from Mouse Brain&quot;</span>
-<span class="n">data_path2</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/henry/Desktop/python/jbook_rna/datos/Theory - Intro to single-cell RNAseq Images&quot;</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">glioblastoma_norm_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s2">&quot;glioblastoma_normalized.h5ad&quot;</span><span class="p">)</span>
-<span class="n">glioblastoma_raw_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s2">&quot;glioblastoma_raw.h5ad&quot;</span><span class="p">)</span>
-<span class="n">pbmc3k_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s2">&quot;pbmc3k.h5ad&quot;</span><span class="p">)</span>
-
-<span class="n">adata_glioblastoma_norm</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">glioblastoma_norm_file</span><span class="p">)</span>
-<span class="n">adata_glioblastoma_raw</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">glioblastoma_raw_file</span><span class="p">)</span>
-<span class="n">adata_pbmc3k</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">pbmc3k_file</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path2</span><span class="p">,</span> <span class="s2">&quot;brain_raw.h5ad&quot;</span><span class="p">)</span>
-<span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">adata_file</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>cell_ontology_class</th>
-      <th>subtissue</th>
-      <th>mouse.sex</th>
-      <th>mouse.id</th>
-      <th>plate.barcode</th>
-    </tr>
-    <tr>
-      <th>cell</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>A1.B003290.3_38_F.1.1</th>
-      <td>astrocyte</td>
-      <td>Striatum</td>
-      <td>F</td>
-      <td>3_38_F</td>
-      <td>B003290</td>
-    </tr>
-    <tr>
-      <th>A1.B003728.3_56_F.1.1</th>
-      <td>astrocyte</td>
-      <td>Striatum</td>
-      <td>F</td>
-      <td>3_56_F</td>
-      <td>B003728</td>
-    </tr>
-    <tr>
-      <th>A1.MAA000560.3_10_M.1.1</th>
-      <td>oligodendrocyte</td>
-      <td>Cortex</td>
-      <td>M</td>
-      <td>3_10_M</td>
-      <td>MAA000560</td>
-    </tr>
-    <tr>
-      <th>A1.MAA000564.3_10_M.1.1</th>
-      <td>endothelial cell</td>
-      <td>Striatum</td>
-      <td>M</td>
-      <td>3_10_M</td>
-      <td>MAA000564</td>
-    </tr>
-    <tr>
-      <th>A1.MAA000923.3_9_M.1.1</th>
-      <td>astrocyte</td>
-      <td>Hippocampus</td>
-      <td>M</td>
-      <td>3_9_M</td>
-      <td>MAA000923</td>
-    </tr>
-    <tr>
-      <th>A1.MAA000930.3_8_M.1.1</th>
-      <td>oligodendrocyte</td>
-      <td>Cortex</td>
-      <td>M</td>
-      <td>3_8_M</td>
-      <td>MAA000930</td>
-    </tr>
-    <tr>
-      <th>A1.MAA000932.3_11_M.1.1</th>
-      <td>endothelial cell</td>
-      <td>Hippocampus</td>
-      <td>M</td>
-      <td>3_11_M</td>
-      <td>MAA000932</td>
-    </tr>
-    <tr>
-      <th>A1.MAA000940.3_8_M.1.1</th>
-      <td>neuron</td>
-      <td>Striatum</td>
-      <td>M</td>
-      <td>3_8_M</td>
-      <td>MAA000940</td>
-    </tr>
-    <tr>
-      <th>A1.MAA001854.3_38_F.1.1</th>
-      <td>oligodendrocyte</td>
-      <td>Cerebellum</td>
-      <td>F</td>
-      <td>3_38_F</td>
-      <td>MAA001854</td>
-    </tr>
-    <tr>
-      <th>A1.MAA001894.3_39_F.1.1</th>
-      <td>endothelial cell</td>
-      <td>Cortex</td>
-      <td>F</td>
-      <td>3_39_F</td>
-      <td>MAA001894</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>disease_state</th>
-      <th>plate_id</th>
-      <th>tissue</th>
-      <th>patient_id</th>
-      <th>cell_type</th>
-      <th>neoplastic_state</th>
-      <th>diagnosis</th>
-    </tr>
-    <tr>
-      <th>index</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>GSM2243439</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-    </tr>
-    <tr>
-      <th>GSM2243444</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-    </tr>
-    <tr>
-      <th>GSM2243445</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-    </tr>
-    <tr>
-      <th>GSM2243447</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-    </tr>
-    <tr>
-      <th>GSM2243452</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-    </tr>
-    <tr>
-      <th>GSM2243455</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Oligodendrocyte</td>
-      <td>neoplastic: Regular</td>
-      <td>Oligodendrocyte</td>
-    </tr>
-    <tr>
-      <th>GSM2243456</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-    </tr>
-    <tr>
-      <th>GSM2243457</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-    </tr>
-    <tr>
-      <th>GSM2243459</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-    </tr>
-    <tr>
-      <th>GSM2243460</th>
-      <td>diagnosis: glioblastoma</td>
-      <td>plate id: 1001000173</td>
-      <td>tissue: Tumor</td>
-      <td>patient id: BT_S2</td>
-      <td>cell type: Neoplastic</td>
-      <td>neoplastic: Neoplastic</td>
-      <td>Neoplastic</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>ERCC</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0610005C13Rik</th>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>0610007C21Rik</th>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>0610007L01Rik</th>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>0610007N19Rik</th>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>0610007P08Rik</th>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>0610007P14Rik</th>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>0610007P22Rik</th>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>0610008F07Rik</th>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>0610009B14Rik</th>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>0610009B22Rik</th>
-      <td>False</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
+</section>
 </section>
 </section>
 </section>
@@ -4050,7 +3671,23 @@ Find biological functions of differentially expressed genes:</p></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
