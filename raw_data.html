@@ -413,17 +413,11 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neighbourhood-graph-and-umap">Neighbourhood Graph and Umap</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-leidein">Clustering with leidein</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-louvain">Clustering with louvain</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#comparation-between-clusters">Comparation between clusters</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-ledein-and-louvain">Clustering - ledein and Louvain</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-with-louvain">Compare with louvain</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-comparation">Cluster comparation</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#markers-genes-for-each-cluster">Markers genes for each cluster</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-top-marker-genes-per-cluster">Extracting top marker genes per cluster</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a></li>
@@ -463,6 +457,18 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.core.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span>
 <span class="c1"># from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="c1"># Suppress the specific FutureWarning and UserWarning</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">,</span> 
+                       <span class="n">message</span><span class="o">=</span><span class="s2">&quot;The default value of &#39;ignore&#39; for the `na_action` parameter&quot;</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">,</span> 
+                       <span class="n">message</span><span class="o">=</span><span class="s2">&quot;No data for colormapping provided via &#39;c&#39;&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1189,7 +1195,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
   ax = sns.violinplot(
 </pre></div>
 </div>
-<img alt="_images/df12b4cdd3b0da75422c3157714b71e2c73e9ece7b7bab87c96e4dca25f780ef.png" src="_images/df12b4cdd3b0da75422c3157714b71e2c73e9ece7b7bab87c96e4dca25f780ef.png" />
+<img alt="_images/b6c8aefba7b59dd13485440a509f3944039c43f7277e9e96d7c0642a120e6b46.png" src="_images/b6c8aefba7b59dd13485440a509f3944039c43f7277e9e96d7c0642a120e6b46.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1679,7 +1685,7 @@ max    514206.000000      8995.002930     3.961021
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.JointGrid at 0x17522cc8be0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.JointGrid at 0x26fd1083940&gt;
 </pre></div>
 </div>
 <img alt="_images/8627d3cd661377270657acaabd803fe6f34f198f614a8cea0ea328098118af28.png" src="_images/8627d3cd661377270657acaabd803fe6f34f198f614a8cea0ea328098118af28.png" />
@@ -1780,11 +1786,11 @@ Genes pre-filter: 7683, post-filter: 7683
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_1796\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_4144\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
   ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
-C:\Users\henry\AppData\Local\Temp\ipykernel_1796\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+C:\Users\henry\AppData\Local\Temp\ipykernel_4144\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
   ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
-C:\Users\henry\AppData\Local\Temp\ipykernel_1796\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+C:\Users\henry\AppData\Local\Temp\ipykernel_4144\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
   ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
 </pre></div>
 </div>
@@ -1844,7 +1850,7 @@ Estimated detectable doublet fraction = 15.4%
 Overall doublet rate:
 	Expected   = 1.5%
 	Estimated  = 0.0%
-Elapsed time: 2.5 seconds
+Elapsed time: 1.7 seconds
 </pre></div>
 </div>
 </div>
@@ -2211,10 +2217,15 @@ k=30: Silhouette = 0.160
 </div>
 </div>
 </div>
-<p>Neighbourhood Graph</p>
+<section id="neighbourhood-graph-and-umap">
+<h4>Neighbourhood Graph and Umap<a class="headerlink" href="#neighbourhood-graph-and-umap" title="Link to this heading">#</a></h4>
+<div class="admonition-what-is-umap admonition">
+<p class="admonition-title">What is UMAP?</p>
+<p>UMAP (Uniform Manifold Approximation and Projection) is a dimensionality reduction technique commonly used in single-cell RNA sequencing (scRNA-seq) analysis. It reduces high-dimensional data (like thousands of gene expression values per cell) into a 2D or 3D representation while preserving the local structure of the data. This allows us to visualize relationships between cells in a lower-dimensional space.</p>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build graph with optimal k=15</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build graph with optimal k=10</span>
 <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span>
     <span class="n">adata_filtered</span><span class="p">,</span>
     <span class="n">n_pcs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>       <span class="c1"># From variance plot</span>
@@ -2225,6 +2236,21 @@ k=30: Silhouette = 0.160
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;UMAP of filtered data&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
+WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
+</pre></div>
+</div>
+<img alt="_images/effc659fc8209a15ee8de9839eb5bedc186ea1a426c259f608608a7e7513e906.png" src="_images/effc659fc8209a15ee8de9839eb5bedc186ea1a426c259f608608a7e7513e906.png" />
+</div>
+</div>
+</section>
 <section id="clustering-with-leidein">
 <h4>Clustering with leidein<a class="headerlink" href="#clustering-with-leidein" title="Link to this heading">#</a></h4>
 <p>The resolution parameter in Leiden clustering controls how granular your clusters will be:</p>
@@ -2241,7 +2267,13 @@ k=30: Silhouette = 0.160
         <span class="n">resolution</span><span class="o">=</span><span class="n">res</span><span class="p">,</span>
         <span class="n">key_added</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="p">)</span>
-    
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>  
 <span class="c1"># Get cluster counts for each resolution</span>
 <span class="n">cluster_counts_r06</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden_r0.4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">cluster_counts_r04</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden_r0.6&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2303,20 +2335,6 @@ k=30: Silhouette = 0.160
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-</pre></div>
-</div>
 <img alt="_images/917a88bceb79d8353579d3aa42fc9944b8856f759e5eddf9f72e5f108eeedda6.png" src="_images/917a88bceb79d8353579d3aa42fc9944b8856f759e5eddf9f72e5f108eeedda6.png" />
 </div>
 </div>
@@ -2415,20 +2433,6 @@ Resolution 0.8: Silhouette = 0.161
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-</pre></div>
-</div>
 <img alt="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" src="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" />
 </div>
 </div>
@@ -2489,32 +2493,6 @@ Resolution 0.8: Silhouette = 0.197
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-</pre></div>
-</div>
 <img alt="_images/6302608f385e3f2c62f9303efe2193ee0f6815270b274d8ad9c8e9c3f9746265.png" src="_images/6302608f385e3f2c62f9303efe2193ee0f6815270b274d8ad9c8e9c3f9746265.png" />
 </div>
 </div>
@@ -2616,6 +2594,14 @@ c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\
 </table>
 </div></div></div>
 </div>
+<div class="admonition-ari-adjusted-rand-index admonition">
+<p class="admonition-title">ARI (Adjusted Rand Index)</p>
+<p>Measures how similar the cluster assignments are, adjusting for random chance.</p>
+<ul class="simple">
+<li><p>Range: 0 (random) to 1 (perfect match).</p></li>
+<li><p>Higher ARI means Leiden and Louvain results are similar.</p></li>
+</ul>
+</div>
 <p>ARI</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2638,6 +2624,46 @@ leiden r=0.8: ARI = 0.283
 louvain r=0.4: ARI = 0.380
 louvain r=0.6: ARI = 0.397
 louvain r=0.8: ARI = 0.369
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition-nmi-normalized-mutual-information admonition">
+<p class="admonition-title">NMI (Normalized Mutual Information)</p>
+<p>Measures how much information is shared between the two clustering methods.</p>
+<ul class="simple">
+<li><p>Range: 0 (independent) to 1 (identical clustering).</p></li>
+<li><p>Higher NMI indicates strong agreement between Leiden and Louvain.</p></li>
+</ul>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalized_mutual_info_score</span> <span class="k">as</span> <span class="n">nmi</span>
+
+<span class="c1"># Compute NMI between Leiden and Louvain for each resolution</span>
+<span class="n">resolutions</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
+<span class="n">nmi_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">resolutions</span><span class="p">:</span>
+    <span class="n">leiden_labels</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="n">louvain_labels</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="n">nmi_score</span> <span class="o">=</span> <span class="n">nmi</span><span class="p">(</span><span class="n">leiden_labels</span><span class="p">,</span> <span class="n">louvain_labels</span><span class="p">)</span>
+    <span class="n">nmi_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nmi_score</span><span class="p">)</span>
+
+<span class="n">df_nmi</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Resolution&#39;</span><span class="p">:</span> <span class="n">resolutions</span><span class="p">,</span>
+    <span class="s1">&#39;NMI (Leiden vs Louvain)&#39;</span><span class="p">:</span> <span class="n">nmi_results</span>
+<span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">df_nmi</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Resolution  NMI (Leiden vs Louvain)
+0         0.4                 0.872361
+1         0.6                 0.889825
+2         0.8                 0.885393
 </pre></div>
 </div>
 </div>
@@ -2717,7 +2743,7 @@ ENSG00000213625: LEPROT
     <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span>
         <span class="n">adata_filtered</span><span class="p">,</span>
         <span class="n">var_names</span><span class="o">=</span><span class="n">mapped_var_names</span><span class="p">,</span>  <span class="c1"># Use mapped var_names</span>
-        <span class="n">groupby</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r0.6&#39;</span><span class="p">,</span>
+        <span class="n">groupby</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r0.4&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1"> Clusters&#39;</span><span class="p">,</span>
         <span class="n">dendrogram</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">swap_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -2729,34 +2755,20 @@ ENSG00000213625: LEPROT
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: dendrogram data not found (using key=dendrogram_leiden_r0.6). Running `sc.tl.dendrogram` with default parameters. For fine tuning it is recommended to run `sc.tl.dendrogram` independently.
-</pre></div>
-</div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:169: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
   obs_bool.groupby(level=0).sum() / obs_bool.groupby(level=0).count()
 c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:179: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
   dot_color_df = self.obs_tidy.groupby(level=0).mean()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_dendrogram.py:133: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  mean_df = rep_df.groupby(level=0).mean()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:749: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
-  dot_ax.scatter(x, y, **kwds)
 </pre></div>
 </div>
-<img alt="_images/44fc65333a5f2879d9794646769b538f9242257a25a1b6a21487bc911a8dd804.png" src="_images/44fc65333a5f2879d9794646769b538f9242257a25a1b6a21487bc911a8dd804.png" />
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: dendrogram data not found (using key=dendrogram_louvain_r0.6). Running `sc.tl.dendrogram` with default parameters. For fine tuning it is recommended to run `sc.tl.dendrogram` independently.
-</pre></div>
-</div>
+<img alt="_images/654233e9ed7ce41e5638c6bf6455ab1003e346b53b61104d1deddce3ec90ff4c.png" src="_images/654233e9ed7ce41e5638c6bf6455ab1003e346b53b61104d1deddce3ec90ff4c.png" />
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:169: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
   obs_bool.groupby(level=0).sum() / obs_bool.groupby(level=0).count()
 c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:179: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
   dot_color_df = self.obs_tidy.groupby(level=0).mean()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_dendrogram.py:133: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  mean_df = rep_df.groupby(level=0).mean()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:749: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39;, &#39;norm&#39; will be ignored
-  dot_ax.scatter(x, y, **kwds)
 </pre></div>
 </div>
-<img alt="_images/9e312843fe12b93b1ba9438e7a519134e7e3338ca7f21af55b171b8334beb222.png" src="_images/9e312843fe12b93b1ba9438e7a519134e7e3338ca7f21af55b171b8334beb222.png" />
+<img alt="_images/99d30e01562674e108a35e8f540811177deb223ad60a11c09f576551e3c939a2.png" src="_images/99d30e01562674e108a35e8f540811177deb223ad60a11c09f576551e3c939a2.png" />
 </div>
 </div>
 <p>Mitochondrial content</p>
@@ -2765,10 +2777,9 @@ c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplo
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span>
     <span class="n">adata_filtered</span><span class="p">,</span>
     <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pct_mito&#39;</span><span class="p">],</span>
-    <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;leiden_r0.6&#39;</span><span class="p">,</span>
+    <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;leiden_r0.4&#39;</span><span class="p">,</span>
     <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span>
 <span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Mitochondrial % by Leiden Cluster&#39;</span><span class="p">)</span>  <span class="c1"># Set the title using plt.title()</span>
 </pre></div>
 </div>
 </div>
@@ -2784,11 +2795,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
   ax = sns.violinplot(
 </pre></div>
 </div>
-<img alt="_images/991805399ab10ef17c5a2071c477dae630e8ee1e5c32bc6d8d680471f6b654bf.png" src="_images/991805399ab10ef17c5a2071c477dae630e8ee1e5c32bc6d8d680471f6b654bf.png" />
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Mitochondrial % by Leiden Cluster&#39;)
-</pre></div>
-</div>
-<img alt="_images/378ab9bfa09b8a4b483c2d3452cda762f1781da09a20b130a2399c6d701a82bf.png" src="_images/378ab9bfa09b8a4b483c2d3452cda762f1781da09a20b130a2399c6d701a82bf.png" />
+<img alt="_images/c6d07e4c361b68f01aa59c89d609ad1180f0a1709b27ee557a3dfc0c88ed7ecd.png" src="_images/c6d07e4c361b68f01aa59c89d609ad1180f0a1709b27ee557a3dfc0c88ed7ecd.png" />
 </div>
 </div>
 </section>
@@ -2816,180 +2823,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:1217: FutureWarning: The default value of &#39;ignore&#39; for the `na_action` parameter in pandas.Categorical.map is deprecated and will be changed to &#39;None&#39; in a future version. Please set na_action to the desired value to avoid seeing this warning
-  color_vector = pd.Categorical(values.map(color_map))
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_tools\scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
-  cax = scatter(
-</pre></div>
-</div>
 <img alt="_images/486d6d57a5da02c377347fb4b2b93bacbc618ea85a176056a07f1b6bb12cb944.png" src="_images/486d6d57a5da02c377347fb4b2b93bacbc618ea85a176056a07f1b6bb12cb944.png" />
-</div>
-</div>
-<div class="admonition-what-is-umap admonition">
-<p class="admonition-title">What is UMAP?</p>
-<p>UMAP (Uniform Manifold Approximation and Projection) is a dimensionality reduction technique commonly used in single-cell RNA sequencing (scRNA-seq) analysis. It reduces high-dimensional data (like thousands of gene expression values per cell) into a 2D or 3D representation while preserving the local structure of the data. This allows us to visualize relationships between cells in a lower-dimensional space.</p>
-</div>
-<p><em><strong>Left (n_genes_by_cell):</strong></em></p>
-<ul class="simple">
-<li><p>This shows the number of detected genes per cell.</p></li>
-<li><p>Darker colors (purple) indicate cells with fewer detected genes, while lighter colors (yellow) indicate cells with more detected genes.</p></li>
-<li><p>This helps assess the variability in gene expression across cells.</p></li>
-</ul>
-<p><em><strong>Middle (total_UMI_counts):</strong></em></p>
-<ul class="simple">
-<li><p>This represents the total number of UMI (Unique Molecular Identifiers) counts per cell, which indicates the overall RNA content.</p></li>
-<li><p>High UMI counts could suggest more active transcription, while low counts might indicate low-quality or dying cells.</p></li>
-</ul>
-<p><em><strong>Right (pct_mito):</strong></em></p>
-<ul class="simple">
-<li><p>This shows the percentage of mitochondrial gene expression in each cell.</p></li>
-<li><p>Higher mitochondrial percentages (yellow) may indicate cells that are stressed, dying, or low-quality.</p></li>
-</ul>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_glioblastoma_filtered</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;n_genes_by_cell&quot;</span><span class="p">,</span> <span class="s2">&quot;total_UMI_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;UMAP of filtered data&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
-WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
-</pre></div>
-</div>
-<img alt="_images/7acbee9ddfb2d3793c93a79a04f2cce7ea16416af617026ef8b311574a8c67a0.png" src="_images/7acbee9ddfb2d3793c93a79a04f2cce7ea16416af617026ef8b311574a8c67a0.png" />
-</div>
-</div>
-</section>
-</section>
-<section id="clustering-ledein-and-louvain">
-<h3>Clustering - ledein and Louvain<a class="headerlink" href="#clustering-ledein-and-louvain" title="Link to this heading">#</a></h3>
-<p>Map the genes</p>
-<section id="compare-with-louvain">
-<h4>Compare with louvain<a class="headerlink" href="#compare-with-louvain" title="Link to this heading">#</a></h4>
-</section>
-<section id="cluster-comparation">
-<h4>Cluster comparation<a class="headerlink" href="#cluster-comparation" title="Link to this heading">#</a></h4>
-<div class="admonition-ari-adjusted-rand-index admonition">
-<p class="admonition-title">ARI (Adjusted Rand Index)</p>
-<p>Measures how similar the cluster assignments are, adjusting for random chance.</p>
-<ul class="simple">
-<li><p>Range: 0 (random) to 1 (perfect match).</p></li>
-<li><p>Higher ARI means Leiden and Louvain results are similar.</p></li>
-</ul>
-</div>
-<div class="admonition-nmi-normalized-mutual-information admonition">
-<p class="admonition-title">NMI (Normalized Mutual Information)</p>
-<p>Measures how much information is shared between the two clustering methods.</p>
-<ul class="simple">
-<li><p>Range: 0 (independent) to 1 (identical clustering).</p></li>
-<li><p>Higher NMI indicates strong agreement between Leiden and Louvain.</p></li>
-</ul>
-</div>
-</section>
-<section id="markers-genes-for-each-cluster">
-<h4>Markers genes for each cluster<a class="headerlink" href="#markers-genes-for-each-cluster" title="Link to this heading">#</a></h4>
-<p>Use Wilcoxon rank-sum test (or another suitable test) to find genes significantly upregulated in each cluster and the select top marker genes per cluster based on log fold change (logFC) and adjusted p-value (FDR).</p>
-</section>
-<section id="extracting-top-marker-genes-per-cluster">
-<h4>Extracting top marker genes per cluster<a class="headerlink" href="#extracting-top-marker-genes-per-cluster" title="Link to this heading">#</a></h4>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top marker genes for Leiden clusters:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">marker_genes_leiden</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top marker genes for Leiden clusters:
-          0       1                2       3                4                5
-0     IFI30    ND4L             APOD    CCL3  ENSG00000255823  ENSG00000277196
-1  HLA-DRB5    COX2         MARCKSL1    CCL4  ENSG00000232196              AGT
-2    LAPTM5    COX1             DNER  CCL3L3  ENSG00000270672           ETNPPL
-3      SRGN    COX3             PLLP  CCL4L2  ENSG00000269028            TTYH1
-4  HLA-DRB4    ATP8            SYT11    CD83  ENSG00000256618            PLPP3
-5   ALOX5AP    CYTB            FAIM2  CCL3L3  ENSG00000256045            GLUD1
-6     APOC1     ND5          PCDHGC3    OLR1            S100B             SCG3
-7    TMSB10     ND4           PCSK1N    EGR3           ATP1B2           ATP1B2
-8   ARHGDIB   HSPB1             CHL1    FPR1           KCNJ10           CLDN10
-9   RNF144B  ATP5MF  ENSG00000184258  LAPTM5              AGT             CST3
-</pre></div>
-</div>
-</div>
-</div>
-<p>Louvain Cluster Marker Genes
-Potential Functional Interpretation
-Louvain clustering shares some genes with Leiden but also includes neuronal differentiation markers and stress response genes.</p>
-<p>GPR183 (G protein-coupled receptor 183)</p>
-<p>Highly expressed in B-cells and macrophages.</p>
-<p>Plays a role in immune cell migration.</p>
-<p>LYZ (Lysozyme)</p>
-<p>Indicates monocyte and macrophage activity.</p>
-<p>Important in antimicrobial defense.</p>
-<p>FOS (Fos proto-oncogene)</p>
-<p>Marker of cell activation, particularly in neuronal and immune cells.</p>
-<p>SRGN (Serglycin)</p>
-<p>Found in granulocytes, mast cells, and cytotoxic T cells.</p>
-<p>Important for immune cell degranulation.</p>
-<p>OLIG2 (Oligodendrocyte transcription factor 2)</p>
-<p>Specific for oligodendrocyte progenitor cells (OPCs), which are crucial for myelination in the central nervous system.</p>
-<p>HSPA1A, HSPA1B (Heat shock proteins)</p>
-<p>Indicate cellular stress response, likely reflecting activated or stressed cells.</p>
-<p>PLIN2 (Perilipin 2)</p>
-<p>Involved in lipid droplet formation and found in microglia and macrophages.</p>
-<p>Louvain Clustering Interpretation
-Cluster 0, 1, 2: Immune-related clusters (monocytes, macrophages, B cells) due to GPR183, LYZ, and SRGN.</p>
-<p>Cluster 3, 4, 5: Neuronal clusters, with OLIG2 marking oligodendrocytes and FOS indicating neuronal activity.</p>
-<p>Cluster 6, 7: Stress-responsive and metabolic clusters, supported by HSPA1A/B and PLIN2.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top marker genes for Louvain clusters:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">marker_genes_louvain</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top marker genes for Louvain clusters:
-          0       1                2       3         4                5  \
-0     IFI30    ND4L             APOD    CCL3    TMSB10             APOD   
-1  HLA-DRB5   HSPB1             PLLP    CCL4     IFI30  ENSG00000184258   
-2    GPR183    COX2         MARCKSL1  CCL4L2       LYZ             SOX8   
-3  HLA-DRB4     MT3              FOS  CCL3L3      BTG1             DNER   
-4   ARHGDIB    COX1             DNER  CCL3L3      SRGN           CACNG4   
-5      SRGN    COX3            S100B    CD83     PLIN2            OLIG2   
-6     FCGBP    ATP8            SYT11    OLR1  HLA-DRB5          ARFGEF3   
-7    MAP3K8  ATP5MF            FAIM2    EGR3    LAPTM5        ANKRD20A1   
-8  HLA-DPA1    CYTB  ENSG00000184258    FPR1   ALOX5AP           GABBR1   
-9     LAIR1     ND5            PEBP1    PLEK   S100A11             LRP4   
-
-                 6       7     8        9               10               11  \
-0  ENSG00000255823    CCL3  COX1    ACTG1           ETNPPL           HSPA1A   
-1  ENSG00000232196    CD83  COX3  TSPAN31              AGT           HSPA1B   
-2  ENSG00000270672    CCL4  CYTB     TBK1            PLPP3           DNAJB1   
-3  ENSG00000269028  SRGAP2  COX2   TUBB2B             SCG3            HSPA6   
-4  ENSG00000256618    OLR1  ND4L   SRGAP1            S1PR1             BAG3   
-5  ENSG00000256045  CCL3L3   ND4  MARCHF9           CLDN10            DDIT4   
-6            S100B  SELPLG  ATP8    NACAD            GLUD1            HSPB1   
-7              ND4  LAPTM5  ATP6    CCND2  ENSG00000277196             HCST   
-8           KCNJ10  CCL4L2   ND5   PCSK1N           ATP1B2             HAMP   
-9  ENSG00000184258    EGR3   ND2   LANCL2            FXYD1  ENSG00000268864   
-
-         12  
-0   HLA-DRA  
-1     APOC1  
-2      PFN1  
-3   S100A11  
-4     IFI30  
-5      GPX1  
-6      APOE  
-7  HLA-DPA1  
-8      FPR1  
-9       ND6  
-</pre></div>
-</div>
 </div>
 </div>
 </section>
@@ -4209,17 +4043,11 @@ Find biological functions of differentially expressed genes:</p></li>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neighbourhood-graph-and-umap">Neighbourhood Graph and Umap</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-leidein">Clustering with leidein</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-louvain">Clustering with louvain</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#comparation-between-clusters">Comparation between clusters</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-ledein-and-louvain">Clustering - ledein and Louvain</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-with-louvain">Compare with louvain</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-comparation">Cluster comparation</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#markers-genes-for-each-cluster">Markers genes for each cluster</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-top-marker-genes-per-cluster">Extracting top marker genes per cluster</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a></li>
