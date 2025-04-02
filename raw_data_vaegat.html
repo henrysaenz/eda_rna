@@ -62,7 +62,6 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'raw_data_vaegat';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Preprocessing of Raw Data" href="raw_data_pca.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -125,6 +124,8 @@
       
       
       
+        
+      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -180,7 +181,7 @@
                 </a>
             </li>
         </ul>
-        <ul class="current nav bd-sidenav">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to Single-Cell RNA Sequencing</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
@@ -191,7 +192,6 @@
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="raw_data_pca.html">Preprocessing of Raw Data</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Preprocessing of Raw Data using VAE + GAT</a></li>
 </ul>
 
     </div>
@@ -5668,6 +5668,166 @@ Name: count, dtype: int64
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GATConv</span><span class="p">,</span> <span class="n">GCNConv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">silhouette_score</span><span class="p">,</span> <span class="n">calinski_harabasz_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stats</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">umap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">DBSCAN</span>
+
+<span class="c1"># Improved VAE+GAT Model with GCN Layer</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">VAE_GAT</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">VAE_GAT</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gcn</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>  <span class="c1"># Added GCN Layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gat1</span> <span class="o">=</span> <span class="n">GATConv</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gat2</span> <span class="o">=</span> <span class="n">GATConv</span><span class="p">(</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc_mu</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc_var</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout_rate</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gcn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>  <span class="c1"># Apply GCN before GAT</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gat1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gat2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc_mu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">log_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc_var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reparameterize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span><span class="p">):</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">log_var</span><span class="p">)</span>
+        <span class="n">eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">std</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">std</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+        <span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reparameterize</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span>
+
+<span class="c1"># Loss function with increased KL regularization</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">loss_function</span><span class="p">(</span><span class="n">recon_x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>  <span class="c1"># Increased beta</span>
+    <span class="n">recon_loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">recon_x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+    <span class="n">kl_loss</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">log_var</span> <span class="o">-</span> <span class="n">mu</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">log_var</span><span class="o">.</span><span class="n">exp</span><span class="p">())</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="n">recon_loss</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">kl_loss</span>
+    <span class="k">return</span> <span class="n">total_loss</span><span class="p">,</span> <span class="n">recon_loss</span><span class="p">,</span> <span class="n">kl_loss</span>
+
+<span class="c1"># Training function</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">train_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Training&#39;</span><span class="p">,</span> <span class="n">leave</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="n">pbar</span><span class="p">:</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">recon_batch</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+        <span class="n">loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">recon_batch</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="n">pbar</span><span class="o">.</span><span class="n">set_postfix</span><span class="p">({</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">losses</span>
+
+<span class="c1"># Model setup</span>
+<span class="n">input_dim</span> <span class="o">=</span> <span class="n">n_genes</span>
+<span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">latent_dim</span> <span class="o">=</span> <span class="mi">64</span>  <span class="c1"># Increased latent dimension</span>
+<span class="n">num_heads</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">200</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">VAE_GAT</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+
+<span class="c1"># Train model</span>
+<span class="n">losses</span> <span class="o">=</span> <span class="n">train_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">)</span>
+
+<span class="c1"># Generate embeddings</span>
+<span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">recon_x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+    <span class="n">embeddings</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+<span class="c1"># Reconstruction metrics</span>
+<span class="n">mse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">recon_x</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+<span class="n">pearson_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">recon_x</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">())[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">latent_distribution</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">normaltest</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+<span class="n">latent_pvalue</span> <span class="o">=</span> <span class="n">latent_distribution</span><span class="o">.</span><span class="n">pvalue</span>
+
+<span class="c1"># UMAP + DBSCAN for Clustering</span>
+<span class="n">embeddings_umap</span> <span class="o">=</span> <span class="n">umap</span><span class="o">.</span><span class="n">UMAP</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+<span class="n">dbscan</span> <span class="o">=</span> <span class="n">DBSCAN</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">min_samples</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">embeddings_umap</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">dbscan</span><span class="o">.</span><span class="n">labels_</span>
+<span class="n">silhouette</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">embeddings_umap</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">calinski_harabasz</span> <span class="o">=</span> <span class="n">calinski_harabasz_score</span><span class="p">(</span><span class="n">embeddings_umap</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="c1"># PCA for comparison</span>
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="n">pca_embeddings</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+<span class="n">pca_labels</span> <span class="o">=</span> <span class="n">dbscan</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">pca_embeddings</span><span class="p">)</span>
+<span class="n">pca_silhouette</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">pca_embeddings</span><span class="p">,</span> <span class="n">pca_labels</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pca_labels</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">pca_calinski_harabasz</span> <span class="o">=</span> <span class="n">calinski_harabasz_score</span><span class="p">(</span><span class="n">pca_embeddings</span><span class="p">,</span> <span class="n">pca_labels</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pca_labels</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="c1"># Metrics Table</span>
+<span class="n">metrics_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Metric&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MSE&#39;</span><span class="p">,</span> <span class="s1">&#39;Pearson Correlation&#39;</span><span class="p">,</span> <span class="s1">&#39;Latent Space Normality (p-value)&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;Silhouette Score&#39;</span><span class="p">,</span> <span class="s1">&#39;Calinski-Harabasz Index&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;VAE+GAT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">mse</span><span class="p">,</span> <span class="n">pearson_corr</span><span class="p">,</span> <span class="n">latent_pvalue</span><span class="p">,</span> <span class="n">silhouette</span><span class="p">,</span> <span class="n">calinski_harabasz</span><span class="p">],</span>
+    <span class="s1">&#39;PCA&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pca_silhouette</span><span class="p">,</span> <span class="n">pca_calinski_harabasz</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Metrics Table:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">metrics_table</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training: 100%|██████████| 200/200 [00:29&lt;00:00,  6.76it/s, loss=2563395.5000]
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\sklearn\utils\deprecation.py:151: FutureWarning: &#39;force_all_finite&#39; was renamed to &#39;ensure_all_finite&#39; in 1.6 and will be removed in 1.8.
+  warnings.warn(
+c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\umap\umap_.py:1952: UserWarning: n_jobs value 1 overridden to 1 by setting random_state. Use no seed for parallelism.
+  warn(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Metrics Table:
+                             Metric  \
+0                               MSE   
+1               Pearson Correlation   
+2  Latent Space Normality (p-value)   
+3                  Silhouette Score   
+4           Calinski-Harabasz Index   
+
+                                             VAE+GAT        PCA  
+0                                           0.674268        NaN  
+1                                           0.357141        NaN  
+2  [2.1339435376498892e-32, 2.1554072341257757e-4...        NaN  
+3                                           0.121067   0.302021  
+4                                        2068.232683  12.829723  
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 </section>
@@ -5703,15 +5863,6 @@ Name: count, dtype: int64
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="raw_data_pca.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Preprocessing of Raw Data</p>
-      </div>
-    </a>
 </div>
                 </footer>
               
