@@ -193,31 +193,6 @@
 
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Preprocessing of Raw Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html">Preprocessing of Raw Data using VAE + GAT</a></li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </ul>
 
     </div>
@@ -481,7 +456,6 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-vae-gat">Using VAE + GAT</a></li>
 </ul>
 </li>
 </ul>
@@ -2713,7 +2687,8 @@ Resolution 0.8: Silhouette = 0.197
 <img alt="_images/6302608f385e3f2c62f9303efe2193ee0f6815270b274d8ad9c8e9c3f9746265.png" src="_images/6302608f385e3f2c62f9303efe2193ee0f6815270b274d8ad9c8e9c3f9746265.png" />
 </div>
 </div>
-<p>Cluster sizes</p>
+<p><strong>Cluster size comparison</strong>
+Leiden clustering (blue) generally produces a larger number of smaller clusters compared to Louvain (orange), which results in slightly larger clusters. As the resolution increases, both methods detect more fine-grained structures, but Leiden retains a greater diversity in cluster sizes. This suggests that Leiden might be more sensitive to capturing smaller subpopulations, while Louvain tends to favor more balanced partitions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot cluster sizes</span>
@@ -2738,7 +2713,8 @@ Resolution 0.8: Silhouette = 0.197
 <img alt="_images/d263de89ed84db9a1513981ad1fb4671c03720a46991d6361e7d334c68f05c0a.png" src="_images/d263de89ed84db9a1513981ad1fb4671c03720a46991d6361e7d334c68f05c0a.png" />
 </div>
 </div>
-<p>Silhoutte scores</p>
+<p><strong>Comparisson between solhoutte scores</strong></p>
+<p>The silhouette scores provide insight into the clustering quality for different resolutions using Leiden and Louvain methods. At lower resolutions (r = 0.4, 0.6), Leiden outperforms Louvain with higher silhouette scores (0.177 and 0.191 vs. 0.157 and 0.176, respectively), indicating better-defined clusters. However, at r = 0.8, Louvain surpasses Leiden (0.197 vs. 0.161), suggesting that Louvain produces more cohesive clusters at higher resolutions. This indicates that Leiden is more effective at lower resolutions, while Louvain may be preferable when finer cluster structures are needed.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
@@ -2886,6 +2862,11 @@ louvain r=0.8: ARI = 0.369
 </div>
 </div>
 <p>Biological clasification</p>
+<ul class="simple">
+<li><p>These genes represent a mix of immune-related (e.g., <strong>SAA2</strong>, <strong>S100A8</strong>), stress-response (e.g., <strong>DNAJC9</strong>), and regulatory genes (e.g., <strong>CTDP1</strong>, <strong>FBXO32</strong>).</p></li>
+<li><p>The presence of inflammation and immune-related genes suggests that the dataset may include immune cell populations or cells responding to stress or inflammation.</p></li>
+<li><p>Genes like <strong>MGP</strong> and <strong>LEPROT</strong> may indicate specific cell types or states, such as metabolic or extracellular matrix regulation.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top 10 HVGs</span>
@@ -2999,6 +2980,11 @@ c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_dendrogra
 </div>
 </div>
 <p>Mitochondrial content</p>
+<ul class="simple">
+<li><p><strong>Cluster 5</strong> has the highest median and the widest distribution of <code class="docutils literal notranslate"><span class="pre">pct_mito</span></code>, with values extending up to 4%. This suggests that cells in this cluster exhibit elevated mitochondrial activity, potentially indicating stress or metabolic differences.</p></li>
+<li><p><strong>Clusters 0, 1, 3, 7, 9, and 10</strong> have relatively narrow distributions and low medians, indicating consistent and low mitochondrial activity across cells in these clusters.</p></li>
+<li><p><strong>Clusters 2, 4, 6, and 8</strong> show moderate variability, with slightly higher medians compared to clusters with low mitochondrial activity.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span>
@@ -3028,6 +3014,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </section>
 <section id="best-cluster-method">
 <h4>Best cluster method<a class="headerlink" href="#best-cluster-method" title="Link to this heading">#</a></h4>
+<p><strong>Leiden at r=0.4</strong> is the optimal choice based on the highest ARI (0.417), indicating the best alignment with the reference clustering. This resolution provides broader clusters that are biologically interpretable and well-defined.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Select best resolution based on metrics</span>
@@ -3409,6 +3396,10 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>The majority of genes have low -Log10 adjusted p-values, clustering near the bottom of the plot. This indicates that most genes do not show statistically significant differential expression.</p></li>
+<li><p>Only a small subset of genes shows both high fold changes and moderate significance, suggesting that these genes may be key markers or drivers of Cluster 2.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Drop NaNs and ensure numeric values</span>
@@ -3573,9 +3564,6 @@ Name: pvals_adj, dtype: float64
 </div>
 </section>
 </section>
-<section id="using-vae-gat">
-<h3>Using VAE + GAT<a class="headerlink" href="#using-vae-gat" title="Link to this heading">#</a></h3>
-</section>
 </section>
 </section>
 
@@ -3711,7 +3699,6 @@ Name: pvals_adj, dtype: float64
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-vae-gat">Using VAE + GAT</a></li>
 </ul>
 </li>
 </ul>
