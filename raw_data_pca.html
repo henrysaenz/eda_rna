@@ -440,7 +440,10 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#umap-distribution-for-doublets">Umap distribution for doublets</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization-transformation-and-standarization">Data Normalization, Transformation and Standarization</a><ul class="nav section-nav flex-column">
@@ -452,7 +455,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neighbourhood-graph-and-umap">Neighbourhood Graph and Umap</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-leidein">Clustering with leidein</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-techniques">Clustering techniques</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#using-leidein">Using Leidein</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-louvain">Clustering with louvain</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#comparation-between-clusters">Comparation between clusters</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
@@ -2062,7 +2068,8 @@ Number of predicted doublets: 0
 </div>
 </div>
 </div>
-<p>Visual inspection of scores vs. QC metrics</p>
+<p><strong>Visual inspection of scores vs. QC metrics</strong></p>
+<p>A few cells exhibit slightly higher doublet scores (up to ~0.14), but these are sparse and do not form a significant cluster, suggesting that potential doublets are rare in this dataset. The expected doublet rate (based on experimental design) is <strong>1.5%</strong> and the estimated doublet rate (based on Scrublet’s analysis) is <strong>0.0%</strong>, indicating that no doublets were identified in the dataset.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;total_counts&#39;</span><span class="p">],</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet_score&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
@@ -2092,6 +2099,9 @@ After filtering doublets: 1823 cells
 </div>
 </div>
 </div>
+<section id="umap-distribution-for-doublets">
+<h4>Umap distribution for doublets<a class="headerlink" href="#umap-distribution-for-doublets" title="Link to this heading">#</a></h4>
+<p>This UMAP plot visualizes the distribution of cells in a reduced-dimensional space, with each point representing a cell. The color gradient corresponds to the <strong>doublet scores</strong> assigned to each cell, ranging from low (blue) to high (red).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize remaining cells in UMAP</span>
@@ -2125,6 +2135,7 @@ After filtering doublets: 1823 cells
 </div>
 </div>
 </div>
+</section>
 </section>
 </section>
 <section id="data-normalization-transformation-and-standarization">
@@ -2229,6 +2240,7 @@ Number of HVGs selected: 2000
 </div>
 </div>
 </div>
+<p>A clear trend is visible: genes with higher mean expression tend to have higher dispersion. This is expected, as technical noise and biological variability both increase with expression levels.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">)</span>
@@ -2239,6 +2251,7 @@ Number of HVGs selected: 2000
 <img alt="_images/44fb41c0a9ee502f777ca07bb586ff4ec7754de13fcf7fadc7fe3ac34549951b.png" src="_images/44fb41c0a9ee502f777ca07bb586ff4ec7754de13fcf7fadc7fe3ac34549951b.png" />
 </div>
 </div>
+<p>A smaller number of genes have higher mean expression values, extending toward the right side of the plot. These genes are likely housekeeping genes or highly expressed genes with consistent expression across cells. The color gradient highlights the normalized dispersion values, with yellow points representing genes with the highest variability</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a publication-quality HVG plot</span>
@@ -2301,8 +2314,19 @@ Number of HVGs selected: 2000
 </section>
 <section id="dimensionality-reduction">
 <h2>Dimensionality reduction<a class="headerlink" href="#dimensionality-reduction" title="Link to this heading">#</a></h2>
+<div class="admonition-what-is-dimensionality-reduction admonition">
+<p class="admonition-title">What is dimensionality reduction?</p>
+<p>Dimensionality reduction is the process of transforming high-dimensional data into a lower-dimensional space while preserving the most important features or patterns. In the context of single-cell RNA sequencing (scRNA-seq), where each cell is represented by thousands of gene expression values, dimensionality reduction is crucial for simplifying the data, reducing noise, and enabling meaningful visualization and analysis.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 <section id="using-pca">
 <h3>Using PCA<a class="headerlink" href="#using-pca" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>The first few PCs (e.g., PC1, PC2, PC3) explain the largest proportion of variance, with a steep drop-off in variance explained as the ranking increases.</p></li>
+<li><p>After approximately the 10th PC, the variance explained by each additional PC becomes minimal, indicating diminishing returns in terms of information captured.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run PCA (using ARPACK for reproducibility)</span>
@@ -2424,14 +2448,22 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 <img alt="_images/effc659fc8209a15ee8de9839eb5bedc186ea1a426c259f608608a7e7513e906.png" src="_images/effc659fc8209a15ee8de9839eb5bedc186ea1a426c259f608608a7e7513e906.png" />
 </div>
 </div>
+<div class="admonition-what-is-granularity-in-clusters admonition">
+<p class="admonition-title">What is granularity in clusters?</p>
+<p>In clustering algorithms like <strong>Leiden</strong> and <strong>Louvain</strong>, the <strong>resolution parameter</strong> controls the granularity of the clusters. It determines how finely or coarsely the data is partitioned into clusters. A higher resolution results in more, smaller clusters, while a lower resolution produces fewer, larger clusters.</p>
+</div>
 </section>
-<section id="clustering-with-leidein">
-<h4>Clustering with leidein<a class="headerlink" href="#clustering-with-leidein" title="Link to this heading">#</a></h4>
+</section>
+<section id="clustering-techniques">
+<h3>Clustering techniques<a class="headerlink" href="#clustering-techniques" title="Link to this heading">#</a></h3>
+<section id="using-leidein">
+<h4>Using Leidein<a class="headerlink" href="#using-leidein" title="Link to this heading">#</a></h4>
 <p>The resolution parameter in Leiden clustering controls how granular your clusters will be:</p>
-<p>Resolution	Effect	Typical Use Case
-0.4	Fewer, broader clusters	Identifying major cell types
-0.6	Moderate clustering (default)	Balancing specificity/size
-0.8	More, finer clusters	Detecting rare subtypes</p>
+<ul class="simple">
+<li><p>0.4	Fewer, broader clusters	Identifying major cell types</p></li>
+<li><p>0.6	Moderate clustering (default)	Balancing specificity/size</p></li>
+<li><p>0.8	More, finer clusters	Detecting rare subtypes</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cluster at multiple resolutions</span>
@@ -2512,6 +2544,16 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 <img alt="_images/917a88bceb79d8353579d3aa42fc9944b8856f759e5eddf9f72e5f108eeedda6.png" src="_images/917a88bceb79d8353579d3aa42fc9944b8856f759e5eddf9f72e5f108eeedda6.png" />
 </div>
 </div>
+<div class="admonition-what-is-silhoutte-score admonition">
+<p class="admonition-title">What is silhoutte score?</p>
+<p>The <strong>silhouette score</strong> is a metric used to evaluate the quality of clustering. It measures how similar a cell is to other cells in its own cluster compared to cells in other clusters. The score ranges from -1 to 1:</p>
+<ul class="simple">
+<li><p>A score close to <strong>1</strong> indicates that cells are well-matched to their own cluster and poorly matched to other clusters (good clustering).</p></li>
+<li><p>A score close to <strong>0</strong> indicates that cells are on the boundary between clusters.</p></li>
+<li><p>A score close to <strong>-1</strong> indicates that cells may be assigned to the wrong cluster.</p></li>
+</ul>
+</div>
+<p>The Leiden clustering results show that <strong>resolution 0.6</strong> provides the best-defined clusters based on the silhouette score. Lower resolutions (e.g., 0.4) result in broader clusters, while higher resolutions (e.g., 0.8) lead to finer granularity but less well-defined clusters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
@@ -2610,6 +2652,7 @@ Resolution 0.8: Silhouette = 0.161
 <img alt="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" src="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" />
 </div>
 </div>
+<p>The Louvain clustering results show that higher resolutions lead to more clusters with smaller sizes, similar to the Leiden algorithm. However, Louvain tends to produce fewer, larger clusters compared to Leiden. The silhouette scores indicate that the clusters become more well-defined at higher resolutions, with the best score observed at <strong>resolution 0.8</strong>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
@@ -3627,7 +3670,10 @@ Name: pvals_adj, dtype: float64
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#umap-distribution-for-doublets">Umap distribution for doublets</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-normalization-transformation-and-standarization">Data Normalization, Transformation and Standarization</a><ul class="nav section-nav flex-column">
@@ -3639,7 +3685,10 @@ Name: pvals_adj, dtype: float64
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neighbourhood-graph-and-umap">Neighbourhood Graph and Umap</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-leidein">Clustering with leidein</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-techniques">Clustering techniques</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#using-leidein">Using Leidein</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-louvain">Clustering with louvain</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#comparation-between-clusters">Comparation between clusters</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
