@@ -62,7 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'raw_data_pca';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Preprocessing of Raw Data" href="raw_data_vaegat.html" />
+    <link rel="next" title="Preprocessing of Raw Data using VAE + GAT" href="raw_data_vaegat.html" />
     <link rel="prev" title="Exploratory Data Analysis for test data" href="EDA_test.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -192,7 +192,7 @@
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
 
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Preprocessing of Raw Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html">Preprocessing of Raw Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html">Preprocessing of Raw Data using VAE + GAT</a></li>
 
 
 
@@ -416,18 +416,29 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-libraries-and-data">Import Libraries and data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-load">Data Load</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-qc"><strong>Quality Control (QC)</strong></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-metrics">Quality control metrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-metrics">Quality control metrics</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-level-metrics">Gene level metrics</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-level-metrics">Cell level metrics</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-statistics">Summary statistics</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unique-molecular-identifiers-umis">🧬 Unique Molecular Identifiers (UMIs)</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-are-umis-important">Why Are UMIs Important?</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#how-are-umis-used-in-scrna-seq">How Are UMIs Used in scRNA-seq?</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-list">Gene list</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-maping">Gene maping</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#process">Process:</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-quality-control-metrics-in-scrna-seq">Distribution of Quality Control Metrics in scRNA-seq</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-between-number-of-genes-by-cell-and-total-umi-counts">Correlation between number of genes by cell and total UMI counts</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering">Cell Filtering</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering">Cell Filtering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-these-thresholds">Why These Thresholds?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-cell-types-across-variables">Distribution of Cell Types Across Variables</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
 </ul>
@@ -480,7 +491,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="preprocessing-of-raw-data">
 <h1>Preprocessing of Raw Data<a class="headerlink" href="#preprocessing-of-raw-data" title="Link to this heading">#</a></h1>
-<p>This preprocessing step is important to delete noise, standarize data and guarantee a quality analysis for the single cell RNA sequencing.</p>
+<p>This preprocessing step is important to delete noise, standarize data and guarantee a quality analysis for the single cell RNA sequencing. It involves multiple steps such as quality control (filtering low-quality cells and genes), normalization (adjusting for differences in sequencing depth), feature selection (identifying highly variable genes), dimensionality reduction (using techniques like PCA), and batch effect correction (to remove technical artifacts). These steps prepare the data for clustering, differential expression analysis, and other advanced analyses.</p>
 <section id="import-libraries-and-data">
 <h2>Import Libraries and data<a class="headerlink" href="#import-libraries-and-data" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
@@ -501,32 +512,6 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.core.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span>
 <span class="c1"># from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: scrublet in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (0.2.3)
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ERROR: Could not find a version that satisfies the requirement os (from versions: none)
-ERROR: No matching distribution found for os
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: mygene in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (3.2.2)
-Requirement already satisfied: biothings-client&gt;=0.2.6 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from mygene) (0.4.1)
-Requirement already satisfied: httpx&gt;=0.22.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from biothings-client&gt;=0.2.6-&gt;mygene) (0.28.1)
-Requirement already satisfied: anyio in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (4.8.0)
-Requirement already satisfied: certifi in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (2025.1.31)
-Requirement already satisfied: httpcore==1.* in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (1.0.7)
-Requirement already satisfied: idna in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (3.10)
-Requirement already satisfied: h11&lt;0.15,&gt;=0.13 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from httpcore==1.*-&gt;httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (0.14.0)
-Requirement already satisfied: exceptiongroup&gt;=1.0.2 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from anyio-&gt;httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (1.2.2)
-Requirement already satisfied: sniffio&gt;=1.1 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from anyio-&gt;httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (1.3.1)
-Requirement already satisfied: typing_extensions&gt;=4.5 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from anyio-&gt;httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (4.12.2)
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_8528\3761028485.py:14: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
-  from IPython.core.display import display, HTML
 </pre></div>
 </div>
 </div>
@@ -575,6 +560,7 @@ Requirement already satisfied: typing_extensions&gt;=4.5 in c:\users\henry\minic
 </section>
 <section id="quality-control-qc">
 <h2><strong>Quality Control (QC)</strong><a class="headerlink" href="#quality-control-qc" title="Link to this heading">#</a></h2>
+<p>Quality control (QC) in scRNA-seq is essential to remove low-quality cells and technical artifacts that could bias downstream analysis. QC typically involves filtering out cells with too few detected genes (indicating possible empty droplets), cells with extremely high gene counts (potentially doublets or multiplets), and cells with a high percentage of mitochondrial gene expression (suggesting damaged or dying cells). These steps help ensure that only high-quality, biologically relevant cells are included in the analysis, improving the accuracy of clustering, differential expression analysis, and biological interpretation.</p>
 <section id="quality-control-metrics">
 <h3>Quality control metrics<a class="headerlink" href="#quality-control-metrics" title="Link to this heading">#</a></h3>
 <p>We use <strong>three key QC metrics</strong>:</p>
@@ -664,7 +650,14 @@ Number of genes: 7683
 </div>
 </div>
 </div>
-<p>gene level metrics</p>
+<section id="gene-level-metrics">
+<h4>Gene level metrics<a class="headerlink" href="#gene-level-metrics" title="Link to this heading">#</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">n_cells_by_counts:</span></code> The number of cells in which a given gene is detected, useful for identifying genes expressed across many cells versus rare or cell-type-specific genes.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mean_counts:</span></code> The average raw UMI (Unique Molecular Identifier) count per gene across all cells, providing a measure of gene expression levels before normalization.</p>
+<p><code class="docutils literal notranslate"><span class="pre">log1p_mean_counts:</span></code> The natural logarithm (log1p) transformation of the mean counts, helping to stabilize variance and improve interpretability, especially for highly expressed genes.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pct_dropout_by_counts:</span></code> The percentage of cells in which a given gene is not detected (dropout rate), useful for identifying highly expressed genes versus those subject to technical dropout.</p>
+<p><code class="docutils literal notranslate"><span class="pre">total_counts:</span></code> The total number of UMIs per cell, reflecting sequencing depth and cell RNA content, often used for normalization.</p>
+<p><code class="docutils literal notranslate"><span class="pre">log1p_total_counts:</span></code> The log1p transformation of total counts, reducing skewness in distributions and making comparisons across cells more robust.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Métricas por gen (adata.var):&quot;</span><span class="p">)</span>
@@ -771,7 +764,25 @@ Number of genes: 7683
 </table>
 </div></div></div>
 </div>
-<p>cell level metrics</p>
+</section>
+<section id="cell-level-metrics">
+<h4>Cell level metrics<a class="headerlink" href="#cell-level-metrics" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">disease_state</span></code></strong>: Indicates the condition of the patient (e.g., healthy or diseased), useful for stratifying samples.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">plate_id</span></code></strong>: Identifies the sequencing batch or plate from which a cell originated, helping to detect batch effects.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">tissue</span></code></strong>: Specifies the tissue source of the sample (e.g., brain, blood), crucial for biological context.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">patient_id</span></code></strong>: Links each cell to a specific patient, allowing for patient-level comparisons.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">cell_type</span></code></strong>: Annotates the inferred cell type, aiding in biological interpretation.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">neoplastic_state</span></code></strong>: Describes whether the cell is classified as neoplastic (tumor) or non-neoplastic, critical for cancer studies.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">diagnosis</span></code></strong>: The clinical diagnosis associated with the sample, relevant for disease-specific analysis.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code></strong>: Number of genes detected per cell, a key metric in quality control to filter out low-complexity cells.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code></strong>: Log1p-transformed <code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code>, stabilizing variance for better interpretation.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">total_counts</span></code></strong>: Total number of UMIs per cell, reflecting sequencing depth and cell RNA content.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">log1p_total_counts</span></code></strong>: Log1p-transformed <code class="docutils literal notranslate"><span class="pre">total_counts</span></code>, reducing skewness in data distribution.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_50_genes</span></code></strong>: Percentage of total counts coming from the 50 most highly expressed genes, used to check for dominance of specific genes.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_100_genes</span></code></strong>: Same as above, but for the top 100 genes.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_200_genes</span></code></strong>: Same as above, but for the top 200 genes, helping to assess gene expression concentration.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Métricas por célula (adata.obs):&quot;</span><span class="p">)</span>
@@ -1189,8 +1200,10 @@ Number of genes: 7683
 </table>
 </div></div></div>
 </div>
-<p>Summary statistics</p>
-<p>plots</p>
+</section>
+<section id="summary-statistics">
+<h4>Summary statistics<a class="headerlink" href="#summary-statistics" title="Link to this heading">#</a></h4>
+<p>The histogram shows the distribution of the number of detected genes per cell. The distribution appears approximately normal but slightly right-skewed, with most cells having between 500 and 2000 detected genes. The density curve suggests a peak around 1200 genes per cell, indicating that this is the most common range. There is a long right tail, meaning some cells have significantly higher gene counts, which may correspond to doublets or highly transcriptionally active cells.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot histogram of number of genes per cell</span>
@@ -1206,6 +1219,7 @@ Number of genes: 7683
 <img alt="_images/225051446ff190aa8eb5d2c3c8aa846274b9b417801b55475c2ee6e0c7358bf2.png" src="_images/225051446ff190aa8eb5d2c3c8aa846274b9b417801b55475c2ee6e0c7358bf2.png" />
 </div>
 </div>
+</section>
 </section>
 <section id="unique-molecular-identifiers-umis">
 <h3>🧬 Unique Molecular Identifiers (UMIs)<a class="headerlink" href="#unique-molecular-identifiers-umis" title="Link to this heading">#</a></h3>
@@ -1228,6 +1242,7 @@ UMIs help correct for <strong>PCR amplification bias</strong> and improve the ac
 <li><p><strong>UMI filtering</strong> ensures that only high-quality data is used in downstream analysis.</p></li>
 </ul>
 <p><strong>UMIs improve scRNA-seq accuracy by eliminating technical biases.</strong></p>
+<p>In the histogram of total Unique Molecular Identifiers per cell, we can see that there is an skewness to the rigth and that the mean and median are not distant</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot histogram of total UMI counts per cell</span>
@@ -1243,7 +1258,7 @@ UMIs help correct for <strong>PCR amplification bias</strong> and improve the ac
 <img alt="_images/3a538b9ffa54b8b98947fc7a7e2f60831850702addea7a3b179b5fc944729166.png" src="_images/3a538b9ffa54b8b98947fc7a7e2f60831850702addea7a3b179b5fc944729166.png" />
 </div>
 </div>
-<p>Violin</p>
+<p>The distribution of the data, as visualized in the violin plot, shows a unimodal pattern with the majority of gene counts per cell concentrated around the middle range, approximately between 500 and 1500. The density decreases symmetrically as the values move toward the extremes, with fewer cells having very low or very high gene counts.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Violin plot for gene counts per cell</span>
@@ -1288,6 +1303,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </section>
 <section id="gene-maping">
 <h4>Gene maping<a class="headerlink" href="#gene-maping" title="Link to this heading">#</a></h4>
+<p>As in the data we have Index or identifiers for the genes but not their real names and we want to reach the conentration of mitochondrial cells and to find out the proportion of mitochondrial cells, we mapp the genes using a python library <code class="docutils literal notranslate"><span class="pre">mygene</span></code> that lead us to define and set the original name of the gene.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize MyGeneInfo</span>
@@ -1296,6 +1312,25 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </div>
 </div>
+<p>In this step, we mapped the gene identifiers (Ensembl IDs) to their corresponding gene symbols using the <code class="docutils literal notranslate"><span class="pre">mygene</span></code> library. This mapping help us for interpreting the biological significance of the genes and identifying specific subsets, such as mitochondrial genes.</p>
+</section>
+<section id="process">
+<h4>Process:<a class="headerlink" href="#process" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>Gene Mapping</strong>:</p>
+<ul class="simple">
+<li><p>We queried the Ensembl IDs from the dataset against the MyGeneInfo database to retrieve their corresponding gene symbols.</p></li>
+<li><p>A dictionary was created to map Ensembl IDs to gene symbols.</p></li>
+</ul>
+</li>
+<li><p><strong>Mitochondrial Gene Identification</strong>:</p>
+<ul class="simple">
+<li><p>A predefined list of mitochondrial gene symbols was used to identify mitochondrial genes in the dataset.</p></li>
+<li><p>The gene symbols were converted to lowercase for case-insensitive matching.</p></li>
+<li><p>A new column, <code class="docutils literal notranslate"><span class="pre">Is_Mitochondrial</span></code>, was added to the dataset to indicate whether a gene is mitochondrial.</p></li>
+</ul>
+</li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># List of Ensembl IDs</span>
@@ -1375,6 +1410,12 @@ ENSG00000242114       MTFP1
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>The mapping process successfully retrieved gene symbols for most of the Ensembl IDs.</p></li>
+<li><p>A subset of genes was identified as mitochondrial genes based on the predefined list.</p></li>
+<li><p>The number of mitochondrial genes detected in the dataset was <strong><code class="docutils literal notranslate"><span class="pre">11</span></code></strong>.</p></li>
+<li><p>These mitochondrial genes were used to calculate the mitochondrial RNA expression percentage for each cell, which is a key quality control metric in single-cell RNA sequencing analysis.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show the first few rows</span>
@@ -1530,6 +1571,7 @@ ENSG00000242114       MTFP1
 </table>
 </div></div></div>
 </div>
+<p>The dataset contains 1,853 observations and the following statistics: <code class="docutils literal notranslate"><span class="pre">total_counts</span></code>, <code class="docutils literal notranslate"><span class="pre">mito_UMI_counts</span></code>, and <code class="docutils literal notranslate"><span class="pre">pct_mito</span></code>. The <code class="docutils literal notranslate"><span class="pre">total_counts</span></code> variable, representing the total number of counts per cell, has a mean of 144,683.83 and a standard deviation of 78,055.96, with values ranging from 48 to 514,206. The <code class="docutils literal notranslate"><span class="pre">mito_UMI_counts</span></code>, indicating mitochondrial UMI counts, has a mean of 489.12 and a standard deviation of 828.28, with a minimum of 0 and a maximum of 8,995. The <code class="docutils literal notranslate"><span class="pre">pct_mito</span></code>, representing the percentage of mitochondrial counts, has a mean of 0.29 (29%) and a standard deviation of 0.39, with values ranging from 0 to 3.96. The interquartile range (IQR) for <code class="docutils literal notranslate"><span class="pre">total_counts</span></code> is 88,120 to 192,708, for <code class="docutils literal notranslate"><span class="pre">mito_UMI_counts</span></code> is 8.80 to 604, and for <code class="docutils literal notranslate"><span class="pre">pct_mito</span></code> is 0.009 to 0.423, indicating variability in the data across cells.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Verify summary statistics</span>
@@ -1551,6 +1593,19 @@ max    514206.000000      8995.002930     3.961021
 </div>
 </div>
 </div>
+</section>
+<section id="distribution-of-quality-control-metrics-in-scrna-seq">
+<h4>Distribution of Quality Control Metrics in scRNA-seq<a class="headerlink" href="#distribution-of-quality-control-metrics-in-scrna-seq" title="Link to this heading">#</a></h4>
+<p>The three histograms represent key quality control metrics for the glioblastoma single-cell RNA sequencing (scRNA-seq) dataset:</p>
+<ol class="arabic simple">
+<li><p><strong>Number of Genes Detected per Cell</strong><br />
+The distribution of genes detected per cell is approximately normal, with a peak around 1200 genes. It shows a right skew, indicating some cells have a significantly higher number of detected genes. This metric is useful for filtering out low-complexity cells and potential doublets with abnormally high gene counts.</p></li>
+<li><p><strong>Total UMI Counts per Cell</strong><br />
+The total UMI count distribution follows a similar pattern to the gene count distribution, but with a longer right tail. The peak occurs around 100,000–150,000 UMIs per cell. Cells with extremely high counts could be doublets or highly active cells, while very low-count cells may be of low quality.</p></li>
+<li><p><strong>Percentage of Mitochondrial Expression per Cell</strong><br />
+The mitochondrial gene expression percentage is highly skewed, with most cells having low mitochondrial content (&lt;1%). A few outliers exhibit higher mitochondrial percentages (&gt;2%), which might indicate dying or stressed cells. Cells with excessively high mitochondrial expression are typically filtered out during quality control to ensure high-quality data.</p></li>
+</ol>
+<p>These visualizations are crucial for identifying outliers, setting quality control thresholds, and ensuring the reliability of downstream analyses in scRNA-seq.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
@@ -1727,8 +1782,9 @@ max    514206.000000      8995.002930     3.961021
 </table></div></div>
 </div>
 </section>
-<section id="correlation">
-<h4>Correlation<a class="headerlink" href="#correlation" title="Link to this heading">#</a></h4>
+<section id="correlation-between-number-of-genes-by-cell-and-total-umi-counts">
+<h4>Correlation between number of genes by cell and total UMI counts<a class="headerlink" href="#correlation-between-number-of-genes-by-cell-and-total-umi-counts" title="Link to this heading">#</a></h4>
+<p>There is a clear positive correlation between the number of genes per cell and the total UMI counts. Cells with higher total UMI counts tend to have a greater number of detected genes, which is expected since higher sequencing depth or cellular activity often results in more genes being captured. The color gradient shows that cells with higher mitochondrial percentages (redder points) are scattered across the plot but tend to cluster in regions with lower total UMI counts and fewer detected genes. This suggests that cells with high mitochondrial activity may have lower overall transcriptional activity, potentially indicating stressed or dying cells.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -1766,19 +1822,30 @@ max    514206.000000      8995.002930     3.961021
 2️⃣ <strong>Potential doublets</strong> → Abnormally high UMI counts (two cells captured together).<br />
 3️⃣ <strong>Stressed or apoptotic</strong> → High percentage of mitochondrial RNA.</p>
 </div>
-<p>Why These Thresholds?
-min_genes = 200</p>
-<p>Balances removing empty droplets (which typically have &lt;100 genes) while retaining viable cells.</p>
-<p>Conservative given your median genes/cell likely falls between 1,000–3,000.</p>
-<p>max_genes = 5000</p>
-<p>For glioblastoma, tumor cells often show high transcriptional complexity.</p>
-<p>Prevents excluding genuine high-gene-count tumor cells while filtering obvious doublets (which would have extreme gene counts, e.g., &gt;6,000).</p>
-<p>min_counts = 1000</p>
-<p>Ensures cells have enough UMIs for reliable gene expression quantification.</p>
-<p>Typical 10x Genomics datasets average 10,000–50,000 UMIs/cell, so this is lenient.</p>
-<p>max_mito = 20%</p>
-<p>Cancer cells (especially glioblastoma) often have elevated mitochondrial activity.</p>
-<p>Standard thresholds (5–10%) are too strict for tumor microenvironments.</p>
+<section id="why-these-thresholds">
+<h3>Why These Thresholds?<a class="headerlink" href="#why-these-thresholds" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Minimum Genes per Cell (<code class="docutils literal notranslate"><span class="pre">min_genes</span> <span class="pre">=</span> <span class="pre">200</span></code>)</strong>:</p>
+<ul class="simple">
+<li><p>This threshold ensures that only cells with at least 200 detected genes are retained. Cells with fewer genes are likely low-quality or empty droplets, which do not represent viable or biologically meaningful cells. This cutoff is commonly used in single-cell RNA-seq preprocessing to remove noise and artifacts from the dataset.</p></li>
+</ul>
+</li>
+<li><p><strong>Maximum Genes per Cell (<code class="docutils literal notranslate"><span class="pre">max_genes</span> <span class="pre">=</span> <span class="pre">5000</span></code>)</strong>:</p>
+<ul class="simple">
+<li><p>The upper limit of 5,000 genes per cell is set to exclude potential doublets or multiplets, where two or more cells are captured together, artificially inflating the number of detected genes. This threshold is adjusted to accommodate the complexity of tumor cells, which often exhibit higher transcriptional activity compared to normal cells.</p></li>
+</ul>
+</li>
+<li><p><strong>Minimum UMIs per Cell (<code class="docutils literal notranslate"><span class="pre">min_counts</span> <span class="pre">=</span> <span class="pre">1000</span></code>)</strong>:</p>
+<ul class="simple">
+<li><p>A minimum of 1,000 total UMI counts per cell ensures sufficient sequencing depth to capture meaningful biological information. Cells with fewer counts are likely to be of low quality or insufficiently sequenced.</p></li>
+</ul>
+</li>
+<li><p><strong>Maximum Mitochondrial Percentage (<code class="docutils literal notranslate"><span class="pre">max_mito</span> <span class="pre">=</span> <span class="pre">20</span></code>)</strong>:</p>
+<ul class="simple">
+<li><p>A maximum mitochondrial percentage of 20% is used to filter out cells with excessive mitochondrial gene expression, which is often indicative of stressed or dying cells. However, this threshold is set higher for cancer datasets, as tumor cells can exhibit elevated mitochondrial activity due to their altered metabolism and stress response.</p></li>
+</ul>
+</li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filtering thresholds (adjusted for your dataset size)</span>
@@ -1815,6 +1882,49 @@ Genes pre-filter: 7683, post-filter: 7683
 </div>
 </div>
 </div>
+</section>
+<section id="distribution-of-cell-types-across-variables">
+<h3>Distribution of Cell Types Across Variables<a class="headerlink" href="#distribution-of-cell-types-across-variables" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Number of Genes by Cell (<code class="docutils literal notranslate"><span class="pre">n_genes_by_cell</span></code>)</strong>:</p>
+<ul class="simple">
+<li><p>The violin plot for <code class="docutils literal notranslate"><span class="pre">n_genes_by_cell</span></code> shows variability across cell types:</p>
+<ul>
+<li><p><strong>Astrocytes</strong>, <strong>immune cells</strong>, and <strong>vascular cells</strong> have relatively lower median values and narrower distributions, indicating fewer detected genes per cell and less variability within these cell types.</p></li>
+<li><p><strong>Neoplastic cells</strong> exhibit the widest distribution and the highest median number of genes, reflecting their transcriptional complexity and heterogeneity, which is characteristic of tumor cells.</p></li>
+<li><p><strong>Neurons</strong> and <strong>oligodendrocytes</strong> show intermediate distributions, with neurons having slightly higher median values than oligodendrocytes.</p></li>
+<li><p><strong>OPCs (oligodendrocyte precursor cells)</strong> have a narrower distribution, suggesting a more uniform transcriptional profile compared to other cell types.</p></li>
+</ul>
+</li>
+<li><p><strong>Insights</strong>: The high number of genes in neoplastic cells suggests their diverse transcriptional activity, while the lower values in astrocytes and vascular cells may reflect their more specialized roles.</p></li>
+</ul>
+</li>
+<li><p><strong>Total UMI Counts (<code class="docutils literal notranslate"><span class="pre">total_UMI_counts</span></code>)</strong>:</p>
+<ul class="simple">
+<li><p>The distribution of total UMI counts follows a similar pattern to <code class="docutils literal notranslate"><span class="pre">n_genes_by_cell</span></code>:</p>
+<ul>
+<li><p><strong>Neoplastic cells</strong> again show the highest median and widest distribution, consistent with their high transcriptional activity.</p></li>
+<li><p><strong>Astrocytes</strong>, <strong>immune cells</strong>, and <strong>vascular cells</strong> have lower median UMI counts and narrower distributions, indicating lower overall transcriptional activity.</p></li>
+<li><p><strong>Neurons</strong> and <strong>oligodendrocytes</strong> have intermediate UMI counts, with neurons showing slightly higher values.</p></li>
+<li><p><strong>OPCs</strong> have a relatively narrow distribution, similar to their pattern in <code class="docutils literal notranslate"><span class="pre">n_genes_by_cell</span></code>.</p></li>
+</ul>
+</li>
+<li><p><strong>Insights</strong>: The high UMI counts in neoplastic cells further support their transcriptional heterogeneity, while the lower counts in astrocytes and vascular cells suggest more specialized and less active transcriptional states.</p></li>
+</ul>
+</li>
+<li><p><strong>Percentage of Mitochondrial Counts (<code class="docutils literal notranslate"><span class="pre">pct_mito</span></code>)</strong>:</p>
+<ul class="simple">
+<li><p>The mitochondrial percentage varies significantly across cell types:</p>
+<ul>
+<li><p><strong>Astrocytes</strong> and <strong>immune cells</strong> have the highest median mitochondrial percentages, with astrocytes showing a particularly wide distribution. This may indicate higher mitochondrial activity or stress in these cell types.</p></li>
+<li><p><strong>Neoplastic cells</strong> have a moderate mitochondrial percentage, with a relatively wide distribution, reflecting their metabolic diversity.</p></li>
+<li><p><strong>Neurons</strong>, <strong>OPCs</strong>, <strong>oligodendrocytes</strong>, and <strong>vascular cells</strong> have lower mitochondrial percentages, with vascular cells showing the narrowest distribution and lowest median values.</p></li>
+</ul>
+</li>
+<li><p><strong>Insights</strong>: The high mitochondrial percentages in astrocytes and immune cells may reflect their active roles in maintaining homeostasis and responding to stress. The moderate mitochondrial activity in neoplastic cells could be linked to their altered metabolism, while the low percentages in neurons and vascular cells suggest less mitochondrial involvement in their transcriptional profiles.</p></li>
+</ul>
+</li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert relevant data from adata_filtered to DataFrame</span>
@@ -1860,6 +1970,7 @@ C:\Users\henry\AppData\Local\Temp\ipykernel_8528\2847459098.py:24: UserWarning: 
 <img alt="_images/8a3592186c2633f3cd23be2ccaa5345f3aa29cc419e54795b40d9dec8d05ebfb.png" src="_images/8a3592186c2633f3cd23be2ccaa5345f3aa29cc419e54795b40d9dec8d05ebfb.png" />
 </div>
 </div>
+</section>
 </section>
 <section id="doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">
 <h2>Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)<a class="headerlink" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq" title="Link to this heading">#</a></h2>
@@ -3469,7 +3580,7 @@ Name: pvals_adj, dtype: float64
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Preprocessing of Raw Data</p>
+        <p class="prev-next-title">Preprocessing of Raw Data using VAE + GAT</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -3492,18 +3603,29 @@ Name: pvals_adj, dtype: float64
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-libraries-and-data">Import Libraries and data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-load">Data Load</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-qc"><strong>Quality Control (QC)</strong></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-metrics">Quality control metrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-metrics">Quality control metrics</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-level-metrics">Gene level metrics</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-level-metrics">Cell level metrics</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-statistics">Summary statistics</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unique-molecular-identifiers-umis">🧬 Unique Molecular Identifiers (UMIs)</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-are-umis-important">Why Are UMIs Important?</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#how-are-umis-used-in-scrna-seq">How Are UMIs Used in scRNA-seq?</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-list">Gene list</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gene-maping">Gene maping</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#process">Process:</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-quality-control-metrics-in-scrna-seq">Distribution of Quality Control Metrics in scRNA-seq</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-between-number-of-genes-by-cell-and-total-umi-counts">Correlation between number of genes by cell and total UMI counts</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering">Cell Filtering</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-filtering">Cell Filtering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-these-thresholds">Why These Thresholds?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-cell-types-across-variables">Distribution of Cell Types Across Variables</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doublets-and-singlets-in-single-cell-rna-seq-scrna-seq">Doublets and Singlets in Single-Cell RNA-Seq (scRNA-Seq)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-it-important-to-detect-doublets">🔬 Why is it important to detect doublets?</a></li>
 </ul>
