@@ -192,7 +192,33 @@
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="raw_data.html">Preprocessing of Raw Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_pca.html">Preprocessing of Raw Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html">Preprocessing of Raw Data</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </ul>
 
     </div>
@@ -432,7 +458,33 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html#genes-detected-per-cell">Genes detected per cell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="raw_data.html">Preprocessing of Raw Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_pca.html">Preprocessing of Raw Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html">Preprocessing of Raw Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#cargar-los-datos">Cargar los datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#control-de-calidad-qc">1. Control de calidad (QC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#filtrar-celulas-con-pocos-genes-detectados-y-genes-expresados-en-pocas-celulas">Filtrar células con pocos genes detectados y genes expresados en pocas células</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#agregar-metricas-de-calidad">Agregar métricas de calidad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#filtrar-celulas-de-baja-calidad">Filtrar células de baja calidad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#normalizacion">2. Normalización</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#normalizacion-por-total-de-conteos-cpm-like-normalization">Normalización por total de conteos (CPM-like normalization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#transformacion-logaritmica">Transformación logarítmica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#correccion-de-lotes">3. Corrección de lotes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#asegurate-de-que-los-metadatos-incluyan-una-columna-batch-indicando-el-lote">Asegúrate de que los metadatos incluyan una columna ‘batch’ indicando el lote</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#seleccion-de-genes-altamente-variables-hvgs">4. Selección de genes altamente variables (HVGs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#verificar-resultados">Verificar resultados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#guardar-los-datos-preprocesados">Guardar los datos preprocesados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#assuming-adata-filtered-is-already-loaded">Assuming <code class="docutils literal notranslate"><span class="pre">adata_filtered</span></code> is already loaded</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#quality-control-qc">1. Quality Control (QC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#add-qc-metrics">Add QC metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#filter-cells-based-on-qc-metrics">Filter cells based on QC metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#filter-genes-expressed-in-very-few-cells">Filter genes expressed in very few cells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#normalization">2. Normalization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#normalize-total-counts-per-cell-to-10-000-and-log-transform">Normalize total counts per cell to 10,000 and log-transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#batch-correction">3. Batch Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#ensure-the-batch-information-is-in-adata-filtered-obs-batch">Ensure the batch information is in <code class="docutils literal notranslate"><span class="pre">adata_filtered.obs['batch']</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#highly-variable-genes-hvgs">4. Highly Variable Genes (HVGs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#identify-the-top-2000-highly-variable-genes">Identify the top 2000 highly variable genes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html#save-the-preprocessed-data-for-downstream-analysis">Save the preprocessed data for downstream analysis</a></li>
 </ul>
 </div>
 </section>
