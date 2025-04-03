@@ -415,16 +415,18 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-vae-gat">Using VAE + GAT</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-combine-vae-and-gat">Why Combine VAE and GAT?</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#create-ajacency-matrix">Create ajacency matrix</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#treshold-for-correlation">Treshold for correlation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#create-adjacency-matrix">Create adjacency matrix</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu">GPU</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#vae-gat">VAE + GAT</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#definition-of-the-model">Definition of the model</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#metrics-used-and-comparison">Metrics used and Comparison</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#metrics-of-loss">Metrics of loss</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vae">VAE</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#umap">UMap</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#celulas-por-cluster">Células por cluster</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cells-per-cluster">Cells per cluster</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-differential-expression">Posterior Differential Expression</a></li>
@@ -470,14 +472,10 @@ document.write(`
 <span class="c1"># from sklearn.decomposition import PCA</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.core.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span>
-<span class="c1"># from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="c1"># from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GATConv</span><span class="p">,</span> <span class="n">GCNConv</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">silhouette_score</span><span class="p">,</span> <span class="n">calinski_harabasz_score</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
@@ -485,6 +483,9 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stats</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">umap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">DBSCAN</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
 </pre></div>
 </div>
 </div>
@@ -2246,36 +2247,8 @@ These scores are learned during training and are used to weight the contribution
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: torch-geometric in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (2.6.1)Note: you may need to restart the kernel to use updated packages.
-
-Requirement already satisfied: aiohttp in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from torch-geometric) (3.11.13)
-Requirement already satisfied: fsspec in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from torch-geometric) (2025.3.0)
-Requirement already satisfied: jinja2 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from torch-geometric) (3.1.5)
-Requirement already satisfied: numpy in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from torch-geometric) (1.26.4)
-Requirement already satisfied: psutil&gt;=5.8.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from torch-geometric) (5.9.5)
-Requirement already satisfied: pyparsing in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from torch-geometric) (3.0.9)
-Requirement already satisfied: requests in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from torch-geometric) (2.31.0)
-Requirement already satisfied: tqdm in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from torch-geometric) (4.67.1)
-Requirement already satisfied: aiohappyeyeballs&gt;=2.3.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from aiohttp-&gt;torch-geometric) (2.6.1)
-Requirement already satisfied: aiosignal&gt;=1.1.2 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from aiohttp-&gt;torch-geometric) (1.3.2)
-Requirement already satisfied: async-timeout&lt;6.0,&gt;=4.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from aiohttp-&gt;torch-geometric) (5.0.1)
-Requirement already satisfied: attrs&gt;=17.3.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from aiohttp-&gt;torch-geometric) (25.1.0)
-Requirement already satisfied: frozenlist&gt;=1.1.1 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from aiohttp-&gt;torch-geometric) (1.5.0)
-Requirement already satisfied: multidict&lt;7.0,&gt;=4.5 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from aiohttp-&gt;torch-geometric) (6.1.0)
-Requirement already satisfied: propcache&gt;=0.2.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from aiohttp-&gt;torch-geometric) (0.3.0)
-Requirement already satisfied: yarl&lt;2.0,&gt;=1.17.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from aiohttp-&gt;torch-geometric) (1.18.3)
-Requirement already satisfied: MarkupSafe&gt;=2.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from jinja2-&gt;torch-geometric) (2.1.3)
-Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from requests-&gt;torch-geometric) (3.4.1)
-Requirement already satisfied: idna&lt;4,&gt;=2.5 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from requests-&gt;torch-geometric) (3.10)
-Requirement already satisfied: urllib3&lt;3,&gt;=1.21.1 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from requests-&gt;torch-geometric) (1.26.16)
-Requirement already satisfied: certifi&gt;=2017.4.17 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from requests-&gt;torch-geometric) (2025.1.31)
-Requirement already satisfied: colorama in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from tqdm-&gt;torch-geometric) (0.4.6)
-Requirement already satisfied: typing-extensions&gt;=4.1.0 in c:\users\henry\miniconda3\envs\ml_venv\lib\site-packages (from multidict&lt;7.0,&gt;=4.5-&gt;aiohttp-&gt;torch-geometric) (4.12.2)
-</pre></div>
 </div>
-</div>
-</div>
+<p>As we are going to process the standarized data from the sparse matrix that was already preprocessed and may have negative values.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -2334,6 +2307,10 @@ Requirement already satisfied: typing-extensions&gt;=4.1.0 in c:\users\henry\min
 </div>
 </div>
 </div>
+</section>
+<section id="treshold-for-correlation">
+<h4>Treshold for correlation<a class="headerlink" href="#treshold-for-correlation" title="Link to this heading">#</a></h4>
+<p>The correlation matrix provides pairwise relationships between genes. However, not all correlations are equally meaningful. By setting a threshold, we create an adjacency matrix, where only correlations above the threshold are considered connections.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create correlation-based adjacency matrix</span>
@@ -2351,10 +2328,7 @@ Requirement already satisfied: typing-extensions&gt;=4.1.0 in c:\users\henry\min
 </div>
 </div>
 </div>
-<p>using Threshold = 0.5 for the following reasons:</p>
-<p>It balances the number of connections (233) and sparsity (0.01%).
-It avoids including too many spurious correlations while retaining meaningful relationships.
-It is computationally efficient for the GAT model.</p>
+<p>The process begins by computing the <strong>Pearson correlation matrix</strong> from the gene expression data (<code class="docutils literal notranslate"><span class="pre">X</span></code>), where correlations between genes are calculated. Next, different correlation thresholds (<code class="docutils literal notranslate"><span class="pre">0.3,</span> <span class="pre">0.5,</span> <span class="pre">0.7,</span> <span class="pre">0.9</span></code>) are applied to create <strong>binary adjacency matrices</strong>, keeping only correlations above each threshold. For each threshold, the number of actual connections and the <strong>sparsity</strong> (percentage of existing vs. possible connections) are computed. The results are stored in a DataFrame and analyzed. <strong>Threshold 0.5</strong> is chosen as the optimal cutoff because it maintains a balance between network density and sparsity, preserving meaningful connections while filtering out noise.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">analyze_threshold</span><span class="p">(</span><span class="n">correlation_matrix</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
@@ -2404,6 +2378,13 @@ It is computationally efficient for the GAT model.</p>
 </div>
 </div>
 </div>
+<p><strong>Number of Connections vs Threshold</strong>:</p>
+<ul class="simple">
+<li><p>As the threshold increases, the number of retained connections <strong>decreases sharply</strong>.</p></li>
+<li><p>At <strong>0.3</strong>, there are over 2000 connections, indicating a highly dense network.</p></li>
+<li><p>By <strong>0.5</strong>, the number of connections drops significantly to around 233, suggesting a balance between connectivity and sparsity.</p></li>
+<li><p>At <strong>0.7</strong> and <strong>0.9</strong>, very few connections remain, indicating an overly sparse network with minimal relationships preserved.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize the effect of different thresholds</span>
@@ -2429,7 +2410,7 @@ It is computationally efficient for the GAT model.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Correlation Values&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Correlation&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Density&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Threshold=0.7&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Threshold=0.5&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -2437,12 +2418,19 @@ It is computationally efficient for the GAT model.</p>
 </div>
 <div class="cell_output docutils container">
 <img alt="_images/943455d1c40f366a64c50f50f60d6c1103017994dfb9597e708ba46c027d1614.png" src="_images/943455d1c40f366a64c50f50f60d6c1103017994dfb9597e708ba46c027d1614.png" />
-<img alt="_images/0482b4f4a000de5687a2335afe46924dac3a8f75a4c08fcb9f7b12901526090f.png" src="_images/0482b4f4a000de5687a2335afe46924dac3a8f75a4c08fcb9f7b12901526090f.png" />
+<img alt="_images/2d3474f689d3a8e207a3ce6d64c57d67531326dc89356405e8c924af5c1da19a.png" src="_images/2d3474f689d3a8e207a3ce6d64c57d67531326dc89356405e8c924af5c1da19a.png" />
 </div>
 </div>
 </section>
-<section id="create-ajacency-matrix">
-<h4>Create ajacency matrix<a class="headerlink" href="#create-ajacency-matrix" title="Link to this heading">#</a></h4>
+<section id="create-adjacency-matrix">
+<h4>Create adjacency matrix<a class="headerlink" href="#create-adjacency-matrix" title="Link to this heading">#</a></h4>
+<p>A threshold of <strong>0.5</strong> is applied to the absolute correlation matrix to create a binary <strong>adjacency matrix</strong>, where connections exist if correlation exceeds the threshold then the diagonal is set to <strong>zero</strong> to remove self-connections. The adjacency matrix is converted into <strong>edge_index</strong> format, suitable for PyTorch Geometric, this is done using <code class="docutils literal notranslate"><span class="pre">torch.nonzero()</span></code> to extract the indices of nonzero elements.</p>
+<p><strong>Filtering Invalid Edges</strong>:</p>
+<ul class="simple">
+<li><p>A mask ensures that all node indices in <code class="docutils literal notranslate"><span class="pre">edge_index</span></code> are within the valid range of <code class="docutils literal notranslate"><span class="pre">X</span></code>.</p></li>
+<li><p>After filtering, the <code class="docutils literal notranslate"><span class="pre">edge_index</span></code> range is adjusted to <strong>5 to 1813</strong>, removing out-of-range indices.</p></li>
+<li><p>The final number of edges is reduced to <strong>336</strong>, ensuring graph consistency.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">treshold</span> <span class="o">=</span> <span class="mf">0.5</span>
@@ -2496,17 +2484,7 @@ Number of edges: 336
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GATConv</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>  <span class="c1"># Para mostrar el progreso</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-
-<span class="c1"># Check TensorFlow version</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check TensorFlow version</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TensorFlow version:&quot;</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 
 <span class="c1"># Check if TensorFlow detects the GPU</span>
@@ -2526,27 +2504,26 @@ GPU details: [PhysicalDevice(name=&#39;/physical_device:GPU:0&#39;, device_type=
 </div>
 </div>
 </div>
-</section>
-<section id="vae-gat">
-<h4>VAE + GAT<a class="headerlink" href="#vae-gat" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>tqmd<span class="w"> </span>optuna
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ERROR: Could not find a version that satisfies the requirement tqmd (from versions: none)
-ERROR: No matching distribution found for tqmd
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># !pip install tqmd optuna</span>
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 </section>
-</section>
-<section id="vae">
-<h2>VAE<a class="headerlink" href="#vae" title="Link to this heading">#</a></h2>
+<section id="definition-of-the-model">
+<h3>Definition of the model<a class="headerlink" href="#definition-of-the-model" title="Link to this heading">#</a></h3>
+<div class="admonition-improved-vae-gat-model-with-gcn-layer admonition">
+<p class="admonition-title">Improved VAE+GAT Model with GCN Layer</p>
+<p>This model extends the <strong>Variational Autoencoder (VAE)</strong> with <strong>Graph Attention Networks (GAT)</strong> while incorporating a <strong>Graph Convolutional Network (GCN) layer</strong> to enhance feature extraction. The <strong>VAE-GAT-GCN</strong> architecture captures both local and global graph structures while enforcing latent space regularization.</p>
+</div>
+<ul class="simple">
+<li><p>GCN applies spectral filtering, smoothing node features, and capturing global graph structures.</p></li>
+<li><p>GAT learns local attention-based features but lacks global smoothing.</p></li>
+<li><p>Combining GCN + GAT balances global smoothness and local attention, improving representation learning.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Improved VAE+GAT Model with GCN Layer</span>
@@ -2619,6 +2596,7 @@ ERROR: No matching distribution found for tqmd
 </div>
 </div>
 </div>
+<p><strong>Parameters of the model</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Model setup</span>
@@ -2635,6 +2613,71 @@ ERROR: No matching distribution found for tqmd
 </div>
 </div>
 </div>
+<section id="metrics-used-and-comparison">
+<h4>Metrics used and Comparison<a class="headerlink" href="#metrics-used-and-comparison" title="Link to this heading">#</a></h4>
+<div class="admonition-mean-squared-error-mse admonition">
+<p class="admonition-title">Mean Squared Error (MSE)</p>
+<p>The <strong>Mean Squared Error (MSE)</strong> is a standard metric used to measure the quality of reconstruction by comparing the original data $<span class="math notranslate nohighlight">\(X\)</span><span class="math notranslate nohighlight">\( with its reconstructed version \)</span><span class="math notranslate nohighlight">\(\hat{X}\)</span>$. MSE provides an <strong>absolute measure of reconstruction error</strong>, with <strong>lower values indicating better reconstruction</strong>. It is particularly useful in models like <strong>VAE+GAT</strong>, where the goal is to learn a meaningful latent representation while minimizing reconstruction loss.</p>
+</div>
+<p>Mathematically, MSE is defined as:</p>
+<div class="math notranslate nohighlight">
+\[MSE = \frac{1}{N} \sum_{i=1}^{N} (X_i - \hat{X}_i)^2\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p>N is the total number of elements in the dataset,</p></li>
+<li><p>X_i is the original data value at index  i,</p></li>
+<li><p>\hat{X}_i is the reconstructed data value at index i,</p></li>
+<li><p>The squared difference ensures that larger errors are penalized more heavily.</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p><strong>VAE+GAT</strong></p>
+<ul class="simple">
+<li><p>The MSE for the <strong>VAE+GAT</strong> model is <strong>0.673</strong>, meaning the reconstructed data is reasonably close to the original.</p></li>
+<li><p>Since <strong>VAE</strong> explicitly reconstructs input data, <strong>MSE is a direct measure of its performance</strong>.</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>PCA focuses on dimensionality reduction</strong>, where reconstruction is not a primary objective. <strong>MSE is not applicable for PCA</strong> in this case because <strong>PCA does not reconstruct data in the same way</strong> as a VAE.</p>
+<div class="admonition-pearson-correlation admonition">
+<p class="admonition-title">Pearson correlation</p>
+<p>The <strong>Pearson Correlation Coefficient</strong> measures the <strong>linear relationship</strong> between the original data X and its reconstructed version \hat{X}. It quantifies how well the structure of the data is preserved after reconstruction.</p>
+</div>
+<p>Mathematically, Pearson correlation is defined as:</p>
+<div class="math notranslate nohighlight">
+\[r = \frac{\sum (X_i - \bar{X}) (\hat{X}_i - \bar{\hat{X}})}
+{\sqrt{\sum (X_i - \bar{X})^2} \sqrt{\sum (\hat{X}_i - \bar{\hat{X}})^2}}\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p>( X_i ) and ( \hat{X}_i ) are the original and reconstructed data points,</p></li>
+<li><p>( \bar{X} ) and ( \bar{\hat{X}} ) are their respective means,</p></li>
+<li><p>( r ) ranges from <strong>-1 to 1</strong>, where:</p>
+<ul>
+<li><p><strong>1</strong> indicates a <strong>perfect positive correlation</strong> (structure fully preserved),</p></li>
+<li><p><strong>0</strong> means <strong>no correlation</strong> (no relationship between original and reconstructed data),</p></li>
+<li><p><strong>-1</strong> indicates a <strong>perfect negative correlation</strong> (inverted structure).</p></li>
+</ul>
+</li>
+</ul>
+<p>Pearson correlation is particularly <strong>useful in VAE-based models</strong> because it helps evaluate whether the reconstructed data retains the original relationship</p>
+<div class="admonition-calinski-harabasz-index-dbscan admonition">
+<p class="admonition-title">Calinski-Harabasz Index (DBSCAN)</p>
+<p>The <strong>Calinski-Harabasz Index</strong> (also called the <strong>Variance Ratio Criterion</strong>) is a metric used to evaluate the <strong>quality of clustering results</strong>. It measures the ratio of inter-cluster dispersion (how far apart clusters are) to intra-cluster dispersion (how compact the clusters are).</p>
+</div>
+<p>Mathematically, the index is defined as:</p>
+<div class="math notranslate nohighlight">
+\[CH = \frac{ \text{Tr}(B_k) / (k - 1) }{ \text{Tr}(W_k) / (n - k) }\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p>( k ) = Number of clusters,</p></li>
+<li><p>( n ) = Total number of points,</p></li>
+<li><p>( B_k ) = <strong>Between-cluster scatter matrix</strong> (measures how far clusters are from each other),</p></li>
+<li><p>( W_k ) = <strong>Within-cluster scatter matrix</strong> (measures how compact each cluster is).</p></li>
+</ul>
+<p><strong>Higher values indicate better-defined clusters</strong>, meaning:</p>
+<ul class="simple">
+<li><p><strong>High inter-cluster distance</strong> (clusters are well-separated).</p></li>
+<li><p><strong>Low intra-cluster distance</strong> (data points within each cluster are tightly packed).</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train model</span>
@@ -2751,6 +2794,32 @@ n_jobs value 1 overridden to 1 by setting random_state. Use no seed for parallel
 </table>
 </div></div></div>
 </div>
+<p>Calinski-Harabasz Index</p>
+<ol class="arabic simple">
+<li><p><strong>VAE+GAT (1983.04)</strong></p>
+<ul class="simple">
+<li><p>Achieves <strong>a significantly higher score</strong>, suggesting that the latent space representations form <strong>well-separated, compact clusters</strong>.</p></li>
+<li><p>This indicates that <strong>VAE+GAT learns meaningful latent features</strong>, which are highly useful for clustering.</p></li>
+</ul>
+</li>
+<li><p><strong>PCA (12.99)</strong></p>
+<ul class="simple">
+<li><p>The <strong>low score</strong> implies that <strong>clusters are not well-defined</strong> in PCA’s transformed space.</p></li>
+<li><p>PCA simply projects data into a <strong>linear lower-dimensional space</strong>, without enforcing explicit clustering properties and since PCA does not explicitly model relationships between points, it often struggles with capturing <strong>complex, non-linear structures</strong> needed for clustering.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="metrics-of-loss">
+<h4>Metrics of loss<a class="headerlink" href="#metrics-of-loss" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Total Loss</strong><br />
+The first graph represents the <strong>total loss</strong> during training over <strong>200 epochs</strong>. The loss starts at a high value (~2.95 million) and gradually decreases, showing a smooth downward trend.</p></li>
+<li><p><strong>Reconstruction Loss</strong><br />
+The <strong>reconstruction loss</strong> follows a pattern similar to the total loss. It starts high and steadily decreases, suggesting that the <strong>decoder is improving at reconstructing the input data</strong> from the latent space.</p></li>
+<li><p><strong>KL Loss (Kullback-Leibler Divergence)</strong><br />
+The <strong>KL loss</strong>, which behaves differently compared to the other two losses. Initially, it fluctuates but then consistently increases throughout training. This is expected behavior in a <strong>VAE</strong>, as KL divergence encourages the latent space to approximate a normal distribution. The increasing KL loss suggests that the latent space is becoming more structured but also indicates a trade-off: <strong>higher KL loss may push the model toward excessive regularization, potentially reducing reconstruction quality</strong>.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot training losses</span>
@@ -2783,8 +2852,19 @@ n_jobs value 1 overridden to 1 by setting random_state. Use no seed for parallel
 <img alt="_images/50c12ab16ba5de3b437cf6d7c56232d4fff4e056f6bcecd37e3afa7acabda934.png" src="_images/50c12ab16ba5de3b437cf6d7c56232d4fff4e056f6bcecd37e3afa7acabda934.png" />
 </div>
 </div>
+<div class="admonition-kullback-leibler-kl-loss-in-variational-autoencoders-vaes admonition">
+<p class="admonition-title"><strong>Kullback-Leibler (KL) Loss in Variational Autoencoders (VAEs)</strong></p>
+<p>KL Loss (Kullback-Leibler divergence) measures the difference between two probability distributions. In <strong>VAEs</strong>, it quantifies how much the learned latent distribution <strong>deviates</strong> from a standard normal distribution (<strong>𝒩(0,1)</strong>). The goal is to regularize the latent space by ensuring that the learned distribution is close to a normal prior, promoting generalization and smoother latent representations.</p>
+</div>
+<p><strong>Mathematically</strong>, the KL divergence between two distributions ( q(z|x) ) (posterior) and ( p(z) ) (prior) is given by:</p>
+<div class="math notranslate nohighlight">
+\[KL(q(z|x) || p(z)) = \sum q(z|x) \log \frac{q(z|x)}{p(z)}\]</div>
+<p>As the KL is increasing, ittends to constrain the model excessively, <strong>reducing reconstruction quality</strong> and a balance is needed: too high may cause <strong>poor reconstruction</strong>.</p>
+</section>
+</section>
 <section id="umap">
 <h3>UMap<a class="headerlink" href="#umap" title="Link to this heading">#</a></h3>
+<p>It can be seen the Umap produced by the data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot UMAP embeddings without clustering</span>
@@ -2802,6 +2882,10 @@ n_jobs value 1 overridden to 1 by setting random_state. Use no seed for parallel
 <img alt="_images/4a705879990c17851c98734364f941732b691a44919e9850323dfb1e70c8ca5a.png" src="_images/4a705879990c17851c98734364f941732b691a44919e9850323dfb1e70c8ca5a.png" />
 </div>
 </div>
+<ul class="simple">
+<li><p>The <strong>largest cluster (green)</strong> encompasses a significant portion of the points, showing a well-defined group of similar data.</p></li>
+<li><p>The <strong>noise points (red and gray dots)</strong> represent data that did not fit well into any cluster, which could indicate anomalies or sparsely distributed data.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#  black for noise points (label = -1)</span>
@@ -2829,8 +2913,8 @@ n_jobs value 1 overridden to 1 by setting random_state. Use no seed for parallel
 <img alt="_images/c38bbcd77af8b7e8408767e2b4350e0fb2a735cf9781c4db78fc295b8c993f65.png" src="_images/c38bbcd77af8b7e8408767e2b4350e0fb2a735cf9781c4db78fc295b8c993f65.png" />
 </div>
 </div>
-<section id="celulas-por-cluster">
-<h4>Células por cluster<a class="headerlink" href="#celulas-por-cluster" title="Link to this heading">#</a></h4>
+<section id="cells-per-cluster">
+<h4>Cells per cluster<a class="headerlink" href="#cells-per-cluster" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cluster Sizes</span>
@@ -2944,6 +3028,7 @@ Name: count, dtype: int64
 </section>
 <section id="posterior-differential-expression">
 <h3>Posterior Differential Expression<a class="headerlink" href="#posterior-differential-expression" title="Link to this heading">#</a></h3>
+<p>It should be perform an analysis of the most relevant genes per cluster and for instance per cell that lead to the glioblastoma pathology.</p>
 </section>
 </section>
 </section>
@@ -3022,16 +3107,18 @@ Name: count, dtype: int64
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-vae-gat">Using VAE + GAT</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-combine-vae-and-gat">Why Combine VAE and GAT?</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#create-ajacency-matrix">Create ajacency matrix</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#treshold-for-correlation">Treshold for correlation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#create-adjacency-matrix">Create adjacency matrix</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu">GPU</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#vae-gat">VAE + GAT</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#definition-of-the-model">Definition of the model</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#metrics-used-and-comparison">Metrics used and Comparison</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#metrics-of-loss">Metrics of loss</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vae">VAE</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#umap">UMap</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#celulas-por-cluster">Células por cluster</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cells-per-cluster">Cells per cluster</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posterior-differential-expression">Posterior Differential Expression</a></li>
