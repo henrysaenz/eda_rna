@@ -4,9 +4,13 @@
 format: jb-book
 root: intro
 chapters:
+  - file: introduction
   - file: EDA_metadata
   - file: EDA_sparse_matrix
   - file: Datos_celulares_y_geneticos
   - file: Agrupaciones_y_clusters
-  
+  - file: EDA_test
+  - file: raw_data_pca
+  - file: raw_data_vaegat_base
+
 

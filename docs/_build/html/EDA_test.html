@@ -60,6 +60,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'EDA_test';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Preprocessing of Raw Data" href="raw_data.html" />
+    <link rel="prev" title="Exploratory Data Analysis for clusterization and gene expressions" href="Agrupaciones_y_clusters.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -122,8 +124,6 @@
       
       
       
-        
-      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -153,8 +153,8 @@
       
     
     
-    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
-    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+    <img src="_static/logo_uninorte.png" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/logo_uninorte.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
   
   
 </a></div>
@@ -175,17 +175,21 @@
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
                 <a class="reference internal" href="intro.html">
-                    RNAseq EDA
+                    Final Project - Deep Learning
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to Single-Cell RNA Sequencing</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="EDA_sparse_matrix.html">Exploratory Data Analysis for the sparse matrix</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Cargue de datos</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Exploratory Data Analysis for Glioblastoma data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Exploratory Data Analysis for test data</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="raw_data.html">Preprocessing of Raw Data</a></li>
 </ul>
 
     </div>
@@ -240,7 +244,7 @@
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+      <li><a href="https://github.com/henrysaenz/eda_rna" target="_blank"
    class="btn btn-sm btn-source-repository-button dropdown-item"
    title="Source repository"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -257,7 +261,7 @@
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FEDA_test.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/henrysaenz/eda_rna/issues/new?title=Issue%20on%20page%20%2FEDA_test.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -382,21 +386,31 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Exploratory Data Analysis for test data</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importacion-de-datos-y-librerias">Importación de datos y librerías</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-data-and-libraries">Import data and libraries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#univariate-analysis">Univariate Analysis</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#genes">genes</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-bivariado">Análisis bivariado</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#genes-detected-per-cell">Genes detected per cell</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-type-and-percentage-distribution">Cell type and percentage distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mitochondrial-distribution">Mitochondrial distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tissue-count-distribution">Tissue count distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bivariate-analysis">Bivariate analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistic-summary">Statistic summary</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-gene-count-for-cell-type">Distribution of gene count for cell type</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlations">Correlations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regression-plot">Regression plot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recommendations-for-the-model">Recommendations for the model</a></li>
 </ul>
 </li>
 </ul>
@@ -413,8 +427,9 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="exploratory-data-analysis-for-test-data">
 <h1>Exploratory Data Analysis for test data<a class="headerlink" href="#exploratory-data-analysis-for-test-data" title="Link to this heading">#</a></h1>
-<section id="importacion-de-datos-y-librerias">
-<h2>Importación de datos y librerías<a class="headerlink" href="#importacion-de-datos-y-librerias" title="Link to this heading">#</a></h2>
+<section id="import-data-and-libraries">
+<h2>Import data and libraries<a class="headerlink" href="#import-data-and-libraries" title="Link to this heading">#</a></h2>
+<p>The test dataset contains information about cells, genes and tissues that were involved into the diagnoses or expression of the glioblastoma, pointing about wich was the real genes and cells combination that producess this type of cancer, also the level of expression and the subtissues involved.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -427,7 +442,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_16060\1582991288.py:6: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_16180\1582991288.py:6: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
   from IPython.core.display import display, HTML
 </pre></div>
 </div>
@@ -478,10 +493,8 @@ document.write(`
 </div>
 </div>
 </div>
-</section>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="explanation-of-the-variables-in-adata-test-obs">
-<h1>📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code><a class="headerlink" href="#explanation-of-the-variables-in-adata-test-obs" title="Link to this heading">#</a></h1>
+<section id="explanation-of-the-variables-in-adata-test-obs">
+<h3>📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code><a class="headerlink" href="#explanation-of-the-variables-in-adata-test-obs" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Column</strong></p></th>
@@ -513,12 +526,13 @@ document.write(`
 </tbody>
 </table>
 </div>
+</section>
 <hr class="docutils" />
 <section id="example-of-data-interpretation">
-<h2>📌 Example of Data Interpretation<a class="headerlink" href="#example-of-data-interpretation" title="Link to this heading">#</a></h2>
+<h3>📌 Example of Data Interpretation<a class="headerlink" href="#example-of-data-interpretation" title="Link to this heading">#</a></h3>
 <p>Each row represents <strong>an individual cell</strong> with its characteristics:</p>
 <section id="example-1">
-<h3><strong>Example 1</strong><a class="headerlink" href="#example-1" title="Link to this heading">#</a></h3>
+<h4><strong>Example 1</strong><a class="headerlink" href="#example-1" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p><strong>Cell ID</strong>: <code class="docutils literal notranslate"><span class="pre">AAACCCAAGGGTAATT-1</span></code></p></li>
 <li><p><strong>Leiden cluster</strong>: <code class="docutils literal notranslate"><span class="pre">12,0</span></code></p></li>
@@ -528,7 +542,7 @@ document.write(`
 </ul>
 </section>
 <section id="example-2">
-<h3><strong>Example 2</strong><a class="headerlink" href="#example-2" title="Link to this heading">#</a></h3>
+<h4><strong>Example 2</strong><a class="headerlink" href="#example-2" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p><strong>Cell ID</strong>: <code class="docutils literal notranslate"><span class="pre">AAACCCACAGATACCT-1</span></code></p></li>
 <li><p><strong>Leiden cluster</strong>: <code class="docutils literal notranslate"><span class="pre">4</span></code></p></li>
@@ -632,6 +646,7 @@ Number of genes: 13553
 </div>
 </div>
 </section>
+</section>
 <section id="univariate-analysis">
 <h3>Univariate Analysis<a class="headerlink" href="#univariate-analysis" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
@@ -652,6 +667,14 @@ Number of genes: 13553
       <th>cell_types</th>
       <th>tissue</th>
       <th>batch</th>
+      <th>n_genes_by_counts</th>
+      <th>log1p_n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>log1p_total_counts</th>
+      <th>pct_counts_in_top_50_genes</th>
+      <th>pct_counts_in_top_100_genes</th>
+      <th>pct_counts_in_top_200_genes</th>
+      <th>pct_counts_in_top_500_genes</th>
     </tr>
   </thead>
   <tbody>
@@ -664,6 +687,14 @@ Number of genes: 13553
       <td>30474</td>
       <td>30474</td>
       <td>30474</td>
+      <td>30474.000000</td>
+      <td>30474.000000</td>
+      <td>30474.000000</td>
+      <td>30474.000000</td>
+      <td>30474.000000</td>
+      <td>30474.000000</td>
+      <td>30474.000000</td>
+      <td>30474.000000</td>
     </tr>
     <tr>
       <th>unique</th>
@@ -674,6 +705,14 @@ Number of genes: 13553
       <td>27</td>
       <td>2</td>
       <td>4</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
       <th>top</th>
@@ -684,6 +723,14 @@ Number of genes: 13553
       <td>Mature B</td>
       <td>Spleen</td>
       <td>SLN111-D1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
       <th>freq</th>
@@ -694,6 +741,14 @@ Number of genes: 13553
       <td>9936</td>
       <td>16423</td>
       <td>8736</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
       <th>mean</th>
@@ -704,6 +759,14 @@ Number of genes: 13553
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
+      <td>1436.073341</td>
+      <td>7.192609</td>
+      <td>4013.372070</td>
+      <td>8.140994</td>
+      <td>38.211286</td>
+      <td>50.788698</td>
+      <td>61.207695</td>
+      <td>76.479128</td>
     </tr>
     <tr>
       <th>std</th>
@@ -714,6 +777,14 @@ Number of genes: 13553
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
+      <td>577.547021</td>
+      <td>0.398395</td>
+      <td>2513.746826</td>
+      <td>0.558468</td>
+      <td>5.065329</td>
+      <td>5.532540</td>
+      <td>5.194998</td>
+      <td>5.937365</td>
     </tr>
     <tr>
       <th>min</th>
@@ -724,6 +795,14 @@ Number of genes: 13553
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
+      <td>199.000000</td>
+      <td>5.298317</td>
+      <td>498.000000</td>
+      <td>6.212606</td>
+      <td>18.742272</td>
+      <td>25.589479</td>
+      <td>33.538552</td>
+      <td>47.112284</td>
     </tr>
     <tr>
       <th>25%</th>
@@ -734,6 +813,14 @@ Number of genes: 13553
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
+      <td>984.000000</td>
+      <td>6.892642</td>
+      <td>2307.000000</td>
+      <td>7.744137</td>
+      <td>34.897781</td>
+      <td>47.323736</td>
+      <td>58.047471</td>
+      <td>72.859081</td>
     </tr>
     <tr>
       <th>50%</th>
@@ -744,6 +831,14 @@ Number of genes: 13553
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
+      <td>1380.000000</td>
+      <td>7.230563</td>
+      <td>3468.000000</td>
+      <td>8.151622</td>
+      <td>38.088272</td>
+      <td>50.923893</td>
+      <td>61.523675</td>
+      <td>75.905396</td>
     </tr>
     <tr>
       <th>75%</th>
@@ -754,6 +849,14 @@ Number of genes: 13553
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
+      <td>1758.000000</td>
+      <td>7.472501</td>
+      <td>5069.750000</td>
+      <td>8.531244</td>
+      <td>41.423292</td>
+      <td>54.423335</td>
+      <td>64.669530</td>
+      <td>79.611450</td>
     </tr>
     <tr>
       <th>max</th>
@@ -764,6 +867,14 @@ Number of genes: 13553
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
+      <td>7018.000000</td>
+      <td>8.856376</td>
+      <td>73968.000000</td>
+      <td>11.211401</td>
+      <td>96.703526</td>
+      <td>97.934488</td>
+      <td>100.000000</td>
+      <td>100.000000</td>
     </tr>
   </tbody>
 </table></div></div>
@@ -771,8 +882,23 @@ Number of genes: 13553
 </section>
 </section>
 </section>
-<section class="tex2jax_ignore mathjax_ignore" id="genes">
-<h1>genes<a class="headerlink" href="#genes" title="Link to this heading">#</a></h1>
+<section class="tex2jax_ignore mathjax_ignore" id="genes-detected-per-cell">
+<h1>Genes detected per cell<a class="headerlink" href="#genes-detected-per-cell" title="Link to this heading">#</a></h1>
+<ul class="simple">
+<li><p>The <strong>peak around 1000-1500 genes per cell</strong> suggests that most cells express a moderate number of genes.</p></li>
+<li><p>The <strong>long tail towards higher gene counts</strong> may indicate:</p>
+<ul>
+<li><p><strong>Highly active cells</strong> with robust transcription.</p></li>
+<li><p><strong>Technical variation</strong>, where certain cells capture more RNA molecules.</p></li>
+</ul>
+</li>
+<li><p>The <strong>low-gene count cells on the left</strong> could represent:</p>
+<ul>
+<li><p><strong>Low-quality or dying cells</strong> with reduced gene expression.</p></li>
+<li><p><strong>Doublets or multiplets</strong> affecting gene detection.</p></li>
+</ul>
+</li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot histogram</span>
@@ -789,7 +915,18 @@ Number of genes: 13553
 <img alt="_images/b77502321ab320555c00d4259110ff8012012f01b31093f414da1521995bb338.png" src="_images/b77502321ab320555c00d4259110ff8012012f01b31093f414da1521995bb338.png" />
 </div>
 </div>
-<p>cell typed</p>
+<section id="cell-type-and-percentage-distribution">
+<h2>Cell type and percentage distribution<a class="headerlink" href="#cell-type-and-percentage-distribution" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Observations</strong>:</p>
+<ul>
+<li><p><strong>Mature B cells</strong> account for over <strong>30%</strong> of the dataset.</p></li>
+<li><p><strong>CD4 T cells</strong> contribute around <strong>15%</strong>, while <strong>CD8 T cells</strong> make up slightly less.</p></li>
+<li><p><strong>Other immune cells (e.g., Neutrophils, Monocytes, Macrophages, and Dendritic Cells)</strong> have relatively smaller proportions.</p></li>
+<li><p>The <strong>color gradient</strong> highlights differences in abundance, with <strong>blue indicating more frequent cell types</strong> and <strong>red indicating rare cell types</strong>.</p></li>
+</ul>
+</li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cell_counts</span> <span class="o">=</span> <span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_types&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
@@ -815,12 +952,12 @@ Number of genes: 13553
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_16060\767820716.py:7: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_20836\767820716.py:7: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `y` variable to `hue` and set `legend=False` for the same effect.
 
   sns.barplot(x=cell_counts.values, y=cell_counts.index, ax=axes[0], palette=&quot;coolwarm&quot;, order=cell_counts.index)
-C:\Users\henry\AppData\Local\Temp\ipykernel_16060\767820716.py:13: FutureWarning: 
+C:\Users\henry\AppData\Local\Temp\ipykernel_20836\767820716.py:13: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `y` variable to `hue` and set `legend=False` for the same effect.
 
@@ -830,7 +967,12 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/9ef0fa38e9c63cf8e4e6c30953b85c5b3a960f192f3947e25df0f90cef410068.png" src="_images/9ef0fa38e9c63cf8e4e6c30953b85c5b3a960f192f3947e25df0f90cef410068.png" />
 </div>
 </div>
-<p>closer</p>
+<ul class="simple">
+<li><p><strong>Mature B cells</strong> make up <strong>41.9%</strong> of the dataset, indicating a strong dominance.</p></li>
+<li><p><strong>CD4 T cells</strong> comprise <strong>21.8%</strong>, reinforcing their substantial presence.</p></li>
+<li><p><strong>CD8 T cells account for 12.3%</strong>, and <strong>Transitional B cells make up 11.5%</strong>.</p></li>
+<li><p><strong>CD122+ CD8 T cells</strong> and <strong>Ifit3-high B cells</strong> contribute <strong>6.9% and 5.5%</strong>, respectively.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the top 6 most frequent cell types</span>
@@ -856,7 +998,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_16060\3906686963.py:9: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_20836\3906686963.py:9: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `y` variable to `hue` and set `legend=False` for the same effect.
 
@@ -866,7 +1008,14 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/1196dd92c836748996582a16785aadc9645fccba0e7f0ccf29d52799183b6624.png" src="_images/1196dd92c836748996582a16785aadc9645fccba0e7f0ccf29d52799183b6624.png" />
 </div>
 </div>
-<p>mito</p>
+</section>
+<section id="mitochondrial-distribution">
+<h2>Mitochondrial distribution<a class="headerlink" href="#mitochondrial-distribution" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The <strong>peak of the histogram</strong> occurs at approximately <strong>6%</strong>, aligning with the median in the violin plot.</p></li>
+<li><p>Some cells have <strong>higher mitochondrial percentages (~10-15%)</strong>, possibly indicating stressed or dying cells.</p></li>
+<li><p><strong>Low mitochondrial gene percentage</strong> is expected in healthy cells, while <strong>high percentages</strong> may indicate cell stress or apoptosis.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a 1x2 subplot</span>
@@ -889,7 +1038,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_16060\2797744079.py:5: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_20836\2797744079.py:5: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `y` variable to `hue` and set `legend=False` for the same effect.
 
@@ -899,7 +1048,13 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/cd0060b9bae1a721e1d7dd19300fa0be0d6afd6ca0d83aefa7d1fccce4a3b9c5.png" src="_images/cd0060b9bae1a721e1d7dd19300fa0be0d6afd6ca0d83aefa7d1fccce4a3b9c5.png" />
 </div>
 </div>
-<p>tissue</p>
+</section>
+<section id="tissue-count-distribution">
+<h2>Tissue count distribution<a class="headerlink" href="#tissue-count-distribution" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Spleen</strong> accounts for <strong>53.9%</strong> of the total samples.</p></li>
+<li><p><strong>Lymph Node</strong> accounts for <strong>46.1%</strong> of the total samples.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tissue_counts</span> <span class="o">=</span> <span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;tissue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
@@ -923,7 +1078,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_16060\3198639555.py:7: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_20836\3198639555.py:7: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `y` variable to `hue` and set `legend=False` for the same effect.
 
@@ -933,8 +1088,46 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/cf5f023d87e24f79aa61cba885c025d86027d59b22596a637d0efc03fc2d08d5.png" src="_images/cf5f023d87e24f79aa61cba885c025d86027d59b22596a637d0efc03fc2d08d5.png" />
 </div>
 </div>
-<section id="analisis-bivariado">
-<h2>Análisis bivariado<a class="headerlink" href="#analisis-bivariado" title="Link to this heading">#</a></h2>
+</section>
+<section id="bivariate-analysis">
+<h2>Bivariate analysis<a class="headerlink" href="#bivariate-analysis" title="Link to this heading">#</a></h2>
+<section id="statistic-summary">
+<h3>Statistic summary<a class="headerlink" href="#statistic-summary" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Statistic</p></th>
+<th class="head"><p>Lymph_Node (Blue)</p></th>
+<th class="head"><p>Spleen (Orange)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Mean</strong></p></td>
+<td><p>~1300–1500</p></td>
+<td><p>~1200–1400</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Median</strong></p></td>
+<td><p>~1200</p></td>
+<td><p>~1100</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Mode</strong></p></td>
+<td><p>~1000</p></td>
+<td><p>~900</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>IQR (Q1–Q3)</strong></p></td>
+<td><p>~800–2000</p></td>
+<td><p>~700–1900</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Max Gene Count</strong></p></td>
+<td><p>~6000–7000</p></td>
+<td><p>~6000–7000</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Min Gene Count</strong></p></td>
+<td><p>~0–100</p></td>
+<td><p>~0–100</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a 1x2 subplot</span>
@@ -959,7 +1152,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_16060\1705930934.py:11: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_20836\1705930934.py:11: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
@@ -969,7 +1162,15 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <img alt="_images/2c8a72015ab89f968fa1cfe47e70320c39f7c16dc7ceb9d9e28706e4e463fe0b.png" src="_images/2c8a72015ab89f968fa1cfe47e70320c39f7c16dc7ceb9d9e28706e4e463fe0b.png" />
 </div>
 </div>
-<p>top 5 cell type</p>
+</section>
+</section>
+<section id="distribution-of-gene-count-for-cell-type">
+<h2>Distribution of gene count for cell type<a class="headerlink" href="#distribution-of-gene-count-for-cell-type" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>High Variability:</strong> Cell types like <strong>Neutrophils and DCs</strong> have a <strong>large spread</strong> of gene counts.</p></li>
+<li><p><strong>Low Variability:</strong> Cells like <strong>Erythrocytes and Tregs</strong> have <strong>more uniform distributions</strong>.</p></li>
+<li><p><strong>Presence of Outliers:</strong> Many cell types have <strong>significant outliers</strong>, indicating a subset of cells with unusually high gene expression.</p></li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#  Ordenar cell_types por el promedio de n_genes de mayor a menor</span>
@@ -994,19 +1195,46 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_16060\3896891421.py:2: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_20836\3393700865.py:4: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
   ordered_cell_types = adata_test.obs.groupby(&quot;cell_types&quot;)[&quot;n_genes&quot;].median().sort_values(ascending=False).index
-C:\Users\henry\AppData\Local\Temp\ipykernel_16060\3896891421.py:9: FutureWarning: 
+C:\Users\henry\AppData\Local\Temp\ipykernel_20836\3393700865.py:11: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.boxplot(x=&quot;cell_types&quot;, y=&quot;n_genes&quot;, data=adata_test.obs, palette=&quot;coolwarm&quot;)
 </pre></div>
 </div>
-<img alt="_images/f289caea2a46a0a1405e7d28221a79a503a5f3367dbdd72e92d16f1b63fc50ba.png" src="_images/f289caea2a46a0a1405e7d28221a79a503a5f3367dbdd72e92d16f1b63fc50ba.png" />
+<img alt="_images/bba6f5ac58832b7e8c0e84ee13654a73d9a791588e437cc3bc7e45e979d304e4.png" src="_images/bba6f5ac58832b7e8c0e84ee13654a73d9a791588e437cc3bc7e45e979d304e4.png" />
 </div>
 </div>
-<p>correlations</p>
+</section>
+<section id="correlations">
+<h2>Correlations<a class="headerlink" href="#correlations" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Strong Positive Correlations ( &gt; 0.90)</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_genes</span></code> and <code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code> (<strong>0.96</strong>): Indicates that the number of genes detected strongly correlates with the number of genes counted, as expected.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_genes</span></code> and <code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code> (<strong>0.96</strong>): Log-transformed values maintain a strong correlation with raw gene counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code> and <code class="docutils literal notranslate"><span class="pre">total_counts</span></code> (<strong>0.94</strong>): Suggests that higher gene expression is generally associated with an increase in total counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code> and <code class="docutils literal notranslate"><span class="pre">log1p_total_counts</span></code> (<strong>0.97</strong>): Log transformation preserves the strong relationship between gene counts and total counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_50_genes</span></code>, <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_100_genes</span></code>, <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_200_genes</span></code>, and <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_500_genes</span></code> all show strong positive correlations (<strong>0.74 to 0.97</strong>) with each other, implying that cells with high expression in a few genes tend to maintain similar trends across different top-ranked gene categories.</p></li>
+</ul>
+</li>
+<li><p><strong>Strong Negative Correlations ( &lt; -0.60)</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">n_genes</span></code> (<strong>-0.61</strong>): Suggests that batch effects could be influencing gene detection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code> (<strong>-0.61</strong>): Further supports batch-driven variability in gene expression.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code> (<strong>-0.67</strong>): Indicates batch effects impact even log-transformed gene counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">log1p_total_counts</span></code> (<strong>-0.65</strong>): Batch effects also influence total gene expression.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_500_genes</span></code> and <code class="docutils literal notranslate"><span class="pre">n_genes_by_counts</span></code> (<strong>-0.74</strong>) and <code class="docutils literal notranslate"><span class="pre">log1p_n_genes_by_counts</span></code> (<strong>-0.82</strong>): Suggests that when a small number of genes dominate expression, the overall gene count is lower.</p></li>
+</ul>
+</li>
+<li><p><strong>Moderate Correlations (0.40 to 0.70)</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_indices</span></code> and <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_50_genes</span></code> (<strong>0.40</strong>) &amp; <code class="docutils literal notranslate"><span class="pre">pct_counts_in_top_500_genes</span></code> (<strong>0.50</strong>): Indicates that batch effects may influence the concentration of expression in top genes.</p></li>
+</ul>
+</li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">numerical_vars</span> <span class="o">=</span> <span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">])</span>
@@ -1025,217 +1253,42 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/6dd6132fabf2c695afa3dcb727d41270fe79375dd90142a1535c0180773aa915.png" src="_images/6dd6132fabf2c695afa3dcb727d41270fe79375dd90142a1535c0180773aa915.png" />
+<img alt="_images/e6c39b2de4286e115c77acba6e01f167a0935424d1cb2fc127944eb927fdca28.png" src="_images/e6c39b2de4286e115c77acba6e01f167a0935424d1cb2fc127944eb927fdca28.png" />
 </div>
 </div>
+</section>
+<section id="regression-plot">
+<h2>Regression plot<a class="headerlink" href="#regression-plot" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>There is <strong>no strong correlation</strong> between mitochondrial gene percentage and the number of genes detected, as indicated by the flat regression line.</p></li>
+<li><p>Some cells with <strong>high mitochondrial gene content</strong> show reduced gene detection, which may indicate <strong>low-quality or dying cells</strong>.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select 4 numerical variables (modify if needed)</span>
-<span class="n">num_vars</span> <span class="o">=</span> <span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the figure</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
-<span class="c1"># Create a 2x2 grid of scatterplots</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="c1"># Replace &#39;var_x&#39; and &#39;var_y&#39; with your chosen numerical variables</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;percent_mito&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;n_genes&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkred&quot;</span><span class="p">,</span> <span class="n">scatter_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
 
-<span class="c1"># Flatten axes for easy iteration</span>
-<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="c1"># Labels and title</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Percent of mitochondrial genes&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Number of genes detected&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Regression Plot&quot;</span><span class="p">)</span>
 
-<span class="c1"># Plot scatterplots for variable pairs</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_vars</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">num_vars</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">num_vars</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;royalblue&quot;</span><span class="p">)</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distribution of </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Index&quot;</span><span class="p">)</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="c1"># Show the plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">19</span><span class="p">],</span> <span class="n">line</span> <span class="mi">12</span>
-<span class="g g-Whitespace">     </span><span class="mi">10</span> <span class="c1"># Plot scatterplots for variable pairs</span>
-<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_vars</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">12</span>     <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">num_vars</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">num_vars</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;royalblue&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">13</span>     <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distribution of </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">14</span>     <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Index&quot;</span><span class="p">)</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\seaborn\relational.py:636,</span> in <span class="ni">scatterplot</span><span class="nt">(data, x, y, hue, size, style, palette, hue_order, hue_norm, sizes, size_order, size_norm, markers, style_order, legend, ax, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">633</span> <span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">634</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_default_color</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">,</span> <span class="n">hue</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">636</span> <span class="n">p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">638</span> <span class="k">return</span> <span class="n">ax</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\seaborn\relational.py:461,</span> in <span class="ni">_ScatterPlotter.plot</span><span class="nt">(self, ax, kws)</span>
-<span class="g g-Whitespace">    </span><span class="mi">458</span>     <span class="n">kws</span><span class="p">[</span><span class="s2">&quot;linewidth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">linewidth</span>
-<span class="g g-Whitespace">    </span><span class="mi">460</span> <span class="c1"># Finalize the axes details</span>
-<span class="ne">--&gt; </span><span class="mi">461</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_axis_labels</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">462</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">legend</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">463</span>     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;hue&quot;</span><span class="p">:</span> <span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\seaborn\_base.py:1196,</span> in <span class="ni">VectorPlotter._add_axis_labels</span><span class="nt">(self, ax, default_x, default_y)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1191</span> <span class="c1"># TODO ax could default to None and use attached axes if present</span>
-<span class="g g-Whitespace">   </span><span class="mi">1192</span> <span class="c1"># but what to do about the case of facets? Currently using FacetGrid&#39;s</span>
-<span class="g g-Whitespace">   </span><span class="mi">1193</span> <span class="c1"># set_axis_labels method, which doesn&#39;t add labels to the interior even</span>
-<span class="g g-Whitespace">   </span><span class="mi">1194</span> <span class="c1"># when the axes are not shared. Maybe that makes sense?</span>
-<span class="g g-Whitespace">   </span><span class="mi">1195</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlabel</span><span class="p">():</span>
-<span class="nn">-&gt; 1196     x_visible = any(t.get_visible() for t</span> in <span class="ni">ax.get_xticklabels</span><span class="nt">())</span>
-<span class="g g-Whitespace">   </span><span class="mi">1197</span>     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">default_x</span><span class="p">),</span> <span class="n">visible</span><span class="o">=</span><span class="n">x_visible</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1198</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylabel</span><span class="p">():</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\axes\_base.py:74,</span> in <span class="ni">_axis_method_wrapper.__set_name__.&lt;locals&gt;.wrapper</span><span class="nt">(self, *args, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">73</span> <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">74</span>     <span class="k">return</span> <span class="n">get_method</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\axis.py:1456,</span> in <span class="ni">Axis.get_ticklabels</span><span class="nt">(self, minor, which)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1454</span> <span class="k">if</span> <span class="n">minor</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1455</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_minorticklabels</span><span class="p">()</span>
-<span class="ne">-&gt; </span><span class="mi">1456</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_majorticklabels</span><span class="p">()</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\axis.py:1413,</span> in <span class="ni">Axis.get_majorticklabels</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1411</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_majorticklabels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="g g-Whitespace">   </span><span class="mi">1412</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Return this Axis&#39; major tick labels, as a list of `~.text.Text`.&quot;&quot;&quot;</span>
-<span class="ne">-&gt; </span><span class="mi">1413</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_update_ticks</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1414</span>     <span class="n">ticks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1415</span>     <span class="n">labels1</span> <span class="o">=</span> <span class="p">[</span><span class="n">tick</span><span class="o">.</span><span class="n">label1</span> <span class="k">for</span> <span class="n">tick</span> <span class="ow">in</span> <span class="n">ticks</span> <span class="k">if</span> <span class="n">tick</span><span class="o">.</span><span class="n">label1</span><span class="o">.</span><span class="n">get_visible</span><span class="p">()]</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\axis.py:1264,</span> in <span class="ni">Axis._update_ticks</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1262</span> <span class="n">major_locs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_majorticklocs</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1263</span> <span class="n">major_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">major</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format_ticks</span><span class="p">(</span><span class="n">major_locs</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1264</span> <span class="n">major_ticks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">major_locs</span><span class="p">))</span>
-<span class="g g-Whitespace">   </span><span class="mi">1265</span> <span class="bp">self</span><span class="o">.</span><span class="n">major</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">set_locs</span><span class="p">(</span><span class="n">major_locs</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1266</span> <span class="k">for</span> <span class="n">tick</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">major_ticks</span><span class="p">,</span> <span class="n">major_locs</span><span class="p">,</span> <span class="n">major_labels</span><span class="p">):</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\axis.py:1602,</span> in <span class="ni">Axis.get_major_ticks</span><span class="nt">(self, numticks)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1598</span>     <span class="n">numticks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_majorticklocs</span><span class="p">())</span>
-<span class="g g-Whitespace">   </span><span class="mi">1600</span> <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">majorTicks</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">numticks</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1601</span>     <span class="c1"># Update the new tick label properties from the old.</span>
-<span class="ne">-&gt; </span><span class="mi">1602</span>     <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tick</span><span class="p">(</span><span class="n">major</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1603</span>     <span class="bp">self</span><span class="o">.</span><span class="n">majorTicks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1604</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_copy_tick_props</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">majorTicks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tick</span><span class="p">)</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\axis.py:1551,</span> in <span class="ni">Axis._get_tick</span><span class="nt">(self, major)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1547</span>     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1548</span>         <span class="sa">f</span><span class="s2">&quot;The Axis subclass </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must define &quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1549</span>         <span class="s2">&quot;_tick_class or reimplement _get_tick()&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1550</span> <span class="n">tick_kw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_major_tick_kw</span> <span class="k">if</span> <span class="n">major</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minor_tick_kw</span>
-<span class="ne">-&gt; </span><span class="mi">1551</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tick_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">major</span><span class="o">=</span><span class="n">major</span><span class="p">,</span> <span class="o">**</span><span class="n">tick_kw</span><span class="p">)</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\axis.py:417,</span> in <span class="ni">XTick.__init__</span><span class="nt">(self, *args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">416</span> <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">417</span>     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">418</span>     <span class="c1"># x in data coords, y in axes coords</span>
-<span class="g g-Whitespace">    </span><span class="mi">419</span>     <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\axis.py:183,</span> in <span class="ni">Tick.__init__</span><span class="nt">(self, axes, loc, size, width, color, tickdir, pad, labelsize, labelcolor, zorder, gridOn, tick1On, tick2On, label1On, label2On, major, labelrotation, grid_color, grid_linestyle, grid_linewidth, grid_alpha, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">174</span> <span class="bp">self</span><span class="o">.</span><span class="n">label1</span> <span class="o">=</span> <span class="n">mtext</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">175</span>     <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">176</span>     <span class="n">fontsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">labelcolor</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="n">label1On</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">177</span>     <span class="n">rotation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_labelrotation</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="g g-Whitespace">    </span><span class="mi">178</span> <span class="bp">self</span><span class="o">.</span><span class="n">label2</span> <span class="o">=</span> <span class="n">mtext</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">179</span>     <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">180</span>     <span class="n">fontsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">labelcolor</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="n">label2On</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">181</span>     <span class="n">rotation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_labelrotation</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="ne">--&gt; </span><span class="mi">183</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_tickdir</span><span class="p">(</span><span class="n">tickdir</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">185</span> <span class="k">for</span> <span class="n">artist</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tick1line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tick2line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gridline</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">186</span>                <span class="bp">self</span><span class="o">.</span><span class="n">label1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label2</span><span class="p">]:</span>
-<span class="g g-Whitespace">    </span><span class="mi">187</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_set_artist_props</span><span class="p">(</span><span class="n">artist</span><span class="p">)</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\axis.py:453,</span> in <span class="ni">XTick._apply_tickdir</span><span class="nt">(self, tickdir)</span>
-<span class="g g-Whitespace">    </span><span class="mi">447</span> <span class="n">mark1</span><span class="p">,</span> <span class="n">mark2</span> <span class="o">=</span> <span class="p">{</span>
-<span class="g g-Whitespace">    </span><span class="mi">448</span>     <span class="s1">&#39;out&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">mlines</span><span class="o">.</span><span class="n">TICKDOWN</span><span class="p">,</span> <span class="n">mlines</span><span class="o">.</span><span class="n">TICKUP</span><span class="p">),</span>
-<span class="g g-Whitespace">    </span><span class="mi">449</span>     <span class="s1">&#39;in&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">mlines</span><span class="o">.</span><span class="n">TICKUP</span><span class="p">,</span> <span class="n">mlines</span><span class="o">.</span><span class="n">TICKDOWN</span><span class="p">),</span>
-<span class="g g-Whitespace">    </span><span class="mi">450</span>     <span class="s1">&#39;inout&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">),</span>
-<span class="g g-Whitespace">    </span><span class="mi">451</span> <span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">_tickdir</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">452</span> <span class="bp">self</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_marker</span><span class="p">(</span><span class="n">mark1</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">453</span> <span class="bp">self</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_marker</span><span class="p">(</span><span class="n">mark2</span><span class="p">)</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\lines.py:1192,</span> in <span class="ni">Line2D.set_marker</span><span class="nt">(self, marker)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1181</span> <span class="nd">@_docstring</span><span class="o">.</span><span class="n">interpd</span>
-<span class="g g-Whitespace">   </span><span class="mi">1182</span> <span class="k">def</span><span class="w"> </span><span class="nf">set_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
-<span class="g g-Whitespace">   </span><span class="mi">1183</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1184</span><span class="sd">     Set the line marker.</span>
-<span class="g g-Whitespace">   </span><span class="mi">1185</span><span class="sd"> </span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1190</span><span class="sd">         arguments.</span>
-<span class="g g-Whitespace">   </span><span class="mi">1191</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">-&gt; </span><span class="mi">1192</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_marker</span> <span class="o">=</span> <span class="n">MarkerStyle</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_marker</span><span class="o">.</span><span class="n">get_fillstyle</span><span class="p">())</span>
-<span class="g g-Whitespace">   </span><span class="mi">1193</span>     <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\markers.py:272,</span> in <span class="ni">MarkerStyle.__init__</span><span class="nt">(self, marker, fillstyle, transform, capstyle, joinstyle)</span>
-<span class="g g-Whitespace">    </span><span class="mi">267</span>     <span class="n">marker</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">268</span>     <span class="n">_api</span><span class="o">.</span><span class="n">warn_deprecated</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">269</span>         <span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;MarkerStyle(None) is deprecated since &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">270</span>         <span class="s2">&quot;</span><span class="si">%(since)s</span><span class="s2">; support will be removed </span><span class="si">%(removal)s</span><span class="s2">.  Use &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">271</span>         <span class="s2">&quot;MarkerStyle(&#39;&#39;) to construct an empty MarkerStyle.&quot;</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">272</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_marker</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\markers.py:367,</span> in <span class="ni">MarkerStyle._set_marker</span><span class="nt">(self, marker)</span>
-<span class="g g-Whitespace">    </span><span class="mi">365</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="n">MarkerStyle</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">366</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_marker</span> <span class="o">=</span> <span class="n">marker</span>
-<span class="ne">--&gt; </span><span class="mi">367</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_recache</span><span class="p">()</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\markers.py:291,</span> in <span class="ni">MarkerStyle._recache</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">287</span> <span class="c1"># Initial guess: Assume the marker is filled unless the fillstyle is</span>
-<span class="g g-Whitespace">    </span><span class="mi">288</span> <span class="c1"># set to &#39;none&#39;. The marker function will override this for unfilled</span>
-<span class="g g-Whitespace">    </span><span class="mi">289</span> <span class="c1"># markers.</span>
-<span class="g g-Whitespace">    </span><span class="mi">290</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fillstyle</span> <span class="o">!=</span> <span class="s1">&#39;none&#39;</span>
-<span class="ne">--&gt; </span><span class="mi">291</span> <span class="bp">self</span><span class="o">.</span><span class="n">_marker_function</span><span class="p">()</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\markers.py:806,</span> in <span class="ni">MarkerStyle._set_tickup</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">805</span> <span class="k">def</span><span class="w"> </span><span class="nf">_set_tickup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">806</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">807</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_snap_threshold</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="g g-Whitespace">    </span><span class="mi">808</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_filled</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="nn">File ~\miniconda3\envs\ml_venv\lib\site-packages\matplotlib\transforms.py:1903,</span> in <span class="ni">Affine2D.__init__</span><span class="nt">(self, matrix, **kwargs)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1900</span> <span class="k">if</span> <span class="n">matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1901</span>     <span class="c1"># A bit faster than np.identity(3).</span>
-<span class="g g-Whitespace">   </span><span class="mi">1902</span>     <span class="n">matrix</span> <span class="o">=</span> <span class="n">IdentityTransform</span><span class="o">.</span><span class="n">_mtx</span>
-<span class="ne">-&gt; </span><span class="mi">1903</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtx</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1904</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalid</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="ne">KeyboardInterrupt</span>: 
-</pre></div>
+<img alt="_images/eff1b435b8b89d3efa76cccbcec42dd482b57cca95f948e2904b65fbe75b8a6a.png" src="_images/eff1b435b8b89d3efa76cccbcec42dd482b57cca95f948e2904b65fbe75b8a6a.png" />
 </div>
 </div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select 4 different numerical variables (modify if needed)</span>
-<span class="n">num_vars</span> <span class="o">=</span> <span class="n">adata_test</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
-
-<span class="c1"># Create a 2x2 grid of regression plots</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-
-<span class="c1"># Flatten axes for easy iteration</span>
-<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-
-<span class="c1"># Plot regression plots for variable pairs</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_vars</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">num_vars</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">num_vars</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;darkred&quot;</span><span class="p">,</span> <span class="n">scatter_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span><span class="mf">0.5</span><span class="p">})</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Regression Plot of </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Index&quot;</span><span class="p">)</span>
-    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 6️⃣ 🔬 Distribución de genes y cuentas</span>
-<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">adata_test</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;total_counts&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;n_genes_by_counts&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Total Counts vs. Genes Detected&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/7df1537cbfc0e310464e27d5f86143419470fd9270d7ade285789917a16f757a.png" src="_images/7df1537cbfc0e310464e27d5f86143419470fd9270d7ade285789917a16f757a.png" />
-</div>
-</div>
+</section>
+<section id="recommendations-for-the-model">
+<h2>Recommendations for the model<a class="headerlink" href="#recommendations-for-the-model" title="Link to this heading">#</a></h2>
+<p>After performing Exploratory Data Analysis (EDA) on the RNA-seq dataset, the next step is to implement a robust feature extraction and dimensionality reduction methodology to optimize clustering performance. The desired methodology involves integrating Variational Autoencoders (VAE) and Generative Adversarial Networks (GAN). The VAE will encode the high-dimensional gene expression data into a meaningful low-dimensional latent space, preserving probabilistic gene relationships. The GAN will further refine this representation, ensuring alignment with biological priors while reducing noise. Once the latent space is optimized, advanced clustering techniques such as Leiden clustering can be applied to improve cell-type classification.</p>
 </section>
 </section>
 
@@ -1269,6 +1322,24 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="Agrupaciones_y_clusters.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Exploratory Data Analysis for clusterization and gene expressions</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="raw_data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Preprocessing of Raw Data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -1286,21 +1357,31 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Exploratory Data Analysis for test data</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importacion-de-datos-y-librerias">Importación de datos y librerías</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-data-and-libraries">Import data and libraries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-and-observation-of-the-data">Exploration and observation of the data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#explanation-of-the-variables-in-adata-test-obs">📌 Explanation of the Variables in <code class="docutils literal notranslate"><span class="pre">adata_test.obs</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-of-data-interpretation">📌 Example of Data Interpretation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1"><strong>Example 1</strong></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2"><strong>Example 2</strong></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#univariate-analysis">Univariate Analysis</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#genes">genes</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-bivariado">Análisis bivariado</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#genes-detected-per-cell">Genes detected per cell</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-type-and-percentage-distribution">Cell type and percentage distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mitochondrial-distribution">Mitochondrial distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tissue-count-distribution">Tissue count distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bivariate-analysis">Bivariate analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistic-summary">Statistic summary</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-of-gene-count-for-cell-type">Distribution of gene count for cell type</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlations">Correlations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regression-plot">Regression plot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recommendations-for-the-model">Recommendations for the model</a></li>
 </ul>
 </li>
 </ul>

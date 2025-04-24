@@ -1,6 +1,12 @@
-# RNAseq EDA
+# Final Project - Deep Learning
+## Introduction to Single-Cell RNA Sequencing 
+### **Students**
+- Henry David Saenz Valverde
+- Ayrgthon Soraca Bonett
 
-Introducción al EDA de RNAseq
+### **Professor**
+- Lihki Jose Rubio Ortega
+
 
 ```{tableofcontents}
 ```
