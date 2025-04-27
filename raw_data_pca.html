@@ -193,6 +193,7 @@
 
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Preprocessing of Raw Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html">Preprocessing of Raw Data using VAE + GAT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat_base.html">Preprocessing of Raw Data using VAE + GAT</a></li>
 </ul>
 
     </div>
@@ -439,23 +440,23 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
 </ul>
@@ -566,6 +567,11 @@ document.write(`
 </tr>
 </tbody>
 </table>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">What is Apoptosis?</p>
+<p>Apoptosis is a form of programmed cell death, a tightly regulated process by which cells self-destruct when they are no longer needed or are damaged beyond repair. In the context of genetics and single-cell RNA sequencing (scRNA-seq).</p>
+<p>In genetics key genes involved include members of the BCL-2 family (such as BAX, BAK, and BCL2), caspases (like CASP3, CASP8, CASP9), and regulators like TP53 (p53). Mutations or dysregulation in these genes can lead to diseases such as cancer (where apoptosis is suppressed) or degenerative diseases (where apoptosis is excessive).</p>
 </div>
 <div class="admonition-quality-control-qc-metrics-in-scrna-seq admonition">
 <p class="admonition-title">Quality Control (QC) Metrics in scRNA-seq</p>
@@ -1321,8 +1327,6 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 
 <span class="c1"># Create a dictionary to map Ensembl IDs to gene symbols</span>
 <span class="n">gene_mappings</span> <span class="o">=</span> <span class="p">{</span><span class="n">gene</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">]:</span> <span class="n">gene</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">gene_info</span> <span class="k">if</span> <span class="s2">&quot;symbol&quot;</span> <span class="ow">in</span> <span class="n">gene</span><span class="p">}</span>
-
-<span class="c1"># Debugging: Print some mappings to check</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sample gene mappings:&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">gene_mappings</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">10</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -1352,8 +1356,6 @@ Input sequence provided is already in string format. No operation performed
 
 <span class="c1"># Convert Mapped_Gene to lowercase and check if it&#39;s mitochondrial</span>
 <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Is_Mitochondrial&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Mapped_Gene&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">mitochondrial_genes_set</span><span class="p">)</span>
-
-<span class="c1"># Debugging: Count and display some mapped genes</span>
 <span class="n">mito_count</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Is_Mitochondrial&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of mitochondrial genes: </span><span class="si">{</span><span class="n">mito_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1463,7 +1465,7 @@ ENSG00000242114       MTFP1
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calcular la suma de UMIs en genes mitocondriales por célula</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the Sum of UMIs in mitochondrial genes per cells</span>
 <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;mito_UMI_counts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="p">[:,</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Is_Mitochondrial&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1471,7 +1473,7 @@ ENSG00000242114       MTFP1
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calcular el porcentaje de expresión mitocondrial</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the percentage of mitochondrial expression </span>
 <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;pct_mito&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;mito_UMI_counts&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;total_counts&quot;</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
@@ -1481,8 +1483,7 @@ ENSG00000242114       MTFP1
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mostrar las primeras filas con el nuevo cálculo</span>
-<span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;mito_UMI_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;mito_UMI_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -3042,8 +3043,9 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </section>
 </section>
+</section>
 <section id="differential-expression-analysis">
-<h3>Differential Expression Analysis<a class="headerlink" href="#differential-expression-analysis" title="Link to this heading">#</a></h3>
+<h2>Differential Expression Analysis<a class="headerlink" href="#differential-expression-analysis" title="Link to this heading">#</a></h2>
 <div class="admonition-what-is-differential-expression-analysis admonition">
 <p class="admonition-title">What is Differential Expression Analysis?</p>
 <p>Differential Expression (DE) analysis identifies genes that are <strong>significantly upregulated or downregulated</strong> between different conditions, cell types, or clusters in a single-cell RNA-seq (scRNA-seq) dataset.</p>
@@ -3118,10 +3120,10 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </div>
 <section id="top-differentially-expressed-genes-degs-per-cluster-biological-interpretation">
-<h4><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong><a class="headerlink" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation" title="Link to this heading">#</a></h4>
+<h3><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong><a class="headerlink" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation" title="Link to this heading">#</a></h3>
 </section>
 <section id="cluster-0">
-<h4><strong>Cluster 0</strong><a class="headerlink" href="#cluster-0" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 0</strong><a class="headerlink" href="#cluster-0" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: HLA-DRB5, CCL3, MT2A, S100A10, APOD</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3138,7 +3140,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-1">
-<h4><strong>Cluster 1</strong><a class="headerlink" href="#cluster-1" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 1</strong><a class="headerlink" href="#cluster-1" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: HLA-DRB4, CCL4, CSRP2, LYZ, PLLP</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3155,7 +3157,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-2">
-<h4><strong>Cluster 2</strong><a class="headerlink" href="#cluster-2" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 2</strong><a class="headerlink" href="#cluster-2" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: FCGBP, CCL4L2, ID3, CSTB, DNER</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3171,7 +3173,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-3">
-<h4><strong>Cluster 3</strong><a class="headerlink" href="#cluster-3" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 3</strong><a class="headerlink" href="#cluster-3" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: RGS2, CCL3L3, IGFBP2, PLIN2</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3187,7 +3189,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-4">
-<h4><strong>Cluster 4</strong><a class="headerlink" href="#cluster-4" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 4</strong><a class="headerlink" href="#cluster-4" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: HLA-DMB, EGR3, EMP1, CLEC5A</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3203,7 +3205,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-5">
-<h4><strong>Cluster 5</strong><a class="headerlink" href="#cluster-5" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 5</strong><a class="headerlink" href="#cluster-5" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: RNF144B, CCL3L3, MT1X, TCIRG1</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3219,7 +3221,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-6">
-<h4><strong>Cluster 6</strong><a class="headerlink" href="#cluster-6" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 6</strong><a class="headerlink" href="#cluster-6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: FGL2, C3AR1, JUN, S100A8</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3235,7 +3237,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-7">
-<h4><strong>Cluster 7</strong><a class="headerlink" href="#cluster-7" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 7</strong><a class="headerlink" href="#cluster-7" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: MAP3K8, P2RY12, CRYAB, MIF</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3251,7 +3253,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-8">
-<h4><strong>Cluster 8</strong><a class="headerlink" href="#cluster-8" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 8</strong><a class="headerlink" href="#cluster-8" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: PLIN2, HLA-DRA, HSPB1, CYTIP</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3267,7 +3269,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-9">
-<h4><strong>Cluster 9</strong><a class="headerlink" href="#cluster-9" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 9</strong><a class="headerlink" href="#cluster-9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: HLA-DRA, SRGAP2, TCIM, HK2</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3283,7 +3285,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-10">
-<h4><strong>Cluster 10</strong><a class="headerlink" href="#cluster-10" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 10</strong><a class="headerlink" href="#cluster-10" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: GABBR2, ZCCHC12, TUBB2A, CPNE6</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3299,7 +3301,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-11">
-<h4><strong>Cluster 11</strong><a class="headerlink" href="#cluster-11" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 11</strong><a class="headerlink" href="#cluster-11" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: ZNF486, TCIM, RTL6, AQP11</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3381,7 +3383,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </section>
 <section id="volcano-plot">
-<h4>Volcano Plot<a class="headerlink" href="#volcano-plot" title="Link to this heading">#</a></h4>
+<h3>Volcano Plot<a class="headerlink" href="#volcano-plot" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden_r0.4&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="s2">&quot;dea_results&quot;</span><span class="p">)</span>
@@ -3565,7 +3567,6 @@ Name: pvals_adj, dtype: float64
 </section>
 </section>
 </section>
-</section>
 
     <script type="text/x-thebe-config">
     {
@@ -3682,23 +3683,23 @@ Name: pvals_adj, dtype: float64
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
 </ul>
