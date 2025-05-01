@@ -4148,6 +4148,22 @@ Name: pvals_adj, dtype: float64
 </div>
 </div>
 </div>
+<div class="admonition-calinski-harabaz-index admonition">
+<p class="admonition-title">Calinski-Harabaz Index</p>
+<p>The Calinski-Harabasz Index, also known as the Variance Ratio Criterion, is a metric used to evaluate the quality of clustering results. It measures how well the clusters are separated and how compact they are. Specifically, it is the ratio of the sum of between-cluster dispersion to the sum of within-cluster dispersion. A higher Calinski-Harabasz score indicates better-defined clusters</p>
+<p>The Calinski-Harabasz Index (CH) is defined as:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{CH} = \frac{ \text{Tr}(B_k) / (k - 1) }{ \text{Tr}(W_k) / (n - k) }
+\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p>( \text{Tr}(B_k) ) is the trace of the between-cluster dispersion matrix</p></li>
+<li><p>( \text{Tr}(W_k) ) is the trace of the within-cluster dispersion matrix</p></li>
+<li><p>( k ) is the number of clusters</p></li>
+<li><p>( n ) is the total number of data points</p></li>
+</ul>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mostrar las métricas</span>
