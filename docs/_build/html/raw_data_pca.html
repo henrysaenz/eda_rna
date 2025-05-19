@@ -62,7 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'raw_data_pca';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Preprocessing of Raw Data using VAE + GAT" href="raw_data_vaegat.html" />
+    <link rel="next" title="Preprocessing of Raw Data using VAE + GAT1" href="raw_data_vaegat.html" />
     <link rel="prev" title="Exploratory Data Analysis for test data" href="EDA_test.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -192,7 +192,8 @@
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
 
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Preprocessing of Raw Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html">Preprocessing of Raw Data using VAE + GAT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html">Preprocessing of Raw Data using VAE + GAT1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat_base.html">Preprocessing of Raw Data using VAE + GAT</a></li>
 </ul>
 
     </div>
@@ -427,8 +428,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standarization"><strong>Standarization</strong></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#batch-correction">Batch Correction</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#caclulate-performance-metrics">Caclulate performance metrics</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neighbourhood-graph-and-umap">Neighbourhood Graph and Umap</a></li>
 </ul>
 </li>
@@ -439,23 +442,23 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
 </ul>
@@ -476,6 +479,21 @@ document.write(`
 <h2>Import Libraries and data<a class="headerlink" href="#import-libraries-and-data" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>igraph<span class="w"> </span>leidenalg<span class="w"> </span>louvain
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: igraph in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (0.11.8)
+Requirement already satisfied: leidenalg in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (0.10.2)
+Requirement already satisfied: louvain in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (0.8.2)
+Requirement already satisfied: texttable&gt;=1.6.2 in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from igraph) (1.7.0)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pip install scanpy anndata scrublet matplotlib seaborn numpy pandas scipy scikit-learn</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>scrublet<span class="w"> </span>os
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>mygene
@@ -488,10 +506,43 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">harmonypy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">LabelEncoder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
 <span class="c1"># from sklearn.decomposition import PCA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span><span class="p">,</span> <span class="n">adjusted_rand_score</span><span class="p">,</span> <span class="n">normalized_mutual_info_score</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.core.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
 <span class="c1"># from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: scrublet in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (0.2.3)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ERROR: Could not find a version that satisfies the requirement os (from versions: none)
+ERROR: No matching distribution found for os
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: mygene in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (3.2.2)
+Requirement already satisfied: biothings-client&gt;=0.2.6 in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from mygene) (0.4.1)
+Requirement already satisfied: httpx&gt;=0.22.0 in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from biothings-client&gt;=0.2.6-&gt;mygene) (0.28.1)
+Requirement already satisfied: anyio in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (4.9.0)
+Requirement already satisfied: certifi in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (2025.1.31)
+Requirement already satisfied: httpcore==1.* in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (1.0.9)
+Requirement already satisfied: idna in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (3.4)
+Requirement already satisfied: h11&gt;=0.16 in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from httpcore==1.*-&gt;httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (0.16.0)
+Requirement already satisfied: exceptiongroup&gt;=1.0.2 in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from anyio-&gt;httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (1.1.3)
+Requirement already satisfied: sniffio&gt;=1.1 in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from anyio-&gt;httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (1.3.1)
+Requirement already satisfied: typing_extensions&gt;=4.5 in c:\users\henry\miniconda3\envs\dl_venv\lib\site-packages (from anyio-&gt;httpx&gt;=0.22.0-&gt;biothings-client&gt;=0.2.6-&gt;mygene) (4.13.0)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_31556\2622900006.py:20: DeprecationWarning: Importing display from IPython.core.display is deprecated since IPython 7.14, please import from IPython display
+  from IPython.core.display import display, HTML
 </pre></div>
 </div>
 </div>
@@ -536,6 +587,18 @@ document.write(`
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\anndata\compat\__init__.py:329: FutureWarning: Moving element from .uns[&#39;neighbors&#39;][&#39;distances&#39;] to .obsp[&#39;distances&#39;].
+
+This is where adjacency matrices should go now.
+  warn(
+c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\anndata\compat\__init__.py:329: FutureWarning: Moving element from .uns[&#39;neighbors&#39;][&#39;connectivities&#39;] to .obsp[&#39;connectivities&#39;].
+
+This is where adjacency matrices should go now.
+  warn(
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="quality-control-qc">
@@ -566,6 +629,11 @@ document.write(`
 </tr>
 </tbody>
 </table>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">What is Apoptosis?</p>
+<p>Apoptosis is a form of programmed cell death, a tightly regulated process by which cells self-destruct when they are no longer needed or are damaged beyond repair. In the context of genetics and single-cell RNA sequencing (scRNA-seq).</p>
+<p>In genetics key genes involved include members of the BCL-2 family (such as BAX, BAK, and BCL2), caspases (like CASP3, CASP8, CASP9), and regulators like TP53 (p53). Mutations or dysregulation in these genes can lead to diseases such as cancer (where apoptosis is suppressed) or degenerative diseases (where apoptosis is excessive).</p>
 </div>
 <div class="admonition-quality-control-qc-metrics-in-scrna-seq admonition">
 <p class="admonition-title">Quality Control (QC) Metrics in scRNA-seq</p>
@@ -1196,7 +1264,7 @@ Number of genes: 7683
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/225051446ff190aa8eb5d2c3c8aa846274b9b417801b55475c2ee6e0c7358bf2.png" src="_images/225051446ff190aa8eb5d2c3c8aa846274b9b417801b55475c2ee6e0c7358bf2.png" />
+<img alt="_images/aa677255bdb965c161a45f4527e780bb87f2194fb22e3179260bff8d9e4c1058.png" src="_images/aa677255bdb965c161a45f4527e780bb87f2194fb22e3179260bff8d9e4c1058.png" />
 </div>
 </div>
 </section>
@@ -1235,7 +1303,7 @@ UMIs help correct for <strong>PCR amplification bias</strong> and improve the ac
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/3a538b9ffa54b8b98947fc7a7e2f60831850702addea7a3b179b5fc944729166.png" src="_images/3a538b9ffa54b8b98947fc7a7e2f60831850702addea7a3b179b5fc944729166.png" />
+<img alt="_images/b3f7600066638638edadf82fb0a2f8a5083c08f3bd3411b619539b829566bf49.png" src="_images/b3f7600066638638edadf82fb0a2f8a5083c08f3bd3411b619539b829566bf49.png" />
 </div>
 </div>
 <p>The distribution of the data, as visualized in the violin plot, shows a unimodal pattern with the majority of gene counts per cell concentrated around the middle range, approximately between 500 and 1500. The density decreases symmetrically as the values move toward the extremes, with fewer cells having very low or very high gene counts.</p>
@@ -1247,13 +1315,7 @@ UMIs help correct for <strong>PCR amplification bias</strong> and improve the ac
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:843: FutureWarning: 
-
-The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `density_norm=&#39;width&#39;` for the same effect.
-  ax = sns.violinplot(
-</pre></div>
-</div>
-<img alt="_images/883decde2583a059ac17de2ae4dd491a22a4f000e04373ade2531cdbce843ca5.png" src="_images/883decde2583a059ac17de2ae4dd491a22a4f000e04373ade2531cdbce843ca5.png" />
+<img alt="_images/ea4712139ee0c8c69c3281f53b4cab53dc4f98b5925002b04708d6d950493328.png" src="_images/ea4712139ee0c8c69c3281f53b4cab53dc4f98b5925002b04708d6d950493328.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1321,8 +1383,6 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 
 <span class="c1"># Create a dictionary to map Ensembl IDs to gene symbols</span>
 <span class="n">gene_mappings</span> <span class="o">=</span> <span class="p">{</span><span class="n">gene</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">]:</span> <span class="n">gene</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">gene_info</span> <span class="k">if</span> <span class="s2">&quot;symbol&quot;</span> <span class="ow">in</span> <span class="n">gene</span><span class="p">}</span>
-
-<span class="c1"># Debugging: Print some mappings to check</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sample gene mappings:&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">gene_mappings</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">10</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -1330,7 +1390,9 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Input sequence provided is already in string format. No operation performed
 Input sequence provided is already in string format. No operation performed
-1 input query terms found dup hits:	[(&#39;ENSG00000268674&#39;, 3)]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1 input query terms found dup hits:	[(&#39;ENSG00000268674&#39;, 3)]
 58 input query terms found no hit:	[&#39;ENSG00000130489&#39;, &#39;ENSG00000133808&#39;, &#39;ENSG00000139656&#39;, &#39;ENSG00000168078&#39;, &#39;ENSG00000170647&#39;, &#39;ENS
 </pre></div>
 </div>
@@ -1352,8 +1414,6 @@ Input sequence provided is already in string format. No operation performed
 
 <span class="c1"># Convert Mapped_Gene to lowercase and check if it&#39;s mitochondrial</span>
 <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Is_Mitochondrial&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Mapped_Gene&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">mitochondrial_genes_set</span><span class="p">)</span>
-
-<span class="c1"># Debugging: Count and display some mapped genes</span>
 <span class="n">mito_count</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Is_Mitochondrial&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of mitochondrial genes: </span><span class="si">{</span><span class="n">mito_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1463,7 +1523,7 @@ ENSG00000242114       MTFP1
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calcular la suma de UMIs en genes mitocondriales por célula</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the Sum of UMIs in mitochondrial genes per cells</span>
 <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;mito_UMI_counts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_glioblastoma_raw</span><span class="p">[:,</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Is_Mitochondrial&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1471,7 +1531,7 @@ ENSG00000242114       MTFP1
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calcular el porcentaje de expresión mitocondrial</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the percentage of mitochondrial expression </span>
 <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;pct_mito&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;mito_UMI_counts&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;total_counts&quot;</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
@@ -1481,8 +1541,7 @@ ENSG00000242114       MTFP1
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mostrar las primeras filas con el nuevo cálculo</span>
-<span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;mito_UMI_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_glioblastoma_raw</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;mito_UMI_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1610,7 +1669,7 @@ The mitochondrial gene expression percentage is highly skewed, with most cells h
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/c8a03d93b233906dad0ca094aa8a9a5691ba52274113f0e235d4837d550f9585.png" src="_images/c8a03d93b233906dad0ca094aa8a9a5691ba52274113f0e235d4837d550f9585.png" />
+<img alt="_images/6b9cb096d127761f6edb3fcba1a88fd213516a407cb75a43c808b069b54e5cfe.png" src="_images/6b9cb096d127761f6edb3fcba1a88fd213516a407cb75a43c808b069b54e5cfe.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1784,10 +1843,10 @@ The mitochondrial gene expression percentage is highly skewed, with most cells h
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.JointGrid at 0x24485a02c40&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.JointGrid at 0x11e689eb5e0&gt;
 </pre></div>
 </div>
-<img alt="_images/8627d3cd661377270657acaabd803fe6f34f198f614a8cea0ea328098118af28.png" src="_images/8627d3cd661377270657acaabd803fe6f34f198f614a8cea0ea328098118af28.png" />
+<img alt="_images/15e1c89bfd7ad15511ce973ad980280ef6c00837cdc89c057bb4838e56efc3f5.png" src="_images/15e1c89bfd7ad15511ce973ad980280ef6c00837cdc89c057bb4838e56efc3f5.png" />
 </div>
 </div>
 </section>
@@ -1939,15 +1998,15 @@ Genes pre-filter: 7683, post-filter: 7683
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_8528\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_31556\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
   ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
-C:\Users\henry\AppData\Local\Temp\ipykernel_8528\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+C:\Users\henry\AppData\Local\Temp\ipykernel_31556\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
   ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
-C:\Users\henry\AppData\Local\Temp\ipykernel_8528\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+C:\Users\henry\AppData\Local\Temp\ipykernel_31556\2847459098.py:24: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
   ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
 </pre></div>
 </div>
-<img alt="_images/8a3592186c2633f3cd23be2ccaa5345f3aa29cc419e54795b40d9dec8d05ebfb.png" src="_images/8a3592186c2633f3cd23be2ccaa5345f3aa29cc419e54795b40d9dec8d05ebfb.png" />
+<img alt="_images/02102dc68aa8612e091ffabbf3ef48583675b4ae66ef9129c7f5420ff2e5cc3d.png" src="_images/02102dc68aa8612e091ffabbf3ef48583675b4ae66ef9129c7f5420ff2e5cc3d.png" />
 </div>
 </div>
 </section>
@@ -2004,7 +2063,7 @@ Estimated detectable doublet fraction = 15.4%
 Overall doublet rate:
 	Expected   = 1.5%
 	Estimated  = 0.0%
-Elapsed time: 3.6 seconds
+Elapsed time: 2.3 seconds
 </pre></div>
 </div>
 </div>
@@ -2025,7 +2084,7 @@ Elapsed time: 3.6 seconds
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/380f609420b6c09ff838355757699fd28b7c65a290a881b43b7cff4b82e6f566.png" src="_images/380f609420b6c09ff838355757699fd28b7c65a290a881b43b7cff4b82e6f566.png" />
+<img alt="_images/09c49882626cd05ddf4e3706986f1d1df382d67e5915a1f82c5f5b5d710021e8.png" src="_images/09c49882626cd05ddf4e3706986f1d1df382d67e5915a1f82c5f5b5d710021e8.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2054,7 +2113,7 @@ Number of predicted doublets: 0
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/2f1c2fbfd68da5f2c0450e16a131acebc177737493a45c8b669b91a4ee39ae55.png" src="_images/2f1c2fbfd68da5f2c0450e16a131acebc177737493a45c8b669b91a4ee39ae55.png" />
+<img alt="_images/123c0999a88dbeaa5940240a94e2f58dc7630f074abffcb3591ae0041a8e558b.png" src="_images/123c0999a88dbeaa5940240a94e2f58dc7630f074abffcb3591ae0041a8e558b.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2091,15 +2150,12 @@ After filtering doublets: 1823 cells
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: You’re trying to run this on 7683 dimensions of `.X`, if you really want this, set `use_rep=&#39;X&#39;`.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\scanpy\tools\_utils.py:41: UserWarning: You’re trying to run this on 7683 dimensions of `.X`, if you really want this, set `use_rep=&#39;X&#39;`.
          Falling back to preprocessing with `sc.pp.pca` and default params.
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\anndata\_core\anndata.py:430: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
   warnings.warn(
 </pre></div>
 </div>
-<img alt="_images/8c5e7e516b76aaa15cb356bc0e73050d7f2569062e7fc865ab6171c13e1a0bf4.png" src="_images/8c5e7e516b76aaa15cb356bc0e73050d7f2569062e7fc865ab6171c13e1a0bf4.png" />
+<img alt="_images/fabe2280543b3a2ea0f74c009c51e8602dc20be85e203ea5202dd00e74aa1e7c.png" src="_images/fabe2280543b3a2ea0f74c009c51e8602dc20be85e203ea5202dd00e74aa1e7c.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2159,12 +2215,6 @@ After filtering doublets: 1823 cells
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\preprocessing\_highly_variable_genes.py:216: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  disp_grouped = df.groupby(&#39;mean_bin&#39;)[&#39;dispersions&#39;]
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 <section id="standarization">
@@ -2206,8 +2256,9 @@ $<span class="math notranslate nohighlight">\(X_{g}: \text{Log-normalized expres
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 1823 × 2000
     obs: &#39;disease_state&#39;, &#39;plate_id&#39;, &#39;tissue&#39;, &#39;patient_id&#39;, &#39;cell_type&#39;, &#39;neoplastic_state&#39;, &#39;diagnosis&#39;, &#39;n_genes_by_counts&#39;, &#39;log1p_n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;log1p_total_counts&#39;, &#39;pct_counts_in_top_50_genes&#39;, &#39;pct_counts_in_top_100_genes&#39;, &#39;pct_counts_in_top_200_genes&#39;, &#39;mito_UMI_counts&#39;, &#39;pct_mito&#39;, &#39;doublet_score&#39;, &#39;predicted_doublet&#39;
     var: &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;log1p_mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;log1p_total_counts&#39;, &#39;Mapped_Gene&#39;, &#39;Is_Mitochondrial&#39;, &#39;highly_variable&#39;, &#39;means&#39;, &#39;dispersions&#39;, &#39;dispersions_norm&#39;, &#39;mean&#39;, &#39;std&#39;
-    uns: &#39;neighbors&#39;, &#39;umap&#39;, &#39;log1p&#39;, &#39;hvg&#39;
+    uns: &#39;pca&#39;, &#39;neighbors&#39;, &#39;umap&#39;, &#39;log1p&#39;, &#39;hvg&#39;
     obsm: &#39;X_pca&#39;, &#39;X_umap&#39;
+    varm: &#39;PCs&#39;
     obsp: &#39;distances&#39;, &#39;connectivities&#39;
 Number of HVGs selected: 2000
 </pre></div>
@@ -2222,7 +2273,7 @@ Number of HVGs selected: 2000
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/44fb41c0a9ee502f777ca07bb586ff4ec7754de13fcf7fadc7fe3ac34549951b.png" src="_images/44fb41c0a9ee502f777ca07bb586ff4ec7754de13fcf7fadc7fe3ac34549951b.png" />
+<img alt="_images/7cb88d5acb7343b4a1c1441ab13cc2e733467c641edf27129bb4d18804c8ca7b.png" src="_images/7cb88d5acb7343b4a1c1441ab13cc2e733467c641edf27129bb4d18804c8ca7b.png" />
 </div>
 </div>
 <p>A smaller number of genes have higher mean expression values, extending toward the right side of the plot. These genes are likely housekeeping genes or highly expressed genes with consistent expression across cells. The color gradient highlights the normalized dispersion values, with yellow points representing genes with the highest variability</p>
@@ -2281,10 +2332,132 @@ Number of HVGs selected: 2000
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/9d0b619777a0a91b1541cad83da29ae6d4a98113d7c455d9476799fa7c1af140.png" src="_images/9d0b619777a0a91b1541cad83da29ae6d4a98113d7c455d9476799fa7c1af140.png" />
+<img alt="_images/e7145363203ea1e9108c1e8fc11acdc32ff719c6ce6fdb7c45134ec1030560d9.png" src="_images/e7145363203ea1e9108c1e8fc11acdc32ff719c6ce6fdb7c45134ec1030560d9.png" />
 </div>
 </div>
 </section>
+</section>
+<section id="batch-correction">
+<h2>Batch Correction<a class="headerlink" href="#batch-correction" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_original</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># Remove zero-variance genes</span>
+<span class="n">gene_variances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="s2">&quot;toarray&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">X</span><span class="p">,</span>
+    <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+<span class="n">genes_to_keep</span> <span class="o">=</span> <span class="n">gene_variances</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="n">adata_filtered</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="p">[:,</span> <span class="n">genes_to_keep</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">pca</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">n_comps</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\scanpy\preprocessing\_pca.py:317: ImplicitModificationWarning: Setting element `.obsm[&#39;X_pca&#39;]` of view, initializing view as actual.
+  adata.obsm[key_obsm] = X_pca
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running Harmony batch correction...&quot;</span><span class="p">)</span>
+<span class="n">harmony_out</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">run_harmony</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">],</span>
+    <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;plate_id&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_harmony&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">harmony_out</span><span class="o">.</span><span class="n">Z_corr</span><span class="o">.</span><span class="n">T</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Harmony correction complete.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-04-28 11:03:42,604 - harmonypy - INFO - Computing initial centroids with sklearn.KMeans...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running Harmony batch correction...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-04-28 11:03:44,407 - harmonypy - INFO - sklearn.KMeans initialization complete.
+2025-04-28 11:03:44,452 - harmonypy - INFO - Iteration 1 of 10
+2025-04-28 11:03:50,080 - harmonypy - INFO - Iteration 2 of 10
+2025-04-28 11:03:52,115 - harmonypy - INFO - Iteration 3 of 10
+2025-04-28 11:03:53,265 - harmonypy - INFO - Iteration 4 of 10
+2025-04-28 11:03:55,492 - harmonypy - INFO - Iteration 5 of 10
+2025-04-28 11:03:56,465 - harmonypy - INFO - Iteration 6 of 10
+2025-04-28 11:03:59,388 - harmonypy - INFO - Iteration 7 of 10
+2025-04-28 11:04:00,710 - harmonypy - INFO - Iteration 8 of 10
+2025-04-28 11:04:02,356 - harmonypy - INFO - Iteration 9 of 10
+2025-04-28 11:04:04,281 - harmonypy - INFO - Iteration 10 of 10
+2025-04-28 11:04:05,411 - harmonypy - INFO - Stopped before convergence
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Harmony correction complete.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute neighbors and UMAP using Harmony embedding</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">use_rep</span><span class="o">=</span><span class="s1">&#39;X_harmony&#39;</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;plate_id&#39;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Batches after Harmony correction&#39;</span><span class="p">,</span>
+    <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;cell_type&#39;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cell types after Harmony correction&#39;</span><span class="p">,</span>
+    <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/c1dcbc47f7cff650770b8cc3e1e2ebae0578114b730ebba98ac76db8380ff093.png" src="_images/c1dcbc47f7cff650770b8cc3e1e2ebae0578114b730ebba98ac76db8380ff093.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print summary statistics</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Shape of data after Harmony correction:&quot;</span><span class="p">,</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of batches:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;plate_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape of data after Harmony correction: (1823, 2000)
+Number of batches: 64
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="dimensionality-reduction">
 <h2>Dimensionality reduction<a class="headerlink" href="#dimensionality-reduction" title="Link to this heading">#</a></h2>
@@ -2315,7 +2488,11 @@ Number of HVGs selected: 2000
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/0fe0654b3576442d86476460c9be07cb8c32bf5060b539d1b3abed58e96cc5f7.png" src="_images/0fe0654b3576442d86476460c9be07cb8c32bf5060b539d1b3abed58e96cc5f7.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\scanpy\preprocessing\_pca.py:377: FutureWarning: Argument `use_highly_variable` is deprecated, consider using the mask argument. Use_highly_variable=True can be called through mask_var=&quot;highly_variable&quot;. Use_highly_variable=False can be called through mask_var=None
+  warn(msg, FutureWarning)
+</pre></div>
+</div>
+<img alt="_images/88b4cdd0be868dfa737bdc176af9672eb889bc594af33333d3f7f36fdda7f2ba.png" src="_images/88b4cdd0be868dfa737bdc176af9672eb889bc594af33333d3f7f36fdda7f2ba.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2325,16 +2502,16 @@ Number of HVGs selected: 2000
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.02982847, 0.04353569, 0.05346748, 0.06150167, 0.06939692,
-       0.07571188, 0.08177834, 0.08763345, 0.0927624 , 0.09718897,
-       0.10155123, 0.10531367, 0.10880655, 0.11208755, 0.11517072,
-       0.1181948 , 0.12108763, 0.12385831, 0.12657325, 0.1292035 ,
-       0.13181   , 0.13437724, 0.13689183, 0.13937438, 0.14182696,
-       0.14426735, 0.14666456, 0.1490276 , 0.1513867 , 0.15372701,
-       0.15605642, 0.15835232, 0.1606443 , 0.16291156, 0.16516818,
-       0.16741069, 0.16963258, 0.17184472, 0.17403935, 0.17621432,
-       0.1783824 , 0.18053292, 0.18266788, 0.18479818, 0.18692067,
-       0.18902257, 0.19111818, 0.19321093, 0.19529848, 0.19737191],
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.02982847, 0.04353569, 0.0534675 , 0.06150168, 0.06939694,
+       0.07571189, 0.08177835, 0.08763348, 0.09276243, 0.097189  ,
+       0.10155126, 0.10531369, 0.10880657, 0.11208757, 0.11517075,
+       0.11819483, 0.12108765, 0.12385833, 0.12657326, 0.12920351,
+       0.13181002, 0.13437727, 0.13689186, 0.1393744 , 0.14182699,
+       0.14426738, 0.14666459, 0.14902763, 0.15138672, 0.15372702,
+       0.15605642, 0.15835232, 0.16064428, 0.16291155, 0.16516817,
+       0.16741067, 0.16963257, 0.1718447 , 0.17403933, 0.17621431,
+       0.17838238, 0.1805329 , 0.18266787, 0.18479817, 0.18692064,
+       0.18902254, 0.19111815, 0.1932109 , 0.19529845, 0.19737189],
       dtype=float32)
 </pre></div>
 </div>
@@ -2362,8 +2539,216 @@ Number of HVGs selected: 2000
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/8d7b1b581fb705a3e6ca3d476ecd18d45a501a99b0c7cdc965707be4281af129.png" src="_images/8d7b1b581fb705a3e6ca3d476ecd18d45a501a99b0c7cdc965707be4281af129.png" />
+<img alt="_images/31553d5e829a605cc18e91272dc9ae397cdf367c91e313aab595a84383a6671f.png" src="_images/31553d5e829a605cc18e91272dc9ae397cdf367c91e313aab595a84383a6671f.png" />
 </div>
+</div>
+<section id="caclulate-performance-metrics">
+<h4>Caclulate performance metrics<a class="headerlink" href="#caclulate-performance-metrics" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Helper: get embedding from AnnData</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_embedding</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;X_pca&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;X_harmony&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_harmony&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown embedding key&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Helper: calculate batch entropy mixing</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">batch_entropy</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">embedding_key</span><span class="p">,</span> <span class="n">batch_key</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NearestNeighbors</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="n">embedding_key</span><span class="p">]</span>
+    <span class="n">batches</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">batch_key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">le</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+    <span class="n">batch_labels</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">batches</span><span class="p">)</span>
+    <span class="n">nbrs</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">nbrs</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">entropies</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">neighbors</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+        <span class="n">neighbor_batches</span> <span class="o">=</span> <span class="n">batch_labels</span><span class="p">[</span><span class="n">neighbors</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>  <span class="c1"># exclude self</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">neighbor_batches</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">le</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span> <span class="o">/</span> <span class="n">n_neighbors</span>
+        <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">p</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">probs</span> <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">entropies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">entropies</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate metrics for PCA</span>
+<span class="n">pca_embedding</span> <span class="o">=</span> <span class="n">get_embedding</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;X_pca&#39;</span><span class="p">)</span>
+<span class="n">cell_types</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">batches</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;plate_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="n">silhouette_pca</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">pca_embedding</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">)</span>
+<span class="n">batch_entropy_pca</span> <span class="o">=</span> <span class="n">batch_entropy</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;X_pca&#39;</span><span class="p">,</span> <span class="s1">&#39;plate_id&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate metrics for Harmony</span>
+<span class="n">harmony_embedding</span> <span class="o">=</span> <span class="n">get_embedding</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;X_harmony&#39;</span><span class="p">)</span>
+<span class="n">silhouette_harmony</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">harmony_embedding</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">)</span>
+<span class="n">batch_entropy_harmony</span> <span class="o">=</span> <span class="n">batch_entropy</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;X_harmony&#39;</span><span class="p">,</span> <span class="s1">&#39;plate_id&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Helper: calculate ARI and NMI</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">clustering_metrics</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="n">true_labels</span><span class="p">,</span> <span class="n">n_clusters</span><span class="p">):</span>
+    <span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
+    <span class="n">pred_labels</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">labels_</span>
+    <span class="n">ari</span> <span class="o">=</span> <span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">pred_labels</span><span class="p">)</span>
+    <span class="n">nmi</span> <span class="o">=</span> <span class="n">normalized_mutual_info_score</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">pred_labels</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ari</span><span class="p">,</span> <span class="n">nmi</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Helper: variance explained (for PCA)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">variance_explained</span><span class="p">(</span><span class="n">adata</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s1">&#39;pca&#39;</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">uns</span> <span class="ow">and</span> <span class="s1">&#39;variance_ratio&#39;</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;pca&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;pca&#39;</span><span class="p">][</span><span class="s1">&#39;variance_ratio&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Method&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;PCA&#39;</span><span class="p">,</span> <span class="s1">&#39;Harmony&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Silhouette Score (cell type)&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">silhouette_pca</span><span class="p">,</span> <span class="n">silhouette_harmony</span><span class="p">],</span>
+    <span class="s1">&#39;Batch Entropy Mixing&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">batch_entropy_pca</span><span class="p">,</span> <span class="n">batch_entropy_harmony</span><span class="p">]</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">methods</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;PCA&#39;</span><span class="p">:</span> <span class="s1">&#39;X_pca&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Harmony&#39;</span><span class="p">:</span> <span class="s1">&#39;X_harmony&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Encode cell types for metrics</span>
+<span class="n">cell_types</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">])</span>
+<span class="n">n_cell_types</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cell_types</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">method</span><span class="p">,</span> <span class="n">emb_key</span> <span class="ow">in</span> <span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">embedding</span> <span class="o">=</span> <span class="n">get_embedding</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">emb_key</span><span class="p">)</span>
+    <span class="c1"># Silhouette Score</span>
+    <span class="n">silhouette</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">)</span>
+    <span class="c1"># Batch Entropy</span>
+    <span class="n">batch_entropy_val</span> <span class="o">=</span> <span class="n">batch_entropy</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">emb_key</span><span class="p">,</span> <span class="s1">&#39;plate_id&#39;</span><span class="p">)</span>
+    <span class="c1"># ARI &amp; NMI (using KMeans, number of clusters = number of cell types)</span>
+    <span class="n">ari</span><span class="p">,</span> <span class="n">nmi</span> <span class="o">=</span> <span class="n">clustering_metrics</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">n_cell_types</span><span class="p">)</span>
+    <span class="c1"># Variance explained (only for PCA)</span>
+    <span class="n">var_exp</span> <span class="o">=</span> <span class="n">variance_explained</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">)</span> <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;PCA&#39;</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="c1"># Append to results</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;Method&#39;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
+        <span class="s1">&#39;Silhouette Score (cell type)&#39;</span><span class="p">:</span> <span class="n">silhouette</span><span class="p">,</span>
+        <span class="s1">&#39;Batch Entropy Mixing&#39;</span><span class="p">:</span> <span class="n">batch_entropy_val</span><span class="p">,</span>
+        <span class="s1">&#39;ARI&#39;</span><span class="p">:</span> <span class="n">ari</span><span class="p">,</span>
+        <span class="s1">&#39;NMI&#39;</span><span class="p">:</span> <span class="n">nmi</span><span class="p">,</span>
+        <span class="s1">&#39;Variance Explained&#39;</span><span class="p">:</span> <span class="n">var_exp</span>
+    <span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\sklearn\cluster\_kmeans.py:1412: FutureWarning: The default value of `n_init` will change from 10 to &#39;auto&#39; in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  super()._check_params_vs_input(X, default_n_init=10)
+c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\sklearn\cluster\_kmeans.py:1412: FutureWarning: The default value of `n_init` will change from 10 to &#39;auto&#39; in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  super()._check_params_vs_input(X, default_n_init=10)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="n">results_df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Method</th>
+      <th>Silhouette Score (cell type)</th>
+      <th>Batch Entropy Mixing</th>
+      <th>ARI</th>
+      <th>NMI</th>
+      <th>Variance Explained</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>PCA</td>
+      <td>0.189582</td>
+      <td>2.895963</td>
+      <td>0.537578</td>
+      <td>0.649484</td>
+      <td>0.197372</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Harmony</td>
+      <td>0.218689</td>
+      <td>3.488787</td>
+      <td>0.550414</td>
+      <td>0.674881</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p><strong>Selecting the best numbers of neighbors</strong></p>
 <div class="cell docutils container">
@@ -2389,6 +2774,7 @@ k=30: Silhouette = 0.160
 </div>
 </div>
 </div>
+</section>
 <section id="neighbourhood-graph-and-umap">
 <h4>Neighbourhood Graph and Umap<a class="headerlink" href="#neighbourhood-graph-and-umap" title="Link to this heading">#</a></h4>
 <div class="admonition-what-is-umap admonition">
@@ -2419,7 +2805,7 @@ k=30: Silhouette = 0.160
 WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
 </pre></div>
 </div>
-<img alt="_images/effc659fc8209a15ee8de9839eb5bedc186ea1a426c259f608608a7e7513e906.png" src="_images/effc659fc8209a15ee8de9839eb5bedc186ea1a426c259f608608a7e7513e906.png" />
+<img alt="_images/485f62265e62a0b22d67b0443d4d99f070c9c576d887290f5628b81f6f6d2db6.png" src="_images/485f62265e62a0b22d67b0443d4d99f070c9c576d887290f5628b81f6f6d2db6.png" />
 </div>
 </div>
 <div class="admonition-what-is-granularity-in-clusters admonition">
@@ -2474,7 +2860,7 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    Leiden (r=0.4)  Leiden (r=0.6)  Leiden (r=0.8)
-0              315             324             228
+0              315             324             237
 1              296             323             223
 10              42              11              56
 11              22               5              47
@@ -2485,10 +2871,10 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 16               0               0               5
 2              238             315             220
 3              223             259             215
-4              220             220             195
+4              220             220             186
 5              191             190             165
-6               76              56             139
-7               72              56              96
+6               76              56             136
+7               72              56              99
 8               56              42              76
 9               56              22              56
 </pre></div>
@@ -2515,7 +2901,7 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/917a88bceb79d8353579d3aa42fc9944b8856f759e5eddf9f72e5f108eeedda6.png" src="_images/917a88bceb79d8353579d3aa42fc9944b8856f759e5eddf9f72e5f108eeedda6.png" />
+<img alt="_images/4c231b5682494344f650c9b4f96434d350a5753861274381a34c8fbeaa0bbcd3.png" src="_images/4c231b5682494344f650c9b4f96434d350a5753861274381a34c8fbeaa0bbcd3.png" />
 </div>
 </div>
 <div class="admonition-what-is-silhoutte-score admonition">
@@ -2544,7 +2930,7 @@ WARNING: The title list is shorter than the number of panels. Using &#39;color&#
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Resolution 0.4: Silhouette = 0.177
 Resolution 0.6: Silhouette = 0.191
-Resolution 0.8: Silhouette = 0.161
+Resolution 0.8: Silhouette = 0.159
 </pre></div>
 </div>
 </div>
@@ -2623,7 +3009,7 @@ Resolution 0.8: Silhouette = 0.161
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" src="_images/100eaaf630a9b43b55b732f8bdd4751d21d52e9b464acf475fdf06af6d8255c0.png" />
+<img alt="_images/601fb9190f24b6ad2d112f053d92afa4e22df08531db4e85ae2e0d1b66ac749a.png" src="_images/601fb9190f24b6ad2d112f053d92afa4e22df08531db4e85ae2e0d1b66ac749a.png" />
 </div>
 </div>
 <p>The Louvain clustering results show that higher resolutions lead to more clusters with smaller sizes, similar to the Leiden algorithm. However, Louvain tends to produce fewer, larger clusters compared to Leiden. The silhouette scores indicate that the clusters become more well-defined at higher resolutions, with the best score observed at <strong>resolution 0.8</strong>.</p>
@@ -2684,7 +3070,7 @@ Resolution 0.8: Silhouette = 0.197
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/6302608f385e3f2c62f9303efe2193ee0f6815270b274d8ad9c8e9c3f9746265.png" src="_images/6302608f385e3f2c62f9303efe2193ee0f6815270b274d8ad9c8e9c3f9746265.png" />
+<img alt="_images/1148e0e207d4e0db38ba61cd5c70d5656e331d71e9c6451afe1eede0661515e1.png" src="_images/1148e0e207d4e0db38ba61cd5c70d5656e331d71e9c6451afe1eede0661515e1.png" />
 </div>
 </div>
 <p><strong>Cluster size comparison</strong>
@@ -2710,7 +3096,7 @@ Leiden clustering (blue) generally produces a larger number of smaller clusters 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/d263de89ed84db9a1513981ad1fb4671c03720a46991d6361e7d334c68f05c0a.png" src="_images/d263de89ed84db9a1513981ad1fb4671c03720a46991d6361e7d334c68f05c0a.png" />
+<img alt="_images/f02e647e80a3bbe793d26a37bea35d5c07eb8c477fa011006f8c6589d1b0b96f.png" src="_images/f02e647e80a3bbe793d26a37bea35d5c07eb8c477fa011006f8c6589d1b0b96f.png" />
 </div>
 </div>
 <p><strong>Comparisson between solhoutte scores</strong></p>
@@ -2780,7 +3166,7 @@ Leiden clustering (blue) generally produces a larger number of smaller clusters 
     </tr>
     <tr>
       <th>0.8</th>
-      <td>0.161260</td>
+      <td>0.159214</td>
       <td>0.196528</td>
     </tr>
   </tbody>
@@ -2813,7 +3199,7 @@ Leiden clustering (blue) generally produces a larger number of smaller clusters 
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>leiden r=0.4: ARI = 0.417
 leiden r=0.6: ARI = 0.362
-leiden r=0.8: ARI = 0.283
+leiden r=0.8: ARI = 0.285
 louvain r=0.4: ARI = 0.380
 louvain r=0.6: ARI = 0.397
 louvain r=0.8: ARI = 0.369
@@ -2856,7 +3242,7 @@ louvain r=0.8: ARI = 0.369
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Resolution  NMI (Leiden vs Louvain)
 0         0.4                 0.872361
 1         0.6                 0.889825
-2         0.8                 0.885393
+2         0.8                 0.876954
 </pre></div>
 </div>
 </div>
@@ -2956,27 +3342,11 @@ ENSG00000213625: LEPROT
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: dendrogram data not found (using key=dendrogram_leiden_r0.4). Running `sc.tl.dendrogram` with default parameters. For fine tuning it is recommended to run `sc.tl.dendrogram` independently.
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:169: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  obs_bool.groupby(level=0).sum() / obs_bool.groupby(level=0).count()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:179: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  dot_color_df = self.obs_tidy.groupby(level=0).mean()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_dendrogram.py:133: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  mean_df = rep_df.groupby(level=0).mean()
-</pre></div>
-</div>
-<img alt="_images/654233e9ed7ce41e5638c6bf6455ab1003e346b53b61104d1deddce3ec90ff4c.png" src="_images/654233e9ed7ce41e5638c6bf6455ab1003e346b53b61104d1deddce3ec90ff4c.png" />
+<img alt="_images/c9b70709f6c6699876721138d0a085d4f984d9912e366d4e7fa44d387869c79e.png" src="_images/c9b70709f6c6699876721138d0a085d4f984d9912e366d4e7fa44d387869c79e.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: dendrogram data not found (using key=dendrogram_louvain_r0.4). Running `sc.tl.dendrogram` with default parameters. For fine tuning it is recommended to run `sc.tl.dendrogram` independently.
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:169: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  obs_bool.groupby(level=0).sum() / obs_bool.groupby(level=0).count()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_dotplot.py:179: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  dot_color_df = self.obs_tidy.groupby(level=0).mean()
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_dendrogram.py:133: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
-  mean_df = rep_df.groupby(level=0).mean()
-</pre></div>
-</div>
-<img alt="_images/99d30e01562674e108a35e8f540811177deb223ad60a11c09f576551e3c939a2.png" src="_images/99d30e01562674e108a35e8f540811177deb223ad60a11c09f576551e3c939a2.png" />
+<img alt="_images/dab4a5f455212431cb4b28291d9248978c59fcca17e6cbf1f9e85eab614dfa03.png" src="_images/dab4a5f455212431cb4b28291d9248978c59fcca17e6cbf1f9e85eab614dfa03.png" />
 </div>
 </div>
 <p>Mitochondrial content</p>
@@ -2997,18 +3367,7 @@ c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\tools\_dendrogra
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:843: FutureWarning: 
-
-Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
-
-  ax = sns.violinplot(
-c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\plotting\_anndata.py:843: FutureWarning: 
-
-The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `density_norm=&#39;width&#39;` for the same effect.
-  ax = sns.violinplot(
-</pre></div>
-</div>
-<img alt="_images/35aae714d15b2ec58e137af95a8356a093d372b9df55fd7103b7ecc86e0e7198.png" src="_images/35aae714d15b2ec58e137af95a8356a093d372b9df55fd7103b7ecc86e0e7198.png" />
+<img alt="_images/e13a75e29d71a4c764c425fc5409f5e48201f7e72cd625dc2ba450bb075c4bc3.png" src="_images/e13a75e29d71a4c764c425fc5409f5e48201f7e72cd625dc2ba450bb075c4bc3.png" />
 </div>
 </div>
 </section>
@@ -3037,13 +3396,14 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
 </pre></div>
 </div>
-<img alt="_images/486d6d57a5da02c377347fb4b2b93bacbc618ea85a176056a07f1b6bb12cb944.png" src="_images/486d6d57a5da02c377347fb4b2b93bacbc618ea85a176056a07f1b6bb12cb944.png" />
+<img alt="_images/e5b864c0a28f24c98cd4fd0e4305434586bf6e59d98f0eafd301b82799332116.png" src="_images/e5b864c0a28f24c98cd4fd0e4305434586bf6e59d98f0eafd301b82799332116.png" />
 </div>
 </div>
+</section>
 </section>
 </section>
 <section id="differential-expression-analysis">
-<h3>Differential Expression Analysis<a class="headerlink" href="#differential-expression-analysis" title="Link to this heading">#</a></h3>
+<h2>Differential Expression Analysis<a class="headerlink" href="#differential-expression-analysis" title="Link to this heading">#</a></h2>
 <div class="admonition-what-is-differential-expression-analysis admonition">
 <p class="admonition-title">What is Differential Expression Analysis?</p>
 <p>Differential Expression (DE) analysis identifies genes that are <strong>significantly upregulated or downregulated</strong> between different conditions, cell types, or clusters in a single-cell RNA-seq (scRNA-seq) dataset.</p>
@@ -3091,16 +3451,16 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 9  ENSG00000204287  ENSG00000266028  ENSG00000176907  ENSG00000159399   
 
                  4                5                6                7  \
-0  ENSG00000189058  ENSG00000198804  ENSG00000164089  ENSG00000135452   
-1  ENSG00000102934  ENSG00000106211  ENSG00000135744  ENSG00000183735   
-2  ENSG00000187957  ENSG00000104267  ENSG00000134873  ENSG00000132434   
-3  ENSG00000184258  ENSG00000176076  ENSG00000162407  ENSG00000147588   
-4  ENSG00000240184  ENSG00000106538  ENSG00000148672  ENSG00000198576   
-5  ENSG00000173546  ENSG00000197061  ENSG00000104112  ENSG00000109846   
-6  ENSG00000170075  ENSG00000123496  ENSG00000277196  ENSG00000171951   
-7  ENSG00000104112  ENSG00000170439  ENSG00000170075  ENSG00000146006   
-8  ENSG00000148123  ENSG00000135744  ENSG00000170989  ENSG00000240184   
-9  ENSG00000157890  ENSG00000107438  ENSG00000167614  ENSG00000115461   
+0  ENSG00000189058  ENSG00000198804  ENSG00000135452  ENSG00000164089   
+1  ENSG00000102934  ENSG00000106211  ENSG00000183735  ENSG00000135744   
+2  ENSG00000187957  ENSG00000104267  ENSG00000132434  ENSG00000134873   
+3  ENSG00000184258  ENSG00000176076  ENSG00000147588  ENSG00000162407   
+4  ENSG00000240184  ENSG00000106538  ENSG00000198576  ENSG00000148672   
+5  ENSG00000173546  ENSG00000197061  ENSG00000109846  ENSG00000104112   
+6  ENSG00000170075  ENSG00000123496  ENSG00000171951  ENSG00000277196   
+7  ENSG00000104112  ENSG00000170439  ENSG00000146006  ENSG00000170075   
+8  ENSG00000148123  ENSG00000135744  ENSG00000240184  ENSG00000170989   
+9  ENSG00000157890  ENSG00000107438  ENSG00000115461  ENSG00000167614   
 
                  8                9               10               11  
 0  ENSG00000244274  ENSG00000241978  ENSG00000136928  ENSG00000256229  
@@ -3118,10 +3478,10 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </div>
 <section id="top-differentially-expressed-genes-degs-per-cluster-biological-interpretation">
-<h4><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong><a class="headerlink" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation" title="Link to this heading">#</a></h4>
+<h3><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong><a class="headerlink" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation" title="Link to this heading">#</a></h3>
 </section>
 <section id="cluster-0">
-<h4><strong>Cluster 0</strong><a class="headerlink" href="#cluster-0" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 0</strong><a class="headerlink" href="#cluster-0" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: HLA-DRB5, CCL3, MT2A, S100A10, APOD</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3138,7 +3498,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-1">
-<h4><strong>Cluster 1</strong><a class="headerlink" href="#cluster-1" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 1</strong><a class="headerlink" href="#cluster-1" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: HLA-DRB4, CCL4, CSRP2, LYZ, PLLP</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3155,7 +3515,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-2">
-<h4><strong>Cluster 2</strong><a class="headerlink" href="#cluster-2" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 2</strong><a class="headerlink" href="#cluster-2" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: FCGBP, CCL4L2, ID3, CSTB, DNER</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3171,7 +3531,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-3">
-<h4><strong>Cluster 3</strong><a class="headerlink" href="#cluster-3" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 3</strong><a class="headerlink" href="#cluster-3" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: RGS2, CCL3L3, IGFBP2, PLIN2</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3187,7 +3547,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-4">
-<h4><strong>Cluster 4</strong><a class="headerlink" href="#cluster-4" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 4</strong><a class="headerlink" href="#cluster-4" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: HLA-DMB, EGR3, EMP1, CLEC5A</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3203,7 +3563,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-5">
-<h4><strong>Cluster 5</strong><a class="headerlink" href="#cluster-5" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 5</strong><a class="headerlink" href="#cluster-5" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: RNF144B, CCL3L3, MT1X, TCIRG1</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3219,7 +3579,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-6">
-<h4><strong>Cluster 6</strong><a class="headerlink" href="#cluster-6" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 6</strong><a class="headerlink" href="#cluster-6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: FGL2, C3AR1, JUN, S100A8</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3235,7 +3595,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-7">
-<h4><strong>Cluster 7</strong><a class="headerlink" href="#cluster-7" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 7</strong><a class="headerlink" href="#cluster-7" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: MAP3K8, P2RY12, CRYAB, MIF</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3251,7 +3611,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-8">
-<h4><strong>Cluster 8</strong><a class="headerlink" href="#cluster-8" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 8</strong><a class="headerlink" href="#cluster-8" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: PLIN2, HLA-DRA, HSPB1, CYTIP</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3267,7 +3627,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-9">
-<h4><strong>Cluster 9</strong><a class="headerlink" href="#cluster-9" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 9</strong><a class="headerlink" href="#cluster-9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: HLA-DRA, SRGAP2, TCIM, HK2</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3283,7 +3643,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-10">
-<h4><strong>Cluster 10</strong><a class="headerlink" href="#cluster-10" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 10</strong><a class="headerlink" href="#cluster-10" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: GABBR2, ZCCHC12, TUBB2A, CPNE6</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3299,7 +3659,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </ul>
 </section>
 <section id="cluster-11">
-<h4><strong>Cluster 11</strong><a class="headerlink" href="#cluster-11" title="Link to this heading">#</a></h4>
+<h3><strong>Cluster 11</strong><a class="headerlink" href="#cluster-11" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Key Genes</strong>: ZNF486, TCIM, RTL6, AQP11</p></li>
 <li><p><strong>Description</strong>:</p>
@@ -3349,16 +3709,16 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top DEGs (Mapped to Gene Symbols):
           0        1       2        3        4        5        6        7  \
-0  HLA-DRB5     CCL3    MT2A  S100A10     APOD     COX1   ETNPPL  TSPAN31   
-1  HLA-DRB4     CCL4   CSRP2      LYZ     PLLP    HSPB1      AGT     TBK1   
-2     FCGBP   CCL4L2     ID3     CSTB     DNER      CA2   CLDN10   LANCL2   
-3      RGS2   CCL3L3  IGFBP2    PLIN2      NaN    KCNE5    PLPP3     PMP2   
-4   HLA-DMB     EGR3    EMP1   CLEC5A  PCDHGC3  RARRES2    GLUD1      ARC   
-5   RNF144B   CCL3L3    MT1X   TCIRG1    CSPG4     H4C3     SCG3    CRYAB   
-6      FGL2    C3AR1     JUN   S100A8  GPR37L1  IL13RA2      NaN     SCG2   
-7    MAP3K8   P2RY12   CRYAB      MIF     SCG3    TMT1B  GPR37L1   LRRTM2   
-8     PLIN2  HLA-DRA   HSPB1    CYTIP   PLPPR1      AGT    S1PR1  PCDHGC3   
-9   HLA-DRA   SRGAP2    TCIM      HK2   MEGF11   PDLIM1    TTYH1   IGFBP5   
+0  HLA-DRB5     CCL3    MT2A  S100A10     APOD     COX1  TSPAN31   ETNPPL   
+1  HLA-DRB4     CCL4   CSRP2      LYZ     PLLP    HSPB1     TBK1      AGT   
+2     FCGBP   CCL4L2     ID3     CSTB     DNER      CA2   LANCL2   CLDN10   
+3      RGS2   CCL3L3  IGFBP2    PLIN2      NaN    KCNE5     PMP2    PLPP3   
+4   HLA-DMB     EGR3    EMP1   CLEC5A  PCDHGC3  RARRES2      ARC    GLUD1   
+5   RNF144B   CCL3L3    MT1X   TCIRG1    CSPG4     H4C3    CRYAB     SCG3   
+6      FGL2    C3AR1     JUN   S100A8  GPR37L1  IL13RA2     SCG2      NaN   
+7    MAP3K8   P2RY12   CRYAB      MIF     SCG3    TMT1B   LRRTM2  GPR37L1   
+8     PLIN2  HLA-DRA   HSPB1    CYTIP   PLPPR1      AGT  PCDHGC3    S1PR1   
+9   HLA-DRA   SRGAP2    TCIM      HK2   MEGF11   PDLIM1   IGFBP5    TTYH1   
 
          8         9       10      11  
 0   DBNDD2       NaN   GABBR2  ZNF486  
@@ -3373,7 +3733,7 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 9  ADAMTS4     PRELP   ENTPD3     FOS  
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_8528\320458301.py:14: FutureWarning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_31556\320458301.py:14: FutureWarning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.
   top_degs_mapped = dea_results.applymap(lambda x: ensembl_to_gene.get(x, x))  # Fallback to Ensembl ID if no symbol exists
 </pre></div>
 </div>
@@ -3381,17 +3741,11 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </section>
 <section id="volcano-plot">
-<h4>Volcano Plot<a class="headerlink" href="#volcano-plot" title="Link to this heading">#</a></h4>
+<h3>Volcano Plot<a class="headerlink" href="#volcano-plot" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden_r0.4&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="s2">&quot;dea_results&quot;</span><span class="p">)</span>
 <span class="n">degs_df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;dea_results&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\ml_venv\lib\site-packages\scanpy\get\get.py:66: FutureWarning: The previous implementation of stack is deprecated and will be removed in a future version of pandas. See the What&#39;s New notes for pandas 2.1.0 for details. Specify future_stack=True to adopt the new implementation and silence this warning.
-  d = d.stack(level=1).reset_index()
 </pre></div>
 </div>
 </div>
@@ -3455,11 +3809,11 @@ The `scale` parameter has been renamed and will be removed in v0.15.0. Pass `den
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_8528\2788135446.py:20: UserWarning: Ignoring `palette` because no `hue` variable has been assigned.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_31556\2788135446.py:20: UserWarning: Ignoring `palette` because no `hue` variable has been assigned.
   sns.scatterplot(
 </pre></div>
 </div>
-<img alt="_images/28a112b0a33b534b4775bf472c08d3b109e3781b728e4b2895a5b7b7ebe09b5b.png" src="_images/28a112b0a33b534b4775bf472c08d3b109e3781b728e4b2895a5b7b7ebe09b5b.png" />
+<img alt="_images/6657bb5b7082bb3a62e4a5b7f45b7967f0f7f07491461192c6f7056a3d839202.png" src="_images/6657bb5b7082bb3a62e4a5b7f45b7967f0f7f07491461192c6f7056a3d839202.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -3545,7 +3899,7 @@ Name: pvals_adj, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/941f796e7e86956b64392a60c7dfac8ae7fb547dd04c2f180da557982402a59d.png" src="_images/941f796e7e86956b64392a60c7dfac8ae7fb547dd04c2f180da557982402a59d.png" />
+<img alt="_images/ef37640e8083a9a4899b51eb513c17eebfc79809797785576ff9a0af2d6ea168.png" src="_images/ef37640e8083a9a4899b51eb513c17eebfc79809797785576ff9a0af2d6ea168.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -3559,10 +3913,9 @@ Name: pvals_adj, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/c13be515a59eda98d8fba04d99fec27d47cca3e1f69e595548cd47f84ce9c90c.png" src="_images/c13be515a59eda98d8fba04d99fec27d47cca3e1f69e595548cd47f84ce9c90c.png" />
+<img alt="_images/2179d7e2e09e4fa673e89086d9d66f899ee39ebdd8715f786a87a22052e922b2.png" src="_images/2179d7e2e09e4fa673e89086d9d66f899ee39ebdd8715f786a87a22052e922b2.png" />
 </div>
 </div>
-</section>
 </section>
 </section>
 </section>
@@ -3611,7 +3964,7 @@ Name: pvals_adj, dtype: float64
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Preprocessing of Raw Data using VAE + GAT</p>
+        <p class="prev-next-title">Preprocessing of Raw Data using VAE + GAT1</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -3670,8 +4023,10 @@ Name: pvals_adj, dtype: float64
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standarization"><strong>Standarization</strong></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#batch-correction">Batch Correction</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-reduction">Dimensionality reduction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#caclulate-performance-metrics">Caclulate performance metrics</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neighbourhood-graph-and-umap">Neighbourhood Graph and Umap</a></li>
 </ul>
 </li>
@@ -3682,23 +4037,23 @@ Name: pvals_adj, dtype: float64
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 </ul>
 </li>
 </ul>

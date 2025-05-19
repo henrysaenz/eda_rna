@@ -11,6 +11,6 @@ chapters:
   - file: Agrupaciones_y_clusters
   - file: EDA_test
   - file: raw_data_pca
-  - file: raw_data_vaegat_base
+  - file: raw_pca_pruebas
 
 
