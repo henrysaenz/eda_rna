@@ -389,8 +389,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-vae">Model VAE</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decoder-gene-expression-reconstruction">3. Decoder – Gene Expression Reconstruction</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-vae">Model VAE</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loss-functions">Loss Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clusterization-for-vae">Clusterization for VAE</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparametrization-of-vae">Hyperparametrization of VAE</a><ul class="nav section-nav flex-column">
@@ -406,6 +405,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vae-attention">VAE + Attention</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Loss Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparametrization-of-the-model-vae-attention">Hyperparametrization of the model VAE + Attention</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-for-vae-attention">Cluster for VAE + Attention</a></li>
 </ul>
@@ -473,13 +473,13 @@ document.write(`
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>  
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Image Preview&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Variational Autoencoders Architecture&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/66ff2cc7c56dda815c6a51620ef1f4b9bd8043647fe1d04f4baa14593db2a269.png" src="_images/66ff2cc7c56dda815c6a51620ef1f4b9bd8043647fe1d04f4baa14593db2a269.png" />
+<img alt="_images/6ef36bc28bb8e2f4926b88c111fb5d465fd316327e6eb7d0e419cc1c5b92d000.png" src="_images/6ef36bc28bb8e2f4926b88c111fb5d465fd316327e6eb7d0e419cc1c5b92d000.png" />
 </div>
 </div>
 <p>The modelo learns a latent representation of each cell and reconstructs gene expression using a probabilistic decoder designed for count data.</p>
@@ -506,9 +506,9 @@ document.write(`
 \[
 \mathbf{z} = \boldsymbol{\mu} + \boldsymbol{\epsilon} \cdot \boldsymbol{\sigma}, \quad \boldsymbol{\epsilon} \sim \mathcal{N}(0, I)
 \]</div>
-</section>
-<section id="decoder-gene-expression-reconstruction">
-<h2>3. Decoder – Gene Expression Reconstruction<a class="headerlink" href="#decoder-gene-expression-reconstruction" title="Link to this heading">#</a></h2>
+<ol class="arabic simple" start="3">
+<li><p>Decoder – Gene Expression Reconstruction</p></li>
+</ol>
 <p>The decoder takes ( \mathbf{z} ) and reconstructs the original gene expression ( \mathbf{x}_i ).</p>
 <ul class="simple">
 <li><p><strong>Layers <code class="docutils literal notranslate"><span class="pre">fc_dec1</span></code> to <code class="docutils literal notranslate"><span class="pre">fc_dec3</span></code>:</strong> Gradually expand the latent vector back to the original input size.</p></li>
@@ -1663,6 +1663,84 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 <h2>VAE + Attention<a class="headerlink" href="#vae-attention" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image_path</span> <span class="o">=</span> <span class="s1">&#39;C:/Users/henry/Documents/jbook/eda_rna/img/vaeattention.png&#39;</span>
+
+<span class="c1"># Load and display the image</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>  
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Variational Autoencoder with Attention&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/035dbf3919d69d603cc06f6b792ce7fbc40689f831fe37bd67553dd2d681d068.png" src="_images/035dbf3919d69d603cc06f6b792ce7fbc40689f831fe37bd67553dd2d681d068.png" />
+</div>
+</div>
+<div class="highlight-{admonition}**VAE notranslate"><div class="highlight"><pre><span></span>This model builds upon the standard Variational Autoencoder (VAE) architecture by incorporating a **self-attention mechanism** into the encoder. This allows the model to better capture interactions between genes and focus on the most informative features in the input.
+
+Single-cell RNA sequencing data contains complex dependencies across genes. While the vanilla VAE captures global patterns, it may miss long-range or structured gene relationships. Self-attention mechanisms address this by dynamically weighting gene contributions per input.
+</pre></div>
+</div>
+<p><strong>Model Architecture Overview</strong>
+The VAE + Attention consists of the following main components:</p>
+<ul class="simple">
+<li><p><strong>Input Layer</strong>: Gene expression vector <span class="math notranslate nohighlight">\(\mathbf{x}_i \in \mathbb{R}^G\)</span>, where <span class="math notranslate nohighlight">\(G\)</span> is the number of genes.</p></li>
+<li><p><strong>Attention Encoder</strong>:</p>
+<ul>
+<li><p>Multi-layer feedforward network with <strong>Self-Attention Block</strong>.</p></li>
+<li><p>Outputs the <strong>mean</strong> <span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span> and <strong>log-variance</strong> <span class="math notranslate nohighlight">\(\log \boldsymbol{\sigma}^2 \)</span> of the latent space.</p></li>
+</ul>
+</li>
+<li><p><strong>Reparameterization Trick</strong>:
+$<span class="math notranslate nohighlight">\(
+\mathbf{z} = \boldsymbol{\mu} + \boldsymbol{\epsilon} \cdot \boldsymbol{\sigma}, \quad \boldsymbol{\epsilon} \sim \mathcal{N}(0, I)
+\)</span>$</p></li>
+<li><p><strong>Decoder</strong>:</p>
+<ul>
+<li><p>Fully-connected layers that reconstruct gene expression from <span class="math notranslate nohighlight">\(\mathbf{z}\)</span>.</p></li>
+<li><p>Output: <span class="math notranslate nohighlight">\(\tilde{\mathbf{x}} \in \mathbb{R}^G\)</span></p></li>
+</ul>
+</li>
+</ul>
+<p>Self-Attention Block</p>
+<p>The attention block is inserted after the first encoder layer. It includes:</p>
+<ul class="simple">
+<li><p><strong>Multi-Head Self-Attention</strong>:</p>
+<ul>
+<li><p>Learns attention scores between all gene pairs.</p></li>
+<li><p>Captures feature dependencies.</p></li>
+</ul>
+</li>
+<li><p><strong>Residual Connection</strong>:</p>
+<ul>
+<li><p>Adds the attention output to the original input (skip connection).</p></li>
+</ul>
+</li>
+<li><p><strong>Layer Normalization</strong>:</p>
+<ul>
+<li><p>Stabilizes training and accelerates convergence.</p></li>
+</ul>
+</li>
+<li><p><strong>Feedforward Network</strong>:</p>
+<ul>
+<li><p>Applies non-linearity and dimensional transformation after attention.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Attention Formula</strong>:
+$<span class="math notranslate nohighlight">\(
+\text{Attention}(Q, K, V) = \text{softmax}\left( \frac{QK^\top}{\sqrt{d_k}} \right) V
+\)</span>$</p>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Q = W_Q \cdot X\)</span>, <span class="math notranslate nohighlight">\(K = W_K \cdot X\)</span>, <span class="math notranslate nohighlight">\(V = W_V \cdot X\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(W_Q, W_K, W_V\)</span>: Learnable projection matrices.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Attention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Attention</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -1675,6 +1753,23 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 </div>
 </div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">Encoder</span> <span class="pre">Architecture</span> <span class="pre">(Detailed)</span></code></p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fc_enc1</span></code>: Reduces input dimension, activation: ELU.</p></li>
+<li><p><strong>Self-Attention Block</strong>:</p>
+<ul class="simple">
+<li><p>Multi-head attention.</p></li>
+<li><p>Residual + normalization.</p></li>
+<li><p>Feedforward MLP layer.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fc_enc2</span></code>: Output mean <span class="math notranslate nohighlight">\(\mu\)</span> and log-variance <span class="math notranslate nohighlight">\(\log \sigma^2\)</span>.</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">Decoder</span> <span class="pre">Architecture</span></code></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fc_dec1</span></code> → <code class="docutils literal notranslate"><span class="pre">fc_dec2</span></code> → <code class="docutils literal notranslate"><span class="pre">fc_dec3</span></code>: Reconstructs input from <span class="math notranslate nohighlight">\(\mathbf{z}\)</span>.</p></li>
+<li><p>Output is used to compute reconstruction loss against the input <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span>.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">VAEAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -1733,6 +1828,17 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 </div>
 </div>
 </div>
+<section id="id1">
+<h3>Loss Functions<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>The loss function is a sum of:</p>
+<ol class="arabic simple">
+<li><p><strong>Reconstruction Loss</strong> (e.g., Negative Binomial or ZINB for count data).</p></li>
+<li><p><strong>KL Divergence</strong>:
+$<span class="math notranslate nohighlight">\(
+\mathcal{L}_{\text{KL}} = -\frac{1}{2} \sum \left( 1 + \log \sigma^2 - \mu^2 - \sigma^2 \right)
+\)</span>$</p></li>
+<li><p>(Optional) Regularization or sparsity losses if used in training.</p></li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Loss functions </span>
@@ -1849,8 +1955,15 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 </div>
 </div>
 </div>
+</section>
 <section id="hyperparametrization-of-the-model-vae-attention">
 <h3>Hyperparametrization of the model VAE + Attention<a class="headerlink" href="#hyperparametrization-of-the-model-vae-attention" title="Link to this heading">#</a></h3>
+<p>Benefits of Attention</p>
+<ul class="simple">
+<li><p>Allows the model to <strong>prioritize</strong> gene features per input.</p></li>
+<li><p>Captures <strong>context-aware</strong> gene relationships.</p></li>
+<li><p>Improves latent space structure for downstream tasks (clustering, DE analysis).</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">hyperparameter_tuning</span><span class="p">(</span><span class="n">X_data</span><span class="p">):</span>
@@ -1943,6 +2056,13 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 </div>
 </div>
 </div>
+<p><strong>Best Hyperparameters:</strong></p>
+<ul class="simple">
+<li><p>Dropout rate: <code class="docutils literal notranslate"><span class="pre">0.1</span></code></p></li>
+<li><p>Hidden dimension: <code class="docutils literal notranslate"><span class="pre">256</span></code></p></li>
+<li><p>Latent dimension: <code class="docutils literal notranslate"><span class="pre">64</span></code></p></li>
+<li><p>Learning rate: <code class="docutils literal notranslate"><span class="pre">0.001</span></code></p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best metrics: </span><span class="si">{</span><span class="n">best_metrics</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -2289,6 +2409,16 @@ Epoch [200/200] - Loss: -34613364.0000, NB Loss: -32076000.0000, Bernoulli Loss:
 </div>
 </div>
 </div>
+<ul class="simple">
+<li><p>Total Loss per Epoch
+The total loss, which combines all loss components, shows an initial fluctuation followed by a steady decline until around epoch 100, after which it stabilizes with minimal variations. This indicates that the model converges successfully, balancing reconstruction accuracy and latent space regularization. The minimum total loss appears around epochs 90–110.</p></li>
+<li><p>Negative Binomial Loss
+This component dominates the overall reconstruction loss and increases steadily over training, suggesting that the model gradually shifts focus from over-regularization to better modeling the over-dispersed gene expression counts. Despite appearing counterintuitive, the increase reflects the increasing confidence in count estimations as the model learns.</p></li>
+<li><p>Bernoulli Loss
+The Bernoulli loss, responsible for capturing dropout or binary zero-inflation in gene expression data, declines consistently across epochs. This indicates a consistent improvement in modeling dropout events, enhancing robustness for sparse single-cell data.</p></li>
+<li><p>KL Divergence Loss
+The KL divergence term increases in the early training epochs, peaking around epoch 60, and then plateaus. This trend is typical for VAE models, where the KL term initially increases as the latent space structure is learned, then stabilizes as the encoder and decoder converge toward a meaningful latent distribution.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_losses</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">nb_losses</span><span class="p">,</span> <span class="n">bernoulli_losses</span><span class="p">,</span> <span class="n">kl_losses</span><span class="p">)</span>
@@ -2341,6 +2471,7 @@ Epoch [200/200] - Loss: -34613364.0000, NB Loss: -32076000.0000, Bernoulli Loss:
 </div>
 </div>
 </div>
+<p>The UMAP visualizations show the clustering of cells in the latent space obtained from the VAE + Attention model, using both Leiden (top row) and Louvain (bottom row) algorithms across three resolution settings: 0.4, 0.6, and 0.8. At a resolution of 0.4, both methods reveal well-separated, coherent clusters that suggest broad cell-type distinctions, with Leiden identifying slightly more compact and distinct groupings compared to Louvain, which appears to generate a few overlapping or merged clusters. As the resolution increases to 0.6, both algorithms begin to subdivide the larger clusters into smaller, more granular groupings, indicating a higher sensitivity to intra-group heterogeneity. The Leiden method at this resolution introduces finer partitioning with clearer boundaries, possibly revealing subpopulations or states within major cell types, while Louvain still maintains relatively larger clusters but with more definition than at 0.4. At the highest resolution of 0.8, both clustering methods generate numerous smaller clusters, highlighting subtle transcriptional differences and potential rare subtypes. Leiden continues to show tighter, more spatially separated clusters, suggesting higher fidelity in capturing local density structures in the latent space. Louvain at 0.8 also reveals distinct groupings but occasionally exhibits diffuse cluster boundaries and overlapping regions, which might reflect either transitional states or less sensitivity to nuanced differences. Notably, the preservation of spatial integrity in UMAP space across all settings suggests that the learned latent representation effectively encodes biologically meaningful variance, supporting both coarse and fine-grained clustering. Overall, the Leiden algorithm demonstrates slightly superior resolution and consistency in delineating clusters, particularly at higher settings, making it potentially more suitable for detecting fine cellular subtypes in complex single-cell RNA-seq datasets.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_clusters_vae_attention</span><span class="p">(</span><span class="n">model_attention</span><span class="p">,</span> <span class="n">X_data_tensor</span><span class="p">)</span>
@@ -2723,6 +2854,24 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 </section>
 <section id="vae-gat">
 <h2>VAE + GAT<a class="headerlink" href="#vae-gat" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image_path</span> <span class="o">=</span> <span class="s1">&#39;C:/Users/henry/Documents/jbook/eda_rna/img/vaegat.png&#39;</span>
+
+<span class="c1"># Load and display the image</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>  
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Variational Autoencoder with Graph Attention Network&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/10b8dc7f0e987fa797f263dbf45c46895c3a25f7534785342a146a24796293ad.png" src="_images/10b8dc7f0e987fa797f263dbf45c46895c3a25f7534785342a146a24796293ad.png" />
+</div>
+</div>
 <p>We calculate the expression Graph</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -3981,8 +4130,7 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-vae">Model VAE</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decoder-gene-expression-reconstruction">3. Decoder – Gene Expression Reconstruction</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-vae">Model VAE</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loss-functions">Loss Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clusterization-for-vae">Clusterization for VAE</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparametrization-of-vae">Hyperparametrization of VAE</a><ul class="nav section-nav flex-column">
@@ -3998,6 +4146,7 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vae-attention">VAE + Attention</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Loss Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparametrization-of-the-model-vae-attention">Hyperparametrization of the model VAE + Attention</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-for-vae-attention">Cluster for VAE + Attention</a></li>
 </ul>
