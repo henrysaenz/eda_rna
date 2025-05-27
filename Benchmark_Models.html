@@ -389,7 +389,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-vae">Model VAE</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-vae">Model VAE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decoder-gene-expression-reconstruction">3. Decoder – Gene Expression Reconstruction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loss-functions">Loss Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clusterization-for-vae">Clusterization for VAE</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparametrization-of-vae">Hyperparametrization of VAE</a><ul class="nav section-nav flex-column">
@@ -398,7 +399,10 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-metrics">Evaluation Metrics</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-for-vae">Differential Expression for VAE</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-for-vae">Differential Expression for VAE</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot-for-differential-expression">Volcano PLot for Differential Expression</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vae-attention">VAE + Attention</a><ul class="nav section-nav flex-column">
@@ -502,9 +506,9 @@ document.write(`
 \[
 \mathbf{z} = \boldsymbol{\mu} + \boldsymbol{\epsilon} \cdot \boldsymbol{\sigma}, \quad \boldsymbol{\epsilon} \sim \mathcal{N}(0, I)
 \]</div>
-<ol class="arabic simple" start="3">
-<li><p>Decoder – Gene Expression Reconstruction</p></li>
-</ol>
+</section>
+<section id="decoder-gene-expression-reconstruction">
+<h2>3. Decoder – Gene Expression Reconstruction<a class="headerlink" href="#decoder-gene-expression-reconstruction" title="Link to this heading">#</a></h2>
 <p>The decoder takes ( \mathbf{z} ) and reconstructs the original gene expression ( \mathbf{x}_i ).</p>
 <ul class="simple">
 <li><p><strong>Layers <code class="docutils literal notranslate"><span class="pre">fc_dec1</span></code> to <code class="docutils literal notranslate"><span class="pre">fc_dec3</span></code>:</strong> Gradually expand the latent vector back to the original input size.</p></li>
@@ -560,34 +564,34 @@ document.write(`
 </div>
 <section id="loss-functions">
 <h3>Loss Functions<a class="headerlink" href="#loss-functions" title="Link to this heading">#</a></h3>
-<p><strong>Custom Loss Function: <code class="docutils literal notranslate"><span class="pre">zinb_loss</span></code></strong></p>
+<p><strong>Custom Loss Function:</strong> <code class="docutils literal notranslate"><span class="pre">zinb_loss</span></code></p>
 <p>This model uses a <strong>Zero-Inflated Negative Binomial (ZINB)</strong> loss tailored to count data with overdispersion and excess zeros, typical of scRNA-seq. It includes:</p>
-<ul class="simple">
-<li><p>Negative Binomial (NB) Loss: The NB likelihood models overdispersed count data. Given mean ( \mu ), dispersion ( \theta ), and count ( x ):</p></li>
-</ul>
-<p>[
+<p>• Negative Binomial (NB) Loss</p>
+<p>The NB likelihood models overdispersed count data. Given mean (<span class="math notranslate nohighlight">\(\mu\)</span>), dispersion (<span class="math notranslate nohighlight">\(\theta\)</span>), and count (<span class="math notranslate nohighlight">\(x\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[
 \mathcal{L}_{NB}(x; \mu, \theta) = \log \Gamma(x + \theta) - \log \Gamma(x + 1) - \log \Gamma(\theta) + \theta \log \left( \frac{\theta}{\theta + \mu} \right) + x \log \left( \frac{\mu}{\theta + \mu} \right)
-]</p>
+\]</div>
 <p>This is typically <strong>negated</strong> to turn it into a loss.</p>
-<ul class="simple">
-<li><p>Bernoulli Loss (BL) – Optional for Zero-Inflation: If zero-inflation probabilities ( p_0 ) are modeled, a Bernoulli component is added:</p></li>
-</ul>
-<p>[
+<p>• Bernoulli Loss (BL) — Optional for Zero-Inflation</p>
+<p>If zero-inflation probabilities (<span class="math notranslate nohighlight">\(p_0\)</span>) are modeled, a Bernoulli component is added:</p>
+<div class="math notranslate nohighlight">
+\[
 \mathcal{L}_{BL}(x; p_0) = -x \cdot \log(1 - p_0) - (1 - x) \cdot \log(p_0)
-]</p>
+\]</div>
 <p>Only applied when modeling dropout/excess zeros explicitly.</p>
-<ul class="simple">
-<li><p>KL Divergence (Latent Regularization): The KL divergence ensures that the latent space stays close to a standard Gaussian prior:</p></li>
-</ul>
-<p>[
-\mathcal{L}_{KL} = -\frac{1}{2} \sum \left(1 + \log \sigma^2 - \mu^2 - \sigma^2\right)
-]</p>
-<ul class="simple">
-<li><p>Total Loss: The final loss combines all components, with a tunable ( \beta ) coefficient:</p></li>
-</ul>
-<p>[
-\mathcal{L}<em>{\text{total}} = \mathcal{L}</em>{NB} + \mathcal{L}<em>{BL} + \beta \cdot \mathcal{L}</em>{KL}
-]</p>
+<p>• KL Divergence (Latent Regularization)</p>
+<p>The KL divergence ensures that the latent space stays close to a standard Gaussian prior:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}_{KL} = -\frac{1}{2} \sum \left(1 + \log \sigma^2 - \mu^2 - \sigma^2 \right)
+\]</div>
+<p>• Total Loss</p>
+<p>The final loss combines all components, with a tunable (<span class="math notranslate nohighlight">\(\beta\)</span>) coefficient:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}_{\text{total}} = \mathcal{L}_{NB} + \mathcal{L}_{BL} + \beta \cdot \mathcal{L}_{KL}
+\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">zinb_loss</span><span class="p">(</span><span class="n">recon_x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log_var</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
@@ -1439,20 +1443,30 @@ This multi-part objective leads to better generalization and clustering performa
 </section>
 <section id="differential-expression-for-vae">
 <h3>Differential Expression for VAE<a class="headerlink" href="#differential-expression-for-vae" title="Link to this heading">#</a></h3>
-<p>The green vertical lines represent log fold change thresholds (typically at +1 and -1).</p>
-<p>The blue horizontal line represents the p-value threshold (typically at p = 0.05, shown as -log10(0.05) on the y-axis).</p>
-<p>If a point (gene) is outside these lines, it means:
-To the right of the green line (&gt; +1 logFC):
-The gene is strongly upregulated in the cluster compared to the others.</p>
-<p>To the left of the green line (&lt; -1 logFC):
-The gene is strongly downregulated in the cluster compared to the others.</p>
-<p>Above the blue line:
-The gene is statistically significant, because its p-value is less than 0.05.</p>
+<div class="admonition-boundaries-of-the-differential-expression-volcano-plot admonition">
+<p class="admonition-title">Boundaries of the differential expression volcano plot</p>
+<ul class="simple">
+<li><p>The green vertical lines represent log fold change thresholds (typically at +1 and -1).</p></li>
+<li><p>The blue horizontal line represents the p-value threshold (typically at p = 0.05, shown as -log10(0.05) on the y-axis).</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>If a point (gene) is outside these lines, it means:</p></li>
+</ol>
+<ul class="simple">
+<li><p>To the right of the green line (&gt; +1 logFC): The gene is strongly upregulated in the cluster compared to the others.</p></li>
+<li><p>To the left of the green line (&lt; -1 logFC): The gene is strongly downregulated in the cluster compared to the others.</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Above the blue line: The gene is statistically significant, because its p-value is less than 0.05.</p></li>
+</ol>
 <p>So if a gene is:
 Beyond the green lines and above the blue line, it’s considered both:</p>
-<p>Statistically significant</p>
-<p>Biologically meaningful (large expression change)</p>
-<p>These genes (points) are often colored red in the plot because they are the most relevant for biological interpretation.</p>
+<ul class="simple">
+<li><p>Statistically significant</p></li>
+<li><p>Biologically meaningful (large expression change)</p></li>
+<li><p>These genes (points) are often colored red in the plot because they are the most relevant for biological interpretation.</p></li>
+</ul>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -1582,6 +1596,8 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 <img alt="_images/644688c15ef5b52e742fcc0c205952a01cc44324dd62f6b46b3b0446a7059b65.png" src="_images/644688c15ef5b52e742fcc0c205952a01cc44324dd62f6b46b3b0446a7059b65.png" />
 </div>
 </div>
+<section id="volcano-plot-for-differential-expression">
+<h4>Volcano PLot for Differential Expression<a class="headerlink" href="#volcano-plot-for-differential-expression" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;rank_genes_groups&#39;</span><span class="p">][</span><span class="s1">&#39;names&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span> <span class="c1">#Name of each cluster</span>
@@ -1639,6 +1655,8 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 <img alt="_images/15d6a3718e0b3dc66084df136c2d46641612a345cc757ab8a74791988c52ce0e.png" src="_images/15d6a3718e0b3dc66084df136c2d46641612a345cc757ab8a74791988c52ce0e.png" />
 </div>
 </div>
+<p>Based on the volcano plots for Clusters 0 through 5, we can conclude that most genes in each cluster exhibit low statistical significance and minimal differential expression, as the majority of points are concentrated around the center (log fold change ≈ 0) and lie below the blue horizontal p-value threshold line. This suggests that for most clusters, the genes do not show strong up- or down-regulation, nor do they achieve statistical significance (p &gt; 0.05). Notably, only a few genes in each plot fall beyond the green vertical boundaries (logFC &gt; 1 or &lt; -1), and even fewer surpass the horizontal blue line, indicating that very few genes meet both criteria for being statistically significant and biologically meaningful. These few genes—if any—are the ones that stand out as potential key markers or drivers for each cluster and would warrant further biological interpretation and validation. Overall, the sparse presence of such genes suggests subtle transcriptional differences between clusters or a relatively homogeneous gene expression landscape.</p>
+</section>
 </section>
 </section>
 <section id="vae-attention">
@@ -3963,7 +3981,8 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-vae">Model VAE</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-vae">Model VAE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decoder-gene-expression-reconstruction">3. Decoder – Gene Expression Reconstruction</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loss-functions">Loss Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clusterization-for-vae">Clusterization for VAE</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparametrization-of-vae">Hyperparametrization of VAE</a><ul class="nav section-nav flex-column">
@@ -3972,7 +3991,10 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-metrics">Evaluation Metrics</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-for-vae">Differential Expression for VAE</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-for-vae">Differential Expression for VAE</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot-for-differential-expression">Volcano PLot for Differential Expression</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vae-attention">VAE + Attention</a><ul class="nav section-nav flex-column">
