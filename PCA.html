@@ -1,0 +1,2041 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Dimensionality reduction &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'PCA';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Benchmark Models" href="preprocessing.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo_uninorte.png" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/logo_uninorte.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Final Project - Deep Learning
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to Single-Cell RNA Sequencing</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="EDA_sparse_matrix.html">Exploratory Data Analysis for the sparse matrix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Exploratory Data Analysis for Glioblastoma data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Benchmark Models</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Dimensionality reduction</a></li>
+
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/henrysaenz/eda_rna" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/henrysaenz/eda_rna/issues/new?title=Issue%20on%20page%20%2FPCA.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/PCA.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Dimensionality reduction</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Dimensionality reduction</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caclulate-performance-metrics">Caclulate performance metrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neighbourhood-graph-and-umap">Neighbourhood Graph and Umap</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-techniques">Clustering techniques</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-leidein">Using Leidein</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-louvain">Clustering with louvain</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparation-between-clusters">Comparation between clusters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="dimensionality-reduction">
+<h1>Dimensionality reduction<a class="headerlink" href="#dimensionality-reduction" title="Link to this heading">#</a></h1>
+<div class="admonition-what-is-dimensionality-reduction admonition">
+<p class="admonition-title">What is dimensionality reduction?</p>
+<p>Dimensionality reduction is the process of transforming high-dimensional data into a lower-dimensional space while preserving the most important features or patterns. In the context of single-cell RNA sequencing (scRNA-seq), where each cell is represented by thousands of gene expression values, dimensionality reduction is crucial for simplifying the data, reducing noise, and enabling meaningful visualization and analysis.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<section id="using-pca">
+<h2>Using PCA<a class="headerlink" href="#using-pca" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The first few PCs (e.g., PC1, PC2, PC3) explain the largest proportion of variance, with a steep drop-off in variance explained as the ranking increases.</p></li>
+<li><p>After approximately the 10th PC, the variance explained by each additional PC becomes minimal, indicating diminishing returns in terms of information captured.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run PCA (using ARPACK for reproducibility)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">pca</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> 
+          <span class="n">n_comps</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> 
+          <span class="n">svd_solver</span><span class="o">=</span><span class="s1">&#39;arpack&#39;</span><span class="p">,</span>  <span class="c1"># Best for reproducibility</span>
+          <span class="n">use_highly_variable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Use the 2000 HVGs</span>
+
+<span class="c1"># Plot variance explained</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">pca_variance_ratio</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\scanpy\preprocessing\_pca.py:377: FutureWarning: Argument `use_highly_variable` is deprecated, consider using the mask argument. Use_highly_variable=True can be called through mask_var=&quot;highly_variable&quot;. Use_highly_variable=False can be called through mask_var=None
+  warn(msg, FutureWarning)
+</pre></div>
+</div>
+<img alt="_images/88b4cdd0be868dfa737bdc176af9672eb889bc594af33333d3f7f36fdda7f2ba.png" src="_images/88b4cdd0be868dfa737bdc176af9672eb889bc594af33333d3f7f36fdda7f2ba.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;pca&#39;</span><span class="p">][</span><span class="s1">&#39;variance_ratio&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.02982847, 0.04353569, 0.0534675 , 0.06150168, 0.06939694,
+       0.07571189, 0.08177835, 0.08763348, 0.09276243, 0.097189  ,
+       0.10155126, 0.10531369, 0.10880657, 0.11208757, 0.11517075,
+       0.11819483, 0.12108765, 0.12385833, 0.12657326, 0.12920351,
+       0.13181002, 0.13437727, 0.13689186, 0.1393744 , 0.14182699,
+       0.14426738, 0.14666459, 0.14902763, 0.15138672, 0.15372702,
+       0.15605642, 0.15835232, 0.16064428, 0.16291155, 0.16516817,
+       0.16741067, 0.16963257, 0.1718447 , 0.17403933, 0.17621431,
+       0.17838238, 0.1805329 , 0.18266787, 0.18479817, 0.18692064,
+       0.18902254, 0.19111815, 0.1932109 , 0.19529845, 0.19737189],
+      dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative_variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;pca&#39;</span><span class="p">][</span><span class="s1">&#39;variance_ratio&#39;</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cumulative_variance</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">cumulative_variance</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+<span class="c1"># Labels and title</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Principal Components&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Cumulative Variance Explained&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Cumulative Variance Explained by PCA&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;80% Variance&#39;</span><span class="p">)</span>  <span class="c1"># Mark 80% threshold</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;90% Variance&#39;</span><span class="p">)</span>  <span class="c1"># Mark 90% threshold</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+<span class="c1"># Show plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/31553d5e829a605cc18e91272dc9ae397cdf367c91e313aab595a84383a6671f.png" src="_images/31553d5e829a605cc18e91272dc9ae397cdf367c91e313aab595a84383a6671f.png" />
+</div>
+</div>
+<section id="caclulate-performance-metrics">
+<h3>Caclulate performance metrics<a class="headerlink" href="#caclulate-performance-metrics" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Helper: get embedding from AnnData</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_embedding</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;X_pca&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;X_harmony&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_harmony&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown embedding key&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># calculate batch entropy mixing</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">batch_entropy</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">embedding_key</span><span class="p">,</span> <span class="n">batch_key</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NearestNeighbors</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="n">embedding_key</span><span class="p">]</span>
+    <span class="n">batches</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">batch_key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">le</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+    <span class="n">batch_labels</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">batches</span><span class="p">)</span>
+    <span class="n">nbrs</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">nbrs</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">entropies</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">neighbors</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+        <span class="n">neighbor_batches</span> <span class="o">=</span> <span class="n">batch_labels</span><span class="p">[</span><span class="n">neighbors</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>  <span class="c1"># exclude self</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">neighbor_batches</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">le</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span> <span class="o">/</span> <span class="n">n_neighbors</span>
+        <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">p</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">probs</span> <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">entropies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">entropies</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate metrics for PCA</span>
+<span class="n">pca_embedding</span> <span class="o">=</span> <span class="n">get_embedding</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;X_pca&#39;</span><span class="p">)</span>
+<span class="n">cell_types</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">batches</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;plate_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="n">silhouette_pca</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">pca_embedding</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">)</span>
+<span class="n">batch_entropy_pca</span> <span class="o">=</span> <span class="n">batch_entropy</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;X_pca&#39;</span><span class="p">,</span> <span class="s1">&#39;plate_id&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate metrics for Harmony</span>
+<span class="n">harmony_embedding</span> <span class="o">=</span> <span class="n">get_embedding</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;X_harmony&#39;</span><span class="p">)</span>
+<span class="n">silhouette_harmony</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">harmony_embedding</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">)</span>
+<span class="n">batch_entropy_harmony</span> <span class="o">=</span> <span class="n">batch_entropy</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="s1">&#39;X_harmony&#39;</span><span class="p">,</span> <span class="s1">&#39;plate_id&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># calculate ARI and NMI</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">clustering_metrics</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="n">true_labels</span><span class="p">,</span> <span class="n">n_clusters</span><span class="p">):</span>
+    <span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
+    <span class="n">pred_labels</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">labels_</span>
+    <span class="n">ari</span> <span class="o">=</span> <span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">pred_labels</span><span class="p">)</span>
+    <span class="n">nmi</span> <span class="o">=</span> <span class="n">normalized_mutual_info_score</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">pred_labels</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ari</span><span class="p">,</span> <span class="n">nmi</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># variance explained (for PCA)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">variance_explained</span><span class="p">(</span><span class="n">adata</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s1">&#39;pca&#39;</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">uns</span> <span class="ow">and</span> <span class="s1">&#39;variance_ratio&#39;</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;pca&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;pca&#39;</span><span class="p">][</span><span class="s1">&#39;variance_ratio&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Method&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;PCA&#39;</span><span class="p">,</span> <span class="s1">&#39;Harmony&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Silhouette Score (cell type)&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">silhouette_pca</span><span class="p">,</span> <span class="n">silhouette_harmony</span><span class="p">],</span>
+    <span class="s1">&#39;Batch Entropy Mixing&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">batch_entropy_pca</span><span class="p">,</span> <span class="n">batch_entropy_harmony</span><span class="p">]</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">methods</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;PCA&#39;</span><span class="p">:</span> <span class="s1">&#39;X_pca&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Harmony&#39;</span><span class="p">:</span> <span class="s1">&#39;X_harmony&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Encode cell types for metrics</span>
+<span class="n">cell_types</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">])</span>
+<span class="n">n_cell_types</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cell_types</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">method</span><span class="p">,</span> <span class="n">emb_key</span> <span class="ow">in</span> <span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">embedding</span> <span class="o">=</span> <span class="n">get_embedding</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">emb_key</span><span class="p">)</span>
+    <span class="c1"># Silhouette Score</span>
+    <span class="n">silhouette</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">)</span>
+    <span class="c1"># Batch Entropy</span>
+    <span class="n">batch_entropy_val</span> <span class="o">=</span> <span class="n">batch_entropy</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">emb_key</span><span class="p">,</span> <span class="s1">&#39;plate_id&#39;</span><span class="p">)</span>
+    <span class="c1"># ARI &amp; NMI (using KMeans, number of clusters = number of cell types)</span>
+    <span class="n">ari</span><span class="p">,</span> <span class="n">nmi</span> <span class="o">=</span> <span class="n">clustering_metrics</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">n_cell_types</span><span class="p">)</span>
+    <span class="c1"># Variance explained (only for PCA)</span>
+    <span class="n">var_exp</span> <span class="o">=</span> <span class="n">variance_explained</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">)</span> <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;PCA&#39;</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="c1"># Append to results</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;Method&#39;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
+        <span class="s1">&#39;Silhouette Score (cell type)&#39;</span><span class="p">:</span> <span class="n">silhouette</span><span class="p">,</span>
+        <span class="s1">&#39;Batch Entropy Mixing&#39;</span><span class="p">:</span> <span class="n">batch_entropy_val</span><span class="p">,</span>
+        <span class="s1">&#39;ARI&#39;</span><span class="p">:</span> <span class="n">ari</span><span class="p">,</span>
+        <span class="s1">&#39;NMI&#39;</span><span class="p">:</span> <span class="n">nmi</span><span class="p">,</span>
+        <span class="s1">&#39;Variance Explained&#39;</span><span class="p">:</span> <span class="n">var_exp</span>
+    <span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\sklearn\cluster\_kmeans.py:1412: FutureWarning: The default value of `n_init` will change from 10 to &#39;auto&#39; in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  super()._check_params_vs_input(X, default_n_init=10)
+c:\Users\henry\miniconda3\envs\dl_venv\lib\site-packages\sklearn\cluster\_kmeans.py:1412: FutureWarning: The default value of `n_init` will change from 10 to &#39;auto&#39; in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  super()._check_params_vs_input(X, default_n_init=10)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="n">results_df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Method</th>
+      <th>Silhouette Score (cell type)</th>
+      <th>Batch Entropy Mixing</th>
+      <th>ARI</th>
+      <th>NMI</th>
+      <th>Variance Explained</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>PCA</td>
+      <td>0.189582</td>
+      <td>2.895963</td>
+      <td>0.537578</td>
+      <td>0.649484</td>
+      <td>0.197372</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Harmony</td>
+      <td>0.218689</td>
+      <td>3.488787</td>
+      <td>0.550414</td>
+      <td>0.674881</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p><strong>Selecting the best numbers of neighbors</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]:</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;clust_k</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Calculate silhouette score</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">][:,:</span><span class="mi">30</span><span class="p">],</span> 
+                            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;clust_k</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: Silhouette = </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_31552\1217238346.py:3: FutureWarning: In the future, the default backend for leiden will be igraph instead of leidenalg.
+
+ To achieve the future defaults please pass: flavor=&quot;igraph&quot; and n_iterations=2.  directed must also be False to work with igraph&#39;s implementation.
+  sc.tl.leiden(adata_filtered, resolution=0.6, key_added=f&#39;clust_k{k}&#39;)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k=10: Silhouette = 0.191
+k=15: Silhouette = 0.182
+k=20: Silhouette = 0.180
+k=30: Silhouette = 0.160
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="neighbourhood-graph-and-umap">
+<h3>Neighbourhood Graph and Umap<a class="headerlink" href="#neighbourhood-graph-and-umap" title="Link to this heading">#</a></h3>
+<div class="admonition-what-is-umap admonition">
+<p class="admonition-title">What is UMAP?</p>
+<p>UMAP (Uniform Manifold Approximation and Projection) is a dimensionality reduction technique commonly used in single-cell RNA sequencing (scRNA-seq) analysis. It reduces high-dimensional data (like thousands of gene expression values per cell) into a 2D or 3D representation while preserving the local structure of the data. This allows us to visualize relationships between cells in a lower-dimensional space.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build graph with optimal k=10</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span>
+    <span class="n">n_pcs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>       <span class="c1"># From variance plot</span>
+    <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># From silhouette</span>
+    <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;total_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_mito&quot;</span><span class="p">],</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;UMAP of filtered data&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
+WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
+</pre></div>
+</div>
+<img alt="_images/9b2f88c1b2cf1e87ca5867d4b62f27280f6b4f158fac02ddaa83e9242f97110f.png" src="_images/9b2f88c1b2cf1e87ca5867d4b62f27280f6b4f158fac02ddaa83e9242f97110f.png" />
+</div>
+</div>
+<div class="admonition-what-is-granularity-in-clusters admonition">
+<p class="admonition-title">What is granularity in clusters?</p>
+<p>In clustering algorithms like <strong>Leiden</strong> and <strong>Louvain</strong>, the <strong>resolution parameter</strong> controls the granularity of the clusters. It determines how finely or coarsely the data is partitioned into clusters. A higher resolution results in more, smaller clusters, while a lower resolution produces fewer, larger clusters.</p>
+</div>
+</section>
+</section>
+<section id="clustering-techniques">
+<h2>Clustering techniques<a class="headerlink" href="#clustering-techniques" title="Link to this heading">#</a></h2>
+<section id="using-leidein">
+<h3>Using Leidein<a class="headerlink" href="#using-leidein" title="Link to this heading">#</a></h3>
+<p>The resolution parameter in Leiden clustering controls how granular your clusters will be:</p>
+<ul class="simple">
+<li><p>0.4	Fewer, broader clusters	Identifying major cell types</p></li>
+<li><p>0.6	Moderate clustering (default)	Balancing specificity/size</p></li>
+<li><p>0.8	More, finer clusters	Detecting rare subtypes</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cluster at multiple resolutions</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="o">=</span><span class="n">res</span><span class="p">,</span>
+        <span class="n">key_added</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>  
+<span class="c1"># Get cluster counts for each resolution</span>
+<span class="n">cluster_counts_r06</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden_r0.4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cluster_counts_r04</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden_r0.6&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cluster_counts_r08</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;leiden_r0.8&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># Create a DataFrame</span>
+<span class="n">df_clusters</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Leiden (r=0.4)&#39;</span><span class="p">:</span> <span class="n">cluster_counts_r04</span><span class="p">,</span>
+    <span class="s1">&#39;Leiden (r=0.6)&#39;</span><span class="p">:</span> <span class="n">cluster_counts_r06</span><span class="p">,</span>
+    <span class="s1">&#39;Leiden (r=0.8)&#39;</span><span class="p">:</span> <span class="n">cluster_counts_r08</span>
+<span class="p">})</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># Fill missing values with 0 and convert to integer</span>
+
+<span class="c1"># Display table</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_clusters</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    Leiden (r=0.4)  Leiden (r=0.6)  Leiden (r=0.8)
+0              315             324             237
+1              296             323             223
+10              42              11              56
+11              22               5              47
+12              11               0              42
+13               5               0              27
+14               0               0              22
+15               0               0              11
+16               0               0               5
+2              238             315             220
+3              223             259             215
+4              220             220             186
+5              191             190             165
+6               76              56             136
+7               72              56              99
+8               56              42              76
+9               56              22              56
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a 3-panel plot comparing resolutions</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]):</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Resolution=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+        <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/e77e444a14b08a129b4fd858f15fe8b5c7abf616b5722a6f5bb2b9bf0dbc869d.png" src="_images/e77e444a14b08a129b4fd858f15fe8b5c7abf616b5722a6f5bb2b9bf0dbc869d.png" />
+</div>
+</div>
+<div class="admonition-what-is-silhoutte-score admonition">
+<p class="admonition-title">What is silhoutte score?</p>
+<p>The <strong>silhouette score</strong> is a metric used to evaluate the quality of clustering. It measures how similar a cell is to other cells in its own cluster compared to cells in other clusters. The score ranges from -1 to 1:</p>
+<ul class="simple">
+<li><p>A score close to <strong>1</strong> indicates that cells are well-matched to their own cluster and poorly matched to other clusters (good clustering).</p></li>
+<li><p>A score close to <strong>0</strong> indicates that cells are on the boundary between clusters.</p></li>
+<li><p>A score close to <strong>-1</strong> indicates that cells may be assigned to the wrong cluster.</p></li>
+</ul>
+</div>
+<p>The Leiden clustering results show that <strong>resolution 0.6</strong> provides the best-defined clusters based on the silhouette score. Lower resolutions (e.g., 0.4) result in broader clusters, while higher resolutions (e.g., 0.8) lead to finer granularity but less well-defined clusters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
+
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">][:,:</span><span class="mi">30</span><span class="p">],</span> 
+        <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resolution </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2">: Silhouette = </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Resolution 0.4: Silhouette = 0.177
+Resolution 0.6: Silhouette = 0.191
+Resolution 0.8: Silhouette = 0.159
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="clustering-with-louvain">
+<h3>Clustering with louvain<a class="headerlink" href="#clustering-with-louvain" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">louvain</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="o">=</span><span class="n">res</span><span class="p">,</span>
+        <span class="n">key_added</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get cluster counts for each resolution</span>
+<span class="n">louvain_counts_r04</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;louvain_r0.4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">louvain_counts_r06</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;louvain_r0.6&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">louvain_counts_r08</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;louvain_r0.8&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create a DataFrame</span>
+<span class="n">df_louvain</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Louvain (r=0.4)&#39;</span><span class="p">:</span> <span class="n">louvain_counts_r04</span><span class="p">,</span>
+    <span class="s1">&#39;Louvain (r=0.6)&#39;</span><span class="p">:</span> <span class="n">louvain_counts_r06</span><span class="p">,</span>
+    <span class="s1">&#39;Louvain (r=0.8)&#39;</span><span class="p">:</span> <span class="n">louvain_counts_r08</span>
+<span class="p">})</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># Fill missing values with 0 and convert to integer</span>
+
+<span class="c1"># Display table</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_louvain</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    Louvain (r=0.4)  Louvain (r=0.6)  Louvain (r=0.8)
+0               348              350              350
+1               285              320              291
+10                0               23               42
+11                0               11               23
+12                0                0               11
+2               270              268              230
+3               241              235              223
+4               220              220              220
+5               215              192              192
+6               135               56               79
+7                67               56               56
+8                42               50               56
+9                 0               42               50
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a 3-panel plot comparing resolutions</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]):</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Resolution=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+        <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/9dafbc2526a2e004041312cd9b7a1ac2d25ad0c3b26fb908d1b7be8e4d9b370f.png" src="_images/9dafbc2526a2e004041312cd9b7a1ac2d25ad0c3b26fb908d1b7be8e4d9b370f.png" />
+</div>
+</div>
+<p>The Louvain clustering results show that higher resolutions lead to more clusters with smaller sizes, similar to the Leiden algorithm. However, Louvain tends to produce fewer, larger clusters compared to Leiden. The silhouette scores indicate that the clusters become more well-defined at higher resolutions, with the best score observed at <strong>resolution 0.8</strong>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">][:,:</span><span class="mi">30</span><span class="p">],</span> 
+        <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resolution </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2">: Silhouette = </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Resolution 0.4: Silhouette = 0.157
+Resolution 0.6: Silhouette = 0.176
+Resolution 0.8: Silhouette = 0.197
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="comparation-between-clusters">
+<h3>Comparation between clusters<a class="headerlink" href="#comparation-between-clusters" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Create comparison plots</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+<span class="c1"># Leiden results</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]):</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Leiden (r=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+<span class="c1"># Louvain results</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]):</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Louvain (r=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/019f8014d6860ffc465381249fb8873bf3ebc47cfb9d8ac7615ab004dacdf4c0.png" src="_images/019f8014d6860ffc465381249fb8873bf3ebc47cfb9d8ac7615ab004dacdf4c0.png" />
+</div>
+</div>
+<p><strong>Cluster size comparison</strong>
+Leiden clustering (blue) generally produces a larger number of smaller clusters compared to Louvain (orange), which results in slightly larger clusters. As the resolution increases, both methods detect more fine-grained structures, but Leiden retains a greater diversity in cluster sizes. This suggests that Leiden might be more sensitive to capturing smaller subpopulations, while Louvain tends to favor more balanced partitions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot cluster sizes</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="s1">&#39;louvain&#39;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="se">\n</span><span class="s1">r=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">),</span>
+            <span class="n">counts</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span>
+        <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Cluster Size (log)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Cluster Size Distribution&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/f02e647e80a3bbe793d26a37bea35d5c07eb8c477fa011006f8c6589d1b0b96f.png" src="_images/f02e647e80a3bbe793d26a37bea35d5c07eb8c477fa011006f8c6589d1b0b96f.png" />
+</div>
+</div>
+<p><strong>Comparisson between solhoutte scores</strong></p>
+<p>The silhouette scores provide insight into the clustering quality for different resolutions using Leiden and Louvain methods. At lower resolutions (r = 0.4, 0.6), Leiden outperforms Louvain with higher silhouette scores (0.177 and 0.191 vs. 0.157 and 0.176, respectively), indicating better-defined clusters. However, at r = 0.8, Louvain surpasses Leiden (0.197 vs. 0.161), suggesting that Louvain produces more cohesive clusters at higher resolutions. This indicates that Leiden is more effective at lower resolutions, while Louvain may be preferable when finer cluster structures are needed.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
+
+<span class="c1"># Calculate for all resolutions</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="s1">&#39;louvain&#39;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span>
+            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">][:,:</span><span class="mi">30</span><span class="p">],</span>
+            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">&#39;Method&#39;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
+            <span class="s1">&#39;Resolution&#39;</span><span class="p">:</span> <span class="n">res</span><span class="p">,</span>
+            <span class="s1">&#39;Silhouette&#39;</span><span class="p">:</span> <span class="n">score</span>
+        <span class="p">})</span>
+
+<span class="c1"># Display as table</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;Resolution&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;Method&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Silhouette&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Method</th>
+      <th>leiden</th>
+      <th>louvain</th>
+    </tr>
+    <tr>
+      <th>Resolution</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.4</th>
+      <td>0.177232</td>
+      <td>0.156801</td>
+    </tr>
+    <tr>
+      <th>0.6</th>
+      <td>0.190543</td>
+      <td>0.175585</td>
+    </tr>
+    <tr>
+      <th>0.8</th>
+      <td>0.159214</td>
+      <td>0.196528</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="admonition-ari-adjusted-rand-index admonition">
+<p class="admonition-title">ARI (Adjusted Rand Index)</p>
+<p>Measures how similar the cluster assignments are, adjusting for random chance.</p>
+<ul class="simple">
+<li><p>Range: 0 (random) to 1 (perfect match).</p></li>
+<li><p>Higher ARI means Leiden and Louvain results are similar.</p></li>
+</ul>
+</div>
+<p>ARI</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">adjusted_rand_score</span>
+
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="s1">&#39;louvain&#39;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]:</span>
+        <span class="n">ari</span> <span class="o">=</span> <span class="n">adjusted_rand_score</span><span class="p">(</span>
+            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">],</span>
+            <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> r=</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2">: ARI = </span><span class="si">{</span><span class="n">ari</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>leiden r=0.4: ARI = 0.417
+leiden r=0.6: ARI = 0.362
+leiden r=0.8: ARI = 0.285
+louvain r=0.4: ARI = 0.380
+louvain r=0.6: ARI = 0.397
+louvain r=0.8: ARI = 0.369
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition-nmi-normalized-mutual-information admonition">
+<p class="admonition-title">NMI (Normalized Mutual Information)</p>
+<p>Measures how much information is shared between the two clustering methods.</p>
+<ul class="simple">
+<li><p>Range: 0 (independent) to 1 (identical clustering).</p></li>
+<li><p>Higher NMI indicates strong agreement between Leiden and Louvain.</p></li>
+</ul>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalized_mutual_info_score</span> <span class="k">as</span> <span class="n">nmi</span>
+
+<span class="c1"># Compute NMI between Leiden and Louvain for each resolution</span>
+<span class="n">resolutions</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
+<span class="n">nmi_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">resolutions</span><span class="p">:</span>
+    <span class="n">leiden_labels</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;leiden_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="n">louvain_labels</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;louvain_r</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+    <span class="n">nmi_score</span> <span class="o">=</span> <span class="n">nmi</span><span class="p">(</span><span class="n">leiden_labels</span><span class="p">,</span> <span class="n">louvain_labels</span><span class="p">)</span>
+    <span class="n">nmi_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nmi_score</span><span class="p">)</span>
+
+<span class="n">df_nmi</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Resolution&#39;</span><span class="p">:</span> <span class="n">resolutions</span><span class="p">,</span>
+    <span class="s1">&#39;NMI (Leiden vs Louvain)&#39;</span><span class="p">:</span> <span class="n">nmi_results</span>
+<span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">df_nmi</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Resolution  NMI (Leiden vs Louvain)
+0         0.4                 0.872361
+1         0.6                 0.889825
+2         0.8                 0.876954
+</pre></div>
+</div>
+</div>
+</div>
+<p>Biological clasification</p>
+<ul class="simple">
+<li><p>These genes represent a mix of immune-related (e.g., <strong>SAA2</strong>, <strong>S100A8</strong>), stress-response (e.g., <strong>DNAJC9</strong>), and regulatory genes (e.g., <strong>CTDP1</strong>, <strong>FBXO32</strong>).</p></li>
+<li><p>The presence of inflammation and immune-related genes suggests that the dataset may include immune cell populations or cells responding to stress or inflammation.</p></li>
+<li><p>Genes like <strong>MGP</strong> and <strong>LEPROT</strong> may indicate specific cell types or states, such as metabolic or extracellular matrix regulation.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top 10 HVGs</span>
+<span class="n">top_hvgs</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;dispersions_norm&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="c1"># Create a mapping dictionary from your var table</span>
+<span class="n">gene_id_to_name</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;Mapped_Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>  <span class="c1"># Or appropriate column</span>
+
+<span class="c1"># Print top HVGs with their names</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top HVGs:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">gene_id</span> <span class="ow">in</span> <span class="n">top_hvgs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">gene_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">gene_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">gene_id</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;unnamed&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top HVGs:
+ENSG00000134339: SAA2
+ENSG00000060069: CTDP1
+ENSG00000258659: TRIM34
+ENSG00000204542: C6orf15
+ENSG00000213551: DNAJC9
+ENSG00000215183: MSMP
+ENSG00000156804: FBXO32
+ENSG00000111341: MGP
+ENSG00000143546: S100A8
+ENSG00000213625: LEPROT
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check which of your marker genes actually exist in Mapped_Gene</span>
+<span class="n">available_markers</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;S100A8&#39;</span><span class="p">,</span> <span class="s1">&#39;SAA2&#39;</span><span class="p">,</span> <span class="s1">&#39;MSMP&#39;</span><span class="p">,</span> <span class="s1">&#39;FBXO32&#39;</span><span class="p">,</span> <span class="s1">&#39;MGP&#39;</span><span class="p">,</span> <span class="s1">&#39;DNAJC9&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;Mapped_Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+        <span class="n">available_markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">gene</span><span class="si">}</span><span class="s2">&#39; not found in Mapped_Gene column&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available markers:&quot;</span><span class="p">,</span> <span class="n">available_markers</span><span class="p">)</span>
+
+<span class="n">marker_genes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Inflammatory&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;S100A8&#39;</span><span class="p">,</span> <span class="s1">&#39;SAA2&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">available_markers</span><span class="p">],</span>
+    <span class="s1">&#39;Proliferative&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MSMP&#39;</span><span class="p">,</span> <span class="s1">&#39;FBXO32&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">available_markers</span><span class="p">],</span>
+    <span class="s1">&#39;Structural&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MGP&#39;</span><span class="p">,</span> <span class="s1">&#39;DNAJC9&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">available_markers</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Available markers: [&#39;S100A8&#39;, &#39;SAA2&#39;, &#39;MSMP&#39;, &#39;FBXO32&#39;, &#39;MGP&#39;, &#39;DNAJC9&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Map gene symbols to var_names (Ensembl IDs) in adata_filtered.var</span>
+<span class="n">mapped_var_names</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">gene_list</span> <span class="ow">in</span> <span class="n">marker_genes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">gene_list</span><span class="p">:</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;Mapped_Gene&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">gene</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="n">mapped_var_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">gene</span><span class="si">}</span><span class="s2"> not found in Mapped_Gene&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot using the mapped var_names</span>
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">,</span> <span class="s1">&#39;louvain&#39;</span><span class="p">]:</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span>
+        <span class="n">adata_filtered</span><span class="p">,</span>
+        <span class="n">var_names</span><span class="o">=</span><span class="n">mapped_var_names</span><span class="p">,</span>  <span class="c1"># Use mapped var_names</span>
+        <span class="n">groupby</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">_r0.4&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1"> Clusters&#39;</span><span class="p">,</span>
+        <span class="n">dendrogram</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">swap_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span>
+        <span class="n">standard_scale</span><span class="o">=</span><span class="s1">&#39;var&#39;</span><span class="p">,</span>
+        <span class="n">use_raw</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: dendrogram data not found (using key=dendrogram_leiden_r0.4). Running `sc.tl.dendrogram` with default parameters. For fine tuning it is recommended to run `sc.tl.dendrogram` independently.
+</pre></div>
+</div>
+<img alt="_images/c9b70709f6c6699876721138d0a085d4f984d9912e366d4e7fa44d387869c79e.png" src="_images/c9b70709f6c6699876721138d0a085d4f984d9912e366d4e7fa44d387869c79e.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: dendrogram data not found (using key=dendrogram_louvain_r0.4). Running `sc.tl.dendrogram` with default parameters. For fine tuning it is recommended to run `sc.tl.dendrogram` independently.
+</pre></div>
+</div>
+<img alt="_images/dab4a5f455212431cb4b28291d9248978c59fcca17e6cbf1f9e85eab614dfa03.png" src="_images/dab4a5f455212431cb4b28291d9248978c59fcca17e6cbf1f9e85eab614dfa03.png" />
+</div>
+</div>
+<p>Mitochondrial content</p>
+<ul class="simple">
+<li><p><strong>Cluster 5</strong> has the highest median and the widest distribution of <code class="docutils literal notranslate"><span class="pre">pct_mito</span></code>, with values extending up to 4%. This suggests that cells in this cluster exhibit elevated mitochondrial activity, potentially indicating stress or metabolic differences.</p></li>
+<li><p><strong>Clusters 0, 1, 3, 7, 9, and 10</strong> have relatively narrow distributions and low medians, indicating consistent and low mitochondrial activity across cells in these clusters.</p></li>
+<li><p><strong>Clusters 2, 4, 6, and 8</strong> show moderate variability, with slightly higher medians compared to clusters with low mitochondrial activity.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span>
+    <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pct_mito&#39;</span><span class="p">],</span>
+    <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;leiden_r0.4&#39;</span><span class="p">,</span>
+    <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/e13a75e29d71a4c764c425fc5409f5e48201f7e72cd625dc2ba450bb075c4bc3.png" src="_images/e13a75e29d71a4c764c425fc5409f5e48201f7e72cd625dc2ba450bb075c4bc3.png" />
+</div>
+</div>
+</section>
+<section id="best-cluster-method">
+<h3>Best cluster method<a class="headerlink" href="#best-cluster-method" title="Link to this heading">#</a></h3>
+<p><strong>Leiden at r=0.4</strong> is the optimal choice based on the highest ARI (0.417), indicating the best alignment with the reference clustering. This resolution provides broader clusters that are biologically interpretable and well-defined.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Select best resolution based on metrics</span>
+<span class="n">best_method</span> <span class="o">=</span> <span class="s1">&#39;leiden&#39;</span>  <span class="c1"># or &#39;louvain&#39;</span>
+<span class="n">best_res</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;final_clusters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">best_method</span><span class="si">}</span><span class="s1">_r</span><span class="si">{</span><span class="n">best_res</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+
+<span class="c1"># Visualize final choice</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;final_clusters&#39;</span><span class="p">,</span> <span class="s1">&#39;cell_type&#39;</span><span class="p">],</span>
+    <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;on data&#39;</span><span class="p">,</span>
+    <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Final Clusters (</span><span class="si">{</span><span class="n">best_method</span><span class="si">}</span><span class="s1">, r=</span><span class="si">{</span><span class="n">best_res</span><span class="si">}</span><span class="s1">)&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The title list is shorter than the number of panels. Using &#39;color&#39; value instead for some plots.
+</pre></div>
+</div>
+<img alt="_images/e38a5189a64111cdcf3445f41aea47a0a9faea538a1632e067c8bc57b98fa6b3.png" src="_images/e38a5189a64111cdcf3445f41aea47a0a9faea538a1632e067c8bc57b98fa6b3.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="differential-expression-analysis">
+<h1>Differential Expression Analysis<a class="headerlink" href="#differential-expression-analysis" title="Link to this heading">#</a></h1>
+<div class="admonition-what-is-differential-expression-analysis admonition">
+<p class="admonition-title">What is Differential Expression Analysis?</p>
+<p>Differential Expression (DE) analysis identifies genes that are <strong>significantly upregulated or downregulated</strong> between different conditions, cell types, or clusters in a single-cell RNA-seq (scRNA-seq) dataset.</p>
+<ul class="simple">
+<li><p>Helps <strong>identify marker genes</strong> that define different cell populations.</p></li>
+<li><p>Reveals <strong>biological differences</strong> between clusters or experimental conditions.</p></li>
+<li><p>Can be used for <strong>functional enrichment analysis</strong> (e.g., GO, KEGG pathways).</p></li>
+</ul>
+</div>
+<p>When analyzing differentially expressed genes, we focus on:</p>
+<ul class="simple">
+<li><p><strong>Log Fold Change (logFC)</strong>: Measures how much a gene is up/downregulated.</p></li>
+<li><p><strong>Adjusted p-value (FDR)</strong>: Ensures statistical significance while controlling false positives.</p></li>
+<li><p><strong>Mean Expression</strong>: Helps distinguish truly expressed genes from noise.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute DEGs for all clusters </span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span> 
+    <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;final_clusters&#39;</span><span class="p">,</span> 
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;wilcoxon&#39;</span><span class="p">,</span>        
+    <span class="n">key_added</span><span class="o">=</span><span class="s1">&#39;dea_results&#39;</span><span class="p">,</span>  <span class="c1"># Stores results in adata.uns[&#39;dea_results&#39;]</span>
+    <span class="n">pts</span><span class="o">=</span><span class="kc">True</span>                 <span class="c1"># Add fraction of cells expressing each gene</span>
+<span class="p">)</span>
+
+<span class="c1"># Save top 10 DEGs per cluster</span>
+<span class="n">dea_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata_filtered</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;dea_results&#39;</span><span class="p">][</span><span class="s1">&#39;names&#39;</span><span class="p">])</span>
+<span class="n">top_degs</span> <span class="o">=</span> <span class="n">dea_results</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">top_degs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                 0                1                2                3  \
+0  ENSG00000198502  ENSG00000277632  ENSG00000125148  ENSG00000197747   
+1  ENSG00000227357  ENSG00000275302  ENSG00000175183  ENSG00000090382   
+2  ENSG00000275395  ENSG00000276070  ENSG00000117318  ENSG00000160213   
+3  ENSG00000116741  ENSG00000277336  ENSG00000115457  ENSG00000147872   
+4  ENSG00000242574  ENSG00000179388  ENSG00000134531  ENSG00000258227   
+5  ENSG00000137393  ENSG00000276085  ENSG00000187193  ENSG00000110719   
+6  ENSG00000127951  ENSG00000171860  ENSG00000177606  ENSG00000143546   
+7  ENSG00000107968  ENSG00000169313  ENSG00000109846  ENSG00000240972   
+8  ENSG00000147872  ENSG00000204287  ENSG00000106211  ENSG00000115165   
+9  ENSG00000204287  ENSG00000266028  ENSG00000176907  ENSG00000159399   
+
+                 4                5                6                7  \
+0  ENSG00000189058  ENSG00000198804  ENSG00000135452  ENSG00000164089   
+1  ENSG00000102934  ENSG00000106211  ENSG00000183735  ENSG00000135744   
+2  ENSG00000187957  ENSG00000104267  ENSG00000132434  ENSG00000134873   
+3  ENSG00000184258  ENSG00000176076  ENSG00000147588  ENSG00000162407   
+4  ENSG00000240184  ENSG00000106538  ENSG00000198576  ENSG00000148672   
+5  ENSG00000173546  ENSG00000197061  ENSG00000109846  ENSG00000104112   
+6  ENSG00000170075  ENSG00000123496  ENSG00000171951  ENSG00000277196   
+7  ENSG00000104112  ENSG00000170439  ENSG00000146006  ENSG00000170075   
+8  ENSG00000148123  ENSG00000135744  ENSG00000240184  ENSG00000170989   
+9  ENSG00000157890  ENSG00000107438  ENSG00000115461  ENSG00000167614   
+
+                 8                9               10               11  
+0  ENSG00000244274  ENSG00000241978  ENSG00000136928  ENSG00000256229  
+1  ENSG00000109846  ENSG00000174807  ENSG00000174460  ENSG00000176907  
+2  ENSG00000099194  ENSG00000107438  ENSG00000137267  ENSG00000188636  
+3  ENSG00000250722  ENSG00000187479  ENSG00000100884  ENSG00000178301  
+4  ENSG00000102934  ENSG00000111341  ENSG00000171951  ENSG00000135245  
+5  ENSG00000189058  ENSG00000118523  ENSG00000107282  ENSG00000076662  
+6  ENSG00000169562  ENSG00000213694  ENSG00000130643  ENSG00000125148  
+7  ENSG00000104267  ENSG00000162998  ENSG00000248485  ENSG00000126243  
+8  ENSG00000126803  ENSG00000106211  ENSG00000103154  ENSG00000163421  
+9  ENSG00000158859  ENSG00000188783  ENSG00000168032  ENSG00000170345  
+</pre></div>
+</div>
+</div>
+</div>
+<section id="top-differentially-expressed-genes-degs-per-cluster-biological-interpretation">
+<h2><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong><a class="headerlink" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation" title="Link to this heading">#</a></h2>
+</section>
+<section id="cluster-0">
+<h2><strong>Cluster 0</strong><a class="headerlink" href="#cluster-0" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: HLA-DRB5, CCL3, MT2A, S100A10, APOD</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Immune/Inflammatory cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">HLA-DRB5</span></code> (MHC class II), <code class="docutils literal notranslate"><span class="pre">CCL3</span></code> (chemokine), and <code class="docutils literal notranslate"><span class="pre">S100A10</span></code> (calcium-binding protein) suggest antigen presentation and immune activation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MT2A</span></code> (metallothionein) indicates metal ion homeostasis/stress response.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">APOD</span></code> (lipocalin) may relate to lipid metabolism.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-1">
+<h2><strong>Cluster 1</strong><a class="headerlink" href="#cluster-1" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: HLA-DRB4, CCL4, CSRP2, LYZ, PLLP</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Macrophage/Myeloid lineage cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">LYZ</span></code> (lysozyme) and <code class="docutils literal notranslate"><span class="pre">CCL4</span></code> (chemokine) are myeloid cell markers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CSRP2</span></code> (cysteine-rich protein) links to smooth muscle differentiation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HLA-DRB4</span></code> reinforces antigen presentation roles.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-2">
+<h2><strong>Cluster 2</strong><a class="headerlink" href="#cluster-2" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: FCGBP, CCL4L2, ID3, CSTB, DNER</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Secretory/Epithelial cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">FCGBP</span></code> (mucin-binding protein) and <code class="docutils literal notranslate"><span class="pre">CSTB</span></code> (cystatin B) are enriched in mucosal/epithelial tissues.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ID3</span></code> (inhibitor of DNA binding) regulates cellular differentiation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-3">
+<h2><strong>Cluster 3</strong><a class="headerlink" href="#cluster-3" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: RGS2, CCL3L3, IGFBP2, PLIN2</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Lipid Metabolism/Adipocyte cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">PLIN2</span></code> (lipid droplet protein) and <code class="docutils literal notranslate"><span class="pre">IGFBP2</span></code> (insulin-like growth factor binding) suggest adipocyte/metabolic functions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RGS2</span></code> regulates G-protein signaling in metabolic pathways.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-4">
+<h2><strong>Cluster 4</strong><a class="headerlink" href="#cluster-4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: HLA-DMB, EGR3, EMP1, CLEC5A</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Dendritic Cell/Immune Activation cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">HLA-DMB</span></code> (MHC class II chaperone) and <code class="docutils literal notranslate"><span class="pre">CLEC5A</span></code> (C-type lectin) indicate immune cell activation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EGR3</span></code> (early growth response) regulates T-cell differentiation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-5">
+<h2><strong>Cluster 5</strong><a class="headerlink" href="#cluster-5" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: RNF144B, CCL3L3, MT1X, TCIRG1</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Stress Response/Oxidative cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">MT1X</span></code> (metallothionein) and <code class="docutils literal notranslate"><span class="pre">TCIRG1</span></code> (proton pump subunit) respond to oxidative/metal stress.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RNF144B</span></code> (E3 ubiquitin ligase) links to protein degradation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-6">
+<h2><strong>Cluster 6</strong><a class="headerlink" href="#cluster-6" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: FGL2, C3AR1, JUN, S100A8</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Pro-inflammatory/Neutrophil cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">S100A8</span></code> (calgranulin A) and <code class="docutils literal notranslate"><span class="pre">C3AR1</span></code> (complement receptor) are neutrophil markers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">JUN</span></code> (AP-1 transcription factor) drives inflammatory signaling.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-7">
+<h2><strong>Cluster 7</strong><a class="headerlink" href="#cluster-7" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: MAP3K8, P2RY12, CRYAB, MIF</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Microglial/Neuroimmune cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">P2RY12</span></code> (purinergic receptor) and <code class="docutils literal notranslate"><span class="pre">CRYAB</span></code> (heat shock protein) are microglia markers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MIF</span></code> (macrophage migration inhibitory factor) regulates neuroinflammation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-8">
+<h2><strong>Cluster 8</strong><a class="headerlink" href="#cluster-8" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: PLIN2, HLA-DRA, HSPB1, CYTIP</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Lipid-Associated/Stress cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">PLIN2</span></code> (lipid droplet) and <code class="docutils literal notranslate"><span class="pre">HSPB1</span></code> (heat shock protein) indicate lipid storage/stress.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HLA-DRA</span></code> (MHC class II) suggests immune crosstalk.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-9">
+<h2><strong>Cluster 9</strong><a class="headerlink" href="#cluster-9" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: HLA-DRA, SRGAP2, TCIM, HK2</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Metabolic/Neuronal cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">HK2</span></code> (hexokinase) and <code class="docutils literal notranslate"><span class="pre">SRGAP2</span></code> (neuronal development) suggest glucose metabolism/neuronal roles.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TCIM</span></code> (TP53-regulated inhibitor) may link to apoptosis regulation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-10">
+<h2><strong>Cluster 10</strong><a class="headerlink" href="#cluster-10" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: GABBR2, ZCCHC12, TUBB2A, CPNE6</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Neuronal/Developmental cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GABBR2</span></code> (GABA receptor) and <code class="docutils literal notranslate"><span class="pre">TUBB2A</span></code> (neural tubulin) indicate neuronal signaling.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ZCCHC12</span></code> (zinc finger protein) is involved in neurodevelopment.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cluster-11">
+<h2><strong>Cluster 11</strong><a class="headerlink" href="#cluster-11" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Key Genes</strong>: ZNF486, TCIM, RTL6, AQP11</p></li>
+<li><p><strong>Description</strong>:</p>
+<ul>
+<li><p>Undefined/Niche cluster:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">AQP11</span></code> (aquaporin) suggests transmembrane transport.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RTL6</span></code> (retrotransposon-like) has unclear biological relevance.</p></li>
+<li><p>Requires further investigation.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="admonition-summary-of-genes-per-cluster admonition">
+<p class="admonition-title">Summary of genes per cluster</p>
+<ul class="simple">
+<li><p><strong>Immune Clusters</strong>: 0, 1, 4, 6, 7 (MHC/chemokine genes)</p></li>
+<li><p><strong>Metabolic/Lipid Clusters</strong>: 3, 8 (PLIN2, APOD)</p></li>
+<li><p><strong>Neuronal Clusters</strong>: 9, 10 (HK2, GABBR2)</p></li>
+<li><p><strong>Stress Response Clusters</strong>: 5 (MT1X, TCIRG1)</p></li>
+</ul>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute DEGs for all clusters</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span>
+    <span class="n">adata_filtered</span><span class="p">,</span> 
+    <span class="n">groupby</span><span class="o">=</span><span class="s1">&#39;final_clusters&#39;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;wilcoxon&#39;</span><span class="p">,</span>
+    <span class="n">key_added</span><span class="o">=</span><span class="s1">&#39;dea_results&#39;</span><span class="p">,</span>
+    <span class="n">pts</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Create a dictionary to map Ensembl IDs to gene symbols</span>
+<span class="n">ensembl_to_gene</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;Mapped_Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+<span class="c1"># Replace Ensembl IDs with gene symbols in the DEG results dataframe</span>
+<span class="n">top_degs_mapped</span> <span class="o">=</span> <span class="n">dea_results</span><span class="o">.</span><span class="n">applymap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ensembl_to_gene</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>  <span class="c1"># Fallback to Ensembl ID if no symbol exists</span>
+<span class="n">top_degs_mapped</span> <span class="o">=</span> <span class="n">top_degs_mapped</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top DEGs (Mapped to Gene Symbols):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">top_degs_mapped</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top DEGs (Mapped to Gene Symbols):
+          0        1       2        3        4        5        6        7  \
+0  HLA-DRB5     CCL3    MT2A  S100A10     APOD     COX1  TSPAN31   ETNPPL   
+1  HLA-DRB4     CCL4   CSRP2      LYZ     PLLP    HSPB1     TBK1      AGT   
+2     FCGBP   CCL4L2     ID3     CSTB     DNER      CA2   LANCL2   CLDN10   
+3      RGS2   CCL3L3  IGFBP2    PLIN2      NaN    KCNE5     PMP2    PLPP3   
+4   HLA-DMB     EGR3    EMP1   CLEC5A  PCDHGC3  RARRES2      ARC    GLUD1   
+5   RNF144B   CCL3L3    MT1X   TCIRG1    CSPG4     H4C3    CRYAB     SCG3   
+6      FGL2    C3AR1     JUN   S100A8  GPR37L1  IL13RA2     SCG2      NaN   
+7    MAP3K8   P2RY12   CRYAB      MIF     SCG3    TMT1B   LRRTM2  GPR37L1   
+8     PLIN2  HLA-DRA   HSPB1    CYTIP   PLPPR1      AGT  PCDHGC3    S1PR1   
+9   HLA-DRA   SRGAP2    TCIM      HK2   MEGF11   PDLIM1   IGFBP5    TTYH1   
+
+         8         9       10      11  
+0   DBNDD2       NaN   GABBR2  ZNF486  
+1    CRYAB     CD248  ZCCHC12    TCIM  
+2      SCD    PDLIM1   TUBB2A    RTL6  
+3  SELENOP  C11orf96    CPNE6   AQP11  
+4     PLLP       MGP     SCG2  HILPDA  
+5     APOD      CCN2    APBA1   ICAM3  
+6     GJB1     S1PR3     CALY    MT2A  
+7      CA2      FRZB   PCP4L1   LRFN3  
+8    HSPA2     HSPB1   NECAB2   PROK2  
+9  ADAMTS4     PRELP   ENTPD3     FOS  
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_7484\320458301.py:14: FutureWarning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.
+  top_degs_mapped = dea_results.applymap(lambda x: ensembl_to_gene.get(x, x))  # Fallback to Ensembl ID if no symbol exists
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="volcano-plot">
+<h2>Volcano Plot<a class="headerlink" href="#volcano-plot" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="s2">&quot;leiden_r0.4&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wilcoxon&quot;</span><span class="p">,</span> <span class="n">key_added</span><span class="o">=</span><span class="s2">&quot;dea_results&quot;</span><span class="p">)</span>
+<span class="n">degs_df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata_filtered</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;dea_results&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>The majority of genes have low -Log10 adjusted p-values, clustering near the bottom of the plot. This indicates that most genes do not show statistically significant differential expression.</p></li>
+<li><p>Only a small subset of genes shows both high fold changes and moderate significance, suggesting that these genes may be key markers or drivers of Cluster 2.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Drop NaNs and ensure numeric values</span>
+<span class="n">degs_df</span> <span class="o">=</span> <span class="n">degs_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">])</span>
+<span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create volcano plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># Plot all genes</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">degs_df</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+
+<span class="c1"># Highlight significant genes</span>
+<span class="n">sig_degs</span> <span class="o">=</span> <span class="n">degs_df</span><span class="p">[(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)]</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sig_degs</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
+    <span class="n">hue</span><span class="o">=</span><span class="n">sig_degs</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Label top significant genes</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sig_degs</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">],</span>
+        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]),</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;gene_symbol&quot;</span><span class="p">],</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+        <span class="n">va</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span>
+    <span class="p">)</span>
+
+<span class="c1"># Add threshold lines</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># p = 0.05 cutoff</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Log2 Fold Change&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;-Log10(Adjusted p-value)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Volcano Plot: Cluster 2 vs Rest&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\henry\AppData\Local\Temp\ipykernel_7484\2788135446.py:20: UserWarning: Ignoring `palette` because no `hue` variable has been assigned.
+  sns.scatterplot(
+</pre></div>
+</div>
+<img alt="_images/6657bb5b7082bb3a62e4a5b7f45b7967f0f7f07491461192c6f7056a3d839202.png" src="_images/6657bb5b7082bb3a62e4a5b7f45b7967f0f7f07491461192c6f7056a3d839202.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Ensure the columns exist</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+<span class="c1"># Check for NaNs</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;names&#39;, &#39;scores&#39;, &#39;logfoldchanges&#39;, &#39;pvals&#39;, &#39;pvals_adj&#39;], dtype=&#39;object&#39;)
+names             0
+scores            0
+logfoldchanges    0
+pvals             0
+pvals_adj         0
+dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">,</span> <span class="s2">&quot;pvals_adj&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       logfoldchanges   pvals_adj
+count      431.000000  431.000000
+mean         1.259929    0.983609
+std          2.109867    0.075351
+min         -5.586777    0.243576
+25%          0.262969    0.999040
+50%          1.127348    0.999040
+75%          2.406521    0.999040
+max          7.970360    0.999906
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.stats.multitest</span><span class="w"> </span><span class="kn">import</span> <span class="n">multipletests</span>
+
+<span class="c1"># Apply Benjamini-Hochberg correction</span>
+<span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">multipletests</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals&quot;</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fdr_bh&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># Check if values are more reasonable</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s2">&quot;pvals_adj&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count    4.310000e+02
+mean     9.992488e-01
+std      1.111513e-16
+min      9.992488e-01
+25%      9.992488e-01
+50%      9.992488e-01
+75%      9.992488e-01
+max      9.992488e-01
+Name: pvals_adj, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degs_df</span> <span class="o">=</span> <span class="n">degs_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;logfoldchanges&quot;</span><span class="p">])</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;pvals_adj&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Adjusted p-value&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Adjusted p-values&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/ef37640e8083a9a4899b51eb513c17eebfc79809797785576ff9a0af2d6ea168.png" src="_images/ef37640e8083a9a4899b51eb513c17eebfc79809797785576ff9a0af2d6ea168.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">degs_df</span><span class="p">[</span><span class="s1">&#39;logfoldchanges&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Log2 Fold Change&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of Log2 Fold Changes&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/2179d7e2e09e4fa673e89086d9d66f899ee39ebdd8715f786a87a22052e922b2.png" src="_images/2179d7e2e09e4fa673e89086d9d66f899ee39ebdd8715f786a87a22052e922b2.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="preprocessing.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Benchmark Models</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Dimensionality reduction</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pca">Using PCA</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caclulate-performance-metrics">Caclulate performance metrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neighbourhood-graph-and-umap">Neighbourhood Graph and Umap</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-techniques">Clustering techniques</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-leidein">Using Leidein</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clustering-with-louvain">Clustering with louvain</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparation-between-clusters">Comparation between clusters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#best-cluster-method">Best cluster method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-analysis">Differential Expression Analysis</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#top-differentially-expressed-genes-degs-per-cluster-biological-interpretation"><strong>Top Differentially Expressed Genes (DEGs) per Cluster - Biological Interpretation</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-0"><strong>Cluster 0</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-1"><strong>Cluster 1</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-2"><strong>Cluster 2</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-3"><strong>Cluster 3</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-4"><strong>Cluster 4</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-5"><strong>Cluster 5</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-6"><strong>Cluster 6</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-7"><strong>Cluster 7</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-8"><strong>Cluster 8</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-9"><strong>Cluster 9</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-10"><strong>Cluster 10</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-11"><strong>Cluster 11</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
