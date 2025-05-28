@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Final Project - Deep Learning &#8212; My sample book</title>
+    <title>Important Concepts and Metrics Used for scRNA-seq Analysis &#8212; My sample book</title>
   
   
   
@@ -59,10 +59,11 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'intro';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'glossary';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction to Single-Cell RNA Sequencing" href="introduction.html" />
+    <link rel="next" title="Exploratory Data Analysis for Metadata" href="EDA_metadata.html" />
+    <link rel="prev" title="Introduction to Single-Cell RNA Sequencing" href="introduction.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -125,8 +126,6 @@
       
       
       
-        
-      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -145,7 +144,7 @@
     
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="intro.html">
   
   
   
@@ -176,16 +175,16 @@
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1 current active">
-                <a class="reference internal" href="#">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
                     Final Project - Deep Learning
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to Single-Cell RNA Sequencing</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="glossary.html">Important Concepts and Metrics Used for scRNA-seq Analysis</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Important Concepts and Metrics Used for scRNA-seq Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="EDA_sparse_matrix.html">Exploratory Data Analysis for the sparse matrix</a></li>
@@ -268,7 +267,7 @@
       
       
       
-      <li><a href="https://github.com/henrysaenz/eda_rna/issues/new?title=Issue%20on%20page%20%2Fintro.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/henrysaenz/eda_rna/issues/new?title=Issue%20on%20page%20%2Fglossary.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -298,7 +297,7 @@
       
       
       
-      <li><a href="_sources/intro.md" target="_blank"
+      <li><a href="_sources/glossary.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -308,7 +307,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.md</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
 </li>
       
@@ -382,7 +381,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Final Project - Deep Learning</h1>
+    <h1>Important Concepts and Metrics Used for scRNA-seq Analysis</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -392,11 +391,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-single-cell-rna-sequencing">Introduction to Single-Cell RNA Sequencing</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#students"><strong>Students</strong></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#professor"><strong>Professor</strong></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concepts-in-the-scrna-seq-analysis">Concepts in the scRNA - seq Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-metrics-in-scrna-seq-analysis">Key Metrics in scRNA seq Analysis</a></li>
 </ul>
             </nav>
         </div>
@@ -408,41 +404,216 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="final-project-deep-learning">
-<h1>Final Project - Deep Learning<a class="headerlink" href="#final-project-deep-learning" title="Link to this heading">#</a></h1>
-<section id="introduction-to-single-cell-rna-sequencing">
-<h2>Introduction to Single-Cell RNA Sequencing<a class="headerlink" href="#introduction-to-single-cell-rna-sequencing" title="Link to this heading">#</a></h2>
-<section id="students">
-<h3><strong>Students</strong><a class="headerlink" href="#students" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Henry David Saenz Valverde</p></li>
-<li><p>Ayrgthon Soraca Bonett</p></li>
-</ul>
-</section>
-<section id="professor">
-<h3><strong>Professor</strong><a class="headerlink" href="#professor" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Lihki Jose Rubio Ortega</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to Single-Cell RNA Sequencing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html#single-cell-rna-sequencing-isolation-analysis-workflow">Single-Cell RNA Sequencing Isolation Analysis Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="glossary.html">Important Concepts and Metrics Used for scRNA-seq Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html#analyze-and-describe-data">Analyze and Describe data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_sparse_matrix.html">Exploratory Data Analysis for the sparse matrix</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Datos_celulares_y_geneticos.html">Exploratory Data Analysis for Glioblastoma data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="EDA_test.html#genes-detected-per-cell">Genes detected per cell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing of Raw Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="PCA.html">Principal Component Analysis - Dimensionality reduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="PCA.html#differential-expression-analysis">Differential Expression Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Benchmark_Models.html">Benchmark Models</a></li>
-</ul>
+  <section class="tex2jax_ignore mathjax_ignore" id="important-concepts-and-metrics-used-for-scrna-seq-analysis">
+<h1>Important Concepts and Metrics Used for scRNA-seq Analysis<a class="headerlink" href="#important-concepts-and-metrics-used-for-scrna-seq-analysis" title="Link to this heading">#</a></h1>
+<section id="concepts-in-the-scrna-seq-analysis">
+<h2>Concepts in the scRNA - seq Analysis<a class="headerlink" href="#concepts-in-the-scrna-seq-analysis" title="Link to this heading">#</a></h2>
+<div class="highlight-{admonition}Gene notranslate"><div class="highlight"><pre><span></span>A **gene** is a sequence of DNA that contains the instructions to produce a specific molecule, typically a protein or functional RNA. In scRNA-seq, gene expression is quantified by counting the RNA molecules transcribed from genes.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Cells notranslate"><div class="highlight"><pre><span></span>**Cells** are the basic structural and functional units of all living organisms. In scRNA-seq, each cell is analyzed individually to understand its gene expression profile.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}RNA notranslate"><div class="highlight"><pre><span></span>**RNA (Ribonucleic Acid)** is a nucleic acid that plays essential roles in coding, decoding, regulation, and expression of genes. scRNA-seq measures the amount of RNA in each cell to infer gene expression.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Apoptosis notranslate"><div class="highlight"><pre><span></span>**Apoptosis** is a form of programmed cell death that occurs in multicellular organisms. It is characterized by specific cellular changes such as cell shrinkage, chromatin condensation, and membrane blebbing.
+
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Apoptotic notranslate"><div class="highlight"><pre><span></span>An **apoptotic cell** is a cell undergoing apoptosis. In scRNA-seq, high mitochondrial gene expression is often used as an indicator of apoptosis.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Gene notranslate"><div class="highlight"><pre><span></span>The **Gene Detection Rate** is the proportion of genes detected (i.e., with non-zero expression) in a given cell. It serves as a quality metric.
+
+**Formula:**
+$$
+\text{Gene Detection Rate} = \frac{\text{Number of detected genes in a cell}}{\text{Total number of genes}}
+$$
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Mitochondrial notranslate"><div class="highlight"><pre><span></span>In the context of scRNA-seq, **mitochondrial cells** usually refer to cells with abnormally high proportions of reads mapped to mitochondrial genes, often considered stressed or dying.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Mitochondrial notranslate"><div class="highlight"><pre><span></span>The **Mitochondrial Proportion** is the percentage of total reads in a cell that map to mitochondrial genes. High values suggest cell stress or apoptosis.
+
+**Formula:**
+$$
+\text{Mitochondrial Proportion} = \frac{\text{Mitochondrial gene counts}}{\text{Total gene counts}} \times 100
+$$
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}UMI notranslate"><div class="highlight"><pre><span></span>**Unique Molecular Identifiers (UMIs)** are short sequences used to count unique RNA molecules, minimizing amplification bias during PCR. Total UMI counts per cell indicate its transcriptome size.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Batch notranslate"><div class="highlight"><pre><span></span>A **batch** refers to a group of cells that have been processed together under the same experimental conditions. Variability between batches is common and can introduce confounding effects.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Batch notranslate"><div class="highlight"><pre><span></span>**Batch Effect** is the unwanted variation in data due to technical differences between batches (e.g., reagent lots, sequencing runs), rather than biological differences.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Normalization notranslate"><div class="highlight"><pre><span></span>**Normalization** is the process of adjusting raw gene expression counts to account for differences in sequencing depth and other technical factors across cells.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Log notranslate"><div class="highlight"><pre><span></span>**Log Normalization** transforms the normalized counts using a logarithmic function to stabilize variance across genes.
+
+**Formula:**
+$$
+\text{LogNormalized}(x) = \log_2\left(\frac{x}{\text{total counts per cell}} \times \text{scale factor} + 1\right)
+$$
+Typically, the scale factor is 10,000.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Highly notranslate"><div class="highlight"><pre><span></span>**Highly Variable Genes (HVGs)** are genes that show greater expression variability across cells than expected by chance. HVGs are useful for downstream dimensionality reduction and clustering.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Principal notranslate"><div class="highlight"><pre><span></span>**PCA** is a linear dimensionality reduction technique that transforms the data into a set of orthogonal axes (principal components), each capturing a portion of the variance.
+
+**Formula:**
+PCA is computed by solving:
+$$
+\text{Cov}(X) = V \Lambda V^T
+$$
+Where:
+- $X$: mean-centered gene expression matrix  
+- $V$: eigenvectors (principal components)  
+- $\Lambda$: eigenvalues (explained variances)
+</pre></div>
 </div>
 </section>
+<section id="key-metrics-in-scrna-seq-analysis">
+<h2>Key Metrics in scRNA seq Analysis<a class="headerlink" href="#key-metrics-in-scrna-seq-analysis" title="Link to this heading">#</a></h2>
+<div class="highlight-{admonition}Total notranslate"><div class="highlight"><pre><span></span>
+Combines NB loss, dropout loss, and KL divergence with a weighting term \( \beta \).
+
+**Formula:**
+
+$$
+\mathcal{L}_{Total} = \mathcal{L}_{NB} + \mathcal{L}_{Bern} + \beta \cdot \mathcal{L}_{KL}
+$$```
+</pre></div>
+</div>
+<div class="highlight-{admonition}KL notranslate"><div class="highlight"><pre><span></span>
+Measures divergence between posterior $q(z|x)$ and prior $p(z)$, used in VAEs.
+
+**Formula:**
+
+$$
+\mathcal{L}_{KL} = -\frac{1}{2} \sum_{i=1}^n \left( 1 + \log \sigma_i^2 - \mu_i^2 - \sigma_i^2 \right)
+$$
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Bernoulli notranslate"><div class="highlight"><pre><span></span>
+Models dropout events as a Bernoulli process with probability $p_0$.
+
+**Formula:**
+
+$$
+\mathcal{L}_{Bern} = - \sum_{i,j} \left[ x_{ij} \log(1 - p_{0ij}) + (1 - x_{ij}) \log(p_{0ij}) \right]
+$$
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Negative notranslate"><div class="highlight"><pre><span></span>
+Used to model count data with overdispersion. Assumes each gene follows a NB distribution.
+
+**Formula:**
+
+$$
+\mathcal{L}_{NB} = - \sum_{i,j} \left[ \log \Gamma(x_{ij} + \theta) - \log \Gamma(x_{ij} + 1) - \log \Gamma(\theta) + x_{ij} \log(\mu_{ij}) + \theta \log \left( \frac{\theta}{\theta + \mu_{ij}} \right) \right]
+$$
+</pre></div>
+</div>
+<div class="highlight-{admonition}Silhouette notranslate"><div class="highlight"><pre><span></span>
+Assesses how similar a cell is to its own cluster versus other clusters.
+
+**Formula:**
+
+$$
+s(i) = \frac{b(i) - a(i)}{max(a(i), b(i))}
+$$
+
+Where:
+- $a(i)$ = mean intra-cluster distance
+- $b(i)$ = mean nearest-cluster distance
+</pre></div>
+</div>
+<div class="admonition-adjusted-rand-index-ari admonition">
+<p class="admonition-title">Adjusted Rand Index (ARI)</p>
+<p>Evaluates clustering similarity between predicted and true labels, adjusted for chance.</p>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[
+ARI = \frac{RI - E[RI]}{max(RI) - E[RI]}
+\]</div>
+<p>Where <span class="math notranslate nohighlight">\(RI\)</span> is the Rand Index.</p>
+</div>
+<div class="highlight-{admonition}Normalized notranslate"><div class="highlight"><pre><span></span>
+Measures mutual dependence between predicted and true clusters.
+
+**Formula:**
+
+$$
+NMI = \frac{2 \cdot I(Y; \hat{Y})}{H(Y) + H(\hat{Y})}
+$$
+
+Where:
+- $I$ is mutual information.
+- $H$ is entropy.
+
+</pre></div>
+</div>
+<div class="highlight-{admonition}Calinski-Harabasz notranslate"><div class="highlight"><pre><span></span>
+Cluster dispersion score; higher values indicate better-defined clusters.
+
+**Formula:**
+
+$$
+CH = \frac{Tr(B_k)}{k - 1} \cdot \frac{n - k}{Tr(W_k)}
+$$
+
+Where:
+- $Tr(B_k)$ = between-cluster dispersion
+- $Tr(W_k)$ = within-cluster dispersion
+- $k$ = number of clusters
+- $n$ = total number of samples
+</pre></div>
+</div>
+<div class="highlight-{admonition}Pearson notranslate"><div class="highlight"><pre><span></span>
+Measures linear correlation between real and reconstructed gene expressions.
+
+**Formula:**
+
+$$
+r = \frac{\sum_i (x_i - \bar{x})(\hat{x}_i - \bar{\hat{x}})}{\sqrt{\sum_i (x_i - \bar{x})^2 \sum_i (\hat{x}_i - \bar{\hat{x}})^2}}
+$$
+</pre></div>
+</div>
+<div class="highlight-{admonition}Reconstruction notranslate"><div class="highlight"><pre><span></span>
+Basic loss function to measure average squared difference between original and reconstructed values.
+
+**Formula:**
+
+$$
+MSE = \frac{1}{n} \sum_{i=1}^{n} (x_i - \hat{x}_i)^2
+$$
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -476,12 +647,21 @@ document.write(`
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="right-next"
+    <a class="left-prev"
        href="introduction.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Introduction to Single-Cell RNA Sequencing</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="EDA_metadata.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Introduction to Single-Cell RNA Sequencing</p>
+        <p class="prev-next-title">Exploratory Data Analysis for Metadata</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -501,11 +681,8 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-single-cell-rna-sequencing">Introduction to Single-Cell RNA Sequencing</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#students"><strong>Students</strong></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#professor"><strong>Professor</strong></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concepts-in-the-scrna-seq-analysis">Concepts in the scRNA - seq Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-metrics-in-scrna-seq-analysis">Key Metrics in scRNA seq Analysis</a></li>
 </ul>
   </nav></div>
 
