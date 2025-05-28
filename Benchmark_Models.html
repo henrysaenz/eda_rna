@@ -415,11 +415,13 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vae-gat">VAE + GAT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expression-graph">Expression Graph</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparametrization-of-vae-gat">Hyperparametrization of VAE + GAT</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#model-defined-vae-gat">Model Defined VAE + GAT</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-for-vae-gat">Differential Expression for VAE + GAT</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-summary-with-biological-interpretation">Cluster Summary with Biological Interpretation</a></li>
 </ul>
 </li>
@@ -486,22 +488,22 @@ document.write(`
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Input:</span> <span class="pre">Gene</span> <span class="pre">Expression</span> <span class="pre">Matrix</span></code></p></li>
 </ol>
-<p>The input is a matrix ( \mathbf{X} \in \mathbb{R}^{n \times m} ), where each row represents a <strong>cell</strong> and each column corresponds to a <strong>gene</strong>. Each input vector ( \mathbf{x}_i ) is high-dimensional and sparse.</p>
+<p>The input is a matrix <span class="math notranslate nohighlight">\(\mathbf{X} \in \mathbb{R}^{n \times m}\)</span>, where each row represents a <strong>cell</strong> and each column corresponds to a <strong>gene</strong>. Each input vector <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> is high-dimensional and sparse.</p>
 <ol class="arabic simple" start="2">
 <li><p>Encoder – Latent Representation Inference</p></li>
 </ol>
-<p>The encoder maps the high-dimensional input into a lower-dimensional <strong>latent space</strong> ( \mathbf{z} ).</p>
+<p>The encoder maps the high-dimensional input into a lower-dimensional <strong>latent space</strong> <span class="math notranslate nohighlight">\(\mathbf{z}\)</span>.</p>
 <ul class="simple">
 <li><p><strong>Layer 1:</strong> <code class="docutils literal notranslate"><span class="pre">fc_enc1</span></code> → Reduces dimensionality with an <strong>ELU</strong> activation.</p></li>
 <li><p><strong>Layer 2:</strong> <code class="docutils literal notranslate"><span class="pre">fc_enc2</span></code> → Further non-linear transformation.</p></li>
 <li><p><strong>Outputs:</strong></p>
 <ul>
-<li><p>( \boldsymbol{\mu} ): Mean of the latent Gaussian.</p></li>
-<li><p>( \log \boldsymbol{\sigma}^2 ): Log-variance of the latent Gaussian.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span>: Mean of the latent Gaussian.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\log \boldsymbol{\sigma}^2\)</span>: Log-variance of the latent Gaussian.</p></li>
 </ul>
 </li>
 </ul>
-<p>The latent variable ( \mathbf{z} ) is sampled using the <strong>reparameterization trick</strong>:</p>
+<p>The latent variable <span class="math notranslate nohighlight">\(\mathbf{z}\)</span> is sampled using the <strong>reparameterization trick</strong>:</p>
 <div class="math notranslate nohighlight">
 \[
 \mathbf{z} = \boldsymbol{\mu} + \boldsymbol{\epsilon} \cdot \boldsymbol{\sigma}, \quad \boldsymbol{\epsilon} \sim \mathcal{N}(0, I)
@@ -509,10 +511,10 @@ document.write(`
 <ol class="arabic simple" start="3">
 <li><p>Decoder – Gene Expression Reconstruction</p></li>
 </ol>
-<p>The decoder takes ( \mathbf{z} ) and reconstructs the original gene expression ( \mathbf{x}_i ).</p>
+<p>The decoder takes <span class="math notranslate nohighlight">\(\mathbf{z}\)</span> and reconstructs the original gene expression <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span>.</p>
 <ul class="simple">
 <li><p><strong>Layers <code class="docutils literal notranslate"><span class="pre">fc_dec1</span></code> to <code class="docutils literal notranslate"><span class="pre">fc_dec3</span></code>:</strong> Gradually expand the latent vector back to the original input size.</p></li>
-<li><p><strong>Output:</strong> The reconstructed gene expression ( \tilde{\mathbf{x}} ).</p></li>
+<li><p><strong>Output:</strong> The reconstructed gene expression <span class="math notranslate nohighlight">\(\tilde{\mathbf{x}}\)</span>.</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2492,6 +2494,7 @@ The KL divergence term increases in the early training epochs, peaking around ep
 </div>
 </div>
 </div>
+<p>The performance metrics across clustering evaluations indicate a significant advantage of integrating attention mechanisms into the VAE architecture, especially in the context of cell population structure discernment. The Silhouette Score, which measures the compactness and separation of clusters, is consistently higher for the VAE+Attention model across all resolutions and clustering methods. For instance, under the Leiden algorithm at a resolution of 0.4, the score jumps from 0.195 in the plain VAE to 0.462 with attention—a dramatic improvement that reflects well-separated and internally coherent clusters. Similarly, the Calinski-Harabasz Index, which evaluates clustering dispersion and compactness, improves more than six-fold at the same setting (from 510 to 3348). This trend persists at higher resolutions (0.6 and 0.8) for both clustering algorithms, albeit with slightly decreasing Silhouette Scores, which is expected as cluster granularity increases. Notably, the Louvain clustering with plain VAE fails completely at resolution 0.4 (both metrics are -1), indicating structurally invalid or poor-quality clusters, whereas the attention-augmented model yields strong, interpretable clusters (Silhouette Score = 0.408, Calinski-Harabasz = 2133.8).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">merged_df</span>
@@ -2649,6 +2652,8 @@ The KL divergence term increases in the early training epochs, peaking around ep
 </table>
 </div></div></div>
 </div>
+<p>On the reconstruction and latent representation front, the impact of attention mechanisms is more nuanced. While the MSE (Mean Squared Error) is significantly higher in the VAE+Attention model (4.55 vs. 0.79), this does not necessarily imply worse performance—in fact, this trade-off may result from a shift in model priorities. The attention-based model likely sacrifices pixel-accurate reconstructions to enforce better latent space organization, which benefits clustering and interpretability. This is corroborated by the Pearson Correlation dropping close to zero (and slightly negative) in the VAE+Attention model, suggesting that the model does not focus on capturing direct gene-wise linear relationships in reconstructions. Most telling is the Latent Space Normality p-value, which drops from 0.425 in the standard VAE to 0.029 in the VAE+Attention model—indicating that attention mechanisms introduce structure in the latent space that departs significantly from a normal distribution. This deviation could reflect biological heterogeneity or more discrete encoding of latent variables, which aligns with the improved clustering metrics.</p>
+<p>Overall, while reconstruction fidelity appears reduced, the attention-augmented model clearly outperforms in generating meaningful latent structures that support better clustering, interpretability, and biological relevance.</p>
 </section>
 </section>
 <section id="differential-expression-for-vae-attention">
@@ -2784,20 +2789,6 @@ The KL divergence term increases in the early training epochs, peaking around ep
 </div>
 </div>
 </div>
-<p>The green vertical lines represent log fold change thresholds (typically at +1 and -1).</p>
-<p>The blue horizontal line represents the p-value threshold (typically at p = 0.05, shown as -log10(0.05) on the y-axis).</p>
-<p>If a point (gene) is outside these lines, it means:
-To the right of the green line (&gt; +1 logFC):
-The gene is strongly upregulated in the cluster compared to the others.</p>
-<p>To the left of the green line (&lt; -1 logFC):
-The gene is strongly downregulated in the cluster compared to the others.</p>
-<p>Above the blue line:
-The gene is statistically significant, because its p-value is less than 0.05.</p>
-<p>So if a gene is:
-Beyond the green lines and above the blue line, it’s considered both:</p>
-<p>Statistically significant</p>
-<p>Biologically meaningful (large expression change)</p>
-<p>These genes (points) are often colored red in the plot because they are the most relevant for biological interpretation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
@@ -2854,6 +2845,9 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 </section>
 <section id="vae-gat">
 <h2>VAE + GAT<a class="headerlink" href="#vae-gat" title="Link to this heading">#</a></h2>
+<p><strong>VAE + GAT Architecture</strong></p>
+<p>The <strong>VAE + GAT</strong> architecture combines a <em>Variational Autoencoder (VAE)</em> with a <em>Graph Attention Network (GAT)</em> to more effectively capture the underlying structure of single-cell transcriptomic data. This model not only considers gene expression levels but also incorporates the topological relationships between cells modeled as a graph.</p>
+<p>The <strong>Variational Autoencoder (VAE)</strong> is a deep generative model that learns a probabilistic latent representation of the input data. In this architecture, it models biological variability using a Bayesian encoding approach, enabling the learning of a continuous latent space from which new samples can be generated. Unlike traditional autoencoders, the VAE enforces a multivariate normal distribution on the latent space, facilitating coherent interpolation between samples.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image_path</span> <span class="o">=</span> <span class="s1">&#39;C:/Users/henry/Documents/jbook/eda_rna/img/vaegat.png&#39;</span>
@@ -2872,7 +2866,28 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 <img alt="_images/10b8dc7f0e987fa797f263dbf45c46895c3a25f7534785342a146a24796293ad.png" src="_images/10b8dc7f0e987fa797f263dbf45c46895c3a25f7534785342a146a24796293ad.png" />
 </div>
 </div>
-<p>We calculate the expression Graph</p>
+<p>The core innovation of this architecture lies in the integration of a <strong>Graph Attention Network (GAT)</strong> within the VAE’s encoder. GATs are neural networks that operate on graphs and allow each node (i.e., each cell) to learn a context-aware embedding based on its neighboring nodes. Through the use of attention mechanisms, the network learns to weigh the importance of each neighbor differently — effectively learning <em>which cells to pay more attention to</em> when encoding a specific cell. This is particularly valuable in single-cell contexts where cells may share developmental trajectories or functional states.</p>
+<div class="admonition-key-advantages admonition">
+<p class="admonition-title">Key Advantages</p>
+<ul class="simple">
+<li><p><strong>Local structure awareness</strong>: GAT layers integrate explicit neighborhood information from the cellular graph, which helps capture subtle transitions or relationships between cells.</p></li>
+<li><p><strong>Improved clustering</strong>: The use of attention mechanisms enhances the quality of latent representations, leading to more distinct and biologically meaningful clusters in downstream analyses (e.g., UMAP, Louvain/Leiden clustering).</p></li>
+<li><p><strong>Robust latent space</strong>: Combining probabilistic encoding (via VAE) with topological context (via GAT) results in a more structured and informative latent space, suitable for visualization, simulation, and biological interpretation.</p></li>
+</ul>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">General</span> <span class="pre">Implementation</span></code></p>
+<ol class="arabic simple">
+<li><p><strong>Input</strong>: Gene expression matrix (cells × genes).</p></li>
+<li><p><strong>Graph Construction</strong>: A k-nearest neighbor (k-NN) graph is constructed where nodes represent cells and edges reflect expression similarity.</p></li>
+<li><p><strong>Encoder (GAT Layers)</strong>: Graph attention layers extract context-aware representations by aggregating information from neighboring cells.</p></li>
+<li><p><strong>Latent Sampling (VAE)</strong>: Mean and variance vectors are computed for the latent distribution, and stochastic sampling is performed.</p></li>
+<li><p><strong>Decoder</strong>: The latent embeddings are decoded to reconstruct the original gene expression profiles.</p></li>
+<li><p><strong>Loss Function</strong>: The total loss combines a reconstruction term (e.g., Negative Binomial likelihood) and a KL divergence regularization term.</p></li>
+</ol>
+<p>This architecture is particularly well-suited for single-cell RNA-seq analysis, where complex, nonlinear relationships between cells must be captured with both local and global context. The VAE + GAT model provides a powerful framework for uncovering biological structure and heterogeneity in high-dimensional transcriptomic datasets.</p>
+<section id="expression-graph">
+<h3>Expression Graph<a class="headerlink" href="#expression-graph" title="Link to this heading">#</a></h3>
+<p>To model the relationships between single cells beyond just their gene expression profiles, a cell-cell graph (also called an expression graph) is constructed. This graph represents cells as nodes and connects them with edges based on gene expression similarity. The goal is to reveal the underlying topological structure of the data — capturing both local and global cellular relationships — which is particularly useful when integrating graph neural networks like GATs into a VAE framework.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">adata_filtered</span><span class="o">.</span><span class="n">X</span>
@@ -2886,6 +2901,8 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 </div>
 </div>
 </div>
+<p>The visualized expression graph displays 150 nodes, each representing a single cell. The edges encode similarity relationships — cells with closer expression patterns are more likely to be connected. In the figure, the central node with many radiating edges likely indicates a hub cell — a cell that is highly similar to many others, perhaps representing a central progenitor or dominant state in the dataset.</p>
+<p>Clusters or tightly interconnected regions may reflect distinct cell types or states, while sparsely connected nodes may represent rare cell populations or transitional states. Importantly, this topological information becomes a key input for Graph Attention Networks (GATs), allowing the model to learn from both individual gene expression values and the structure of cellular relationships.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2897,15 +2914,20 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
         <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>  <span class="c1"># driven graph</span>
 
 <span class="n">edge_index_cells</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># shape (2, num_edges)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Número de aristas: </span><span class="si">{</span><span class="n">edge_index_cells</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Número de células (nodos): </span><span class="si">{</span><span class="n">n_cells</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Number of Edges: </span><span class="si">{</span><span class="n">edge_index_cells</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Number of cells (nodes)): </span><span class="si">{</span><span class="n">n_cells</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> Número de aristas: 36460
- Número de células (nodos): 1823
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> Number of Edges: 36460
+ Number of cells (nodes)): 1823
 </pre></div>
 </div>
 </div>
@@ -2915,12 +2937,22 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
 <span class="n">edges</span> <span class="o">=</span> <span class="n">edge_index_cells</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
-
-<span class="c1"># subgraph random sampling</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># subgraph random sampling</span>
 <span class="n">sample_nodes</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">),</span> <span class="mi">150</span><span class="p">)</span>
 <span class="n">subgraph</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 <span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">subgraph</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">subgraph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">node_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="s1">&#39;deepskyblue&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
 <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">subgraph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
@@ -2935,6 +2967,7 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 <img alt="_images/7cc1cf5d6bf06ae3c9a4aae28c95e0d25aca48bb2cde871e37e17d2497cc591c.png" src="_images/7cc1cf5d6bf06ae3c9a4aae28c95e0d25aca48bb2cde871e37e17d2497cc591c.png" />
 </div>
 </div>
+</section>
 <section id="hyperparametrization-of-vae-gat">
 <h3>Hyperparametrization of VAE + GAT<a class="headerlink" href="#hyperparametrization-of-vae-gat" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
@@ -3522,6 +3555,7 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
 <img alt="_images/f8b4ff86c70db6931ebee8fbf2cf22b9886cda465e13e4f45bd9f04795b2a618.png" src="_images/f8b4ff86c70db6931ebee8fbf2cf22b9886cda465e13e4f45bd9f04795b2a618.png" />
 </div>
 </div>
+<p>The clustering results obtained using <strong>Leiden</strong> and <strong>Louvain</strong> algorithms across resolutions 0.4, 0.6, and 0.8 reveal distinct behaviors in terms of cluster compactness, separation, and overall structure. At resolution 0.4, both algorithms identify relatively coarse groupings. Leiden detects more dispersed clusters, reflected in a silhouette score of <strong>0.46</strong> and Calinski-Harabasz (CH) index of <strong>2430.7</strong>, while Louvain shows slightly more compact groupings with a higher silhouette score of <strong>0.48</strong>, albeit a slightly lower CH index (<strong>2332.0</strong>). At resolution 0.6, both methods begin to over-segment the data, with Leiden’s silhouette score dropping to <strong>0.39</strong>, indicating a decline in intra-cluster cohesion. However, the CH index for Leiden increases to <strong>2464.9</strong>, suggesting some increase in between-cluster separation. Louvain at the same resolution maintains a higher silhouette score (<strong>0.47</strong>) and achieves the highest CH index (<strong>2482.2</strong>), indicating a better trade-off between cohesion and separation than Leiden.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata_latent</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">AnnData</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">mu</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
@@ -3573,28 +3607,7 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
 <img alt="_images/1264956e81f707a9178dbf1daa16b03a87e3d43ef339a21794dbeb86b3d949bf.png" src="_images/1264956e81f707a9178dbf1daa16b03a87e3d43ef339a21794dbeb86b3d949bf.png" />
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># recon_np = recon_x.detach().numpy()</span>
-<span class="c1"># pearson_corr = np.corrcoef(X_tensor.numpy().flatten(), recon_np.flatten())[0, 1]</span>
-<span class="c1"># kl_div = kl_loss.item()</span>
-
-<span class="c1"># metrics_df = pd.DataFrame({</span>
-<span class="c1">#     &#39;Metric&#39;: [&#39;Pearson Corr&#39;, &#39;Silhouette Score&#39;, &#39;Calinski-Harabasz&#39;, &#39;KL Divergence&#39;],</span>
-<span class="c1">#     &#39;VAE + GAT&#39;: [pearson_corr, silh, ch, kl_div]</span>
-<span class="c1"># })</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pd.set_option(&#39;display.float_format&#39;, &#39;{:.6f}&#39;.format)</span>
-<span class="c1"># metrics_df</span>
-</pre></div>
-</div>
-</div>
-</div>
+<p>At resolution 0.8, both methods over-partition the data further, generating many smaller clusters. For Leiden, this results in a higher CH index of <strong>2774.3</strong>, the best among all configurations, but the silhouette score only marginally increases to <strong>0.47</strong>, suggesting that while the clusters are further apart, their internal consistency hasn’t improved much. In contrast, Louvain at resolution 0.8 yields a lower silhouette score of <strong>0.41</strong> and a CH index of <strong>2433.7</strong>, indicating it struggles to preserve cluster quality as granularity increases. Overall, <strong>Louvain clustering at resolution 0.6 appears to offer the best balance</strong>, achieving strong cohesion and good separation, while Leiden at resolution 0.8 maximizes inter-cluster distance at the cost of consistency. The visual UMAP projections support these findings, where some clusters begin to fragment into smaller, possibly biologically irrelevant subgroups at high resolution settings.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">evaluate_model_vae_gat</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_data</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
@@ -3688,6 +3701,8 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
 </div>
 </div>
 </div>
+<p>In terms of clustering quality assessed using the <strong>Silhouette Score</strong> and <strong>Calinski-Harabasz (CH) Index</strong>, the <strong>VAE+GAT</strong> model shows significant improvements over the standard VAE, although it does not consistently outperform the <strong>VAE+Attention</strong> model. Using the <strong>Leiden</strong> method, the vanilla VAE performs poorly across all resolutions, with Silhouette scores ranging from <strong>0.076 to 0.195</strong> and CH indices between <strong>229 and 510</strong>, indicating poor cluster separation and compactness. When attention mechanisms are introduced, the <strong>VAE+Attention</strong> model significantly improves, reaching up to <strong>0.462</strong> Silhouette and CH scores over <strong>3600</strong>. The <strong>VAE+GAT</strong> also shows notable enhancements over the base model, particularly at resolution 0.8, where it achieves its best Silhouette score (<strong>0.472</strong>) and a strong CH index (<strong>2774.3</strong>), although it does not reach the peak CH index of the attention-based variant.</p>
+<p>Using the <strong>Louvain</strong> method, similar patterns emerge. The VAE model performs especially poorly, with negative metric values at resolution 0.4, indicating complete failure in forming meaningful clusters. The addition of attention stabilizes these metrics with Silhouette scores up to <strong>0.408</strong> and CH indices above <strong>2100</strong>. However, the <strong>VAE+GAT again stands out</strong>, achieving the highest Silhouette score of <strong>0.478</strong> at resolution 0.4 and the highest CH index of <strong>2482.2</strong> at resolution 0.6. This suggests that leveraging a cell-cell graph enables the model to better capture latent structures aligned with the true distribution of the data, resulting in improved intra-cluster cohesion and inter-cluster separation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">final_df</span>
@@ -3861,6 +3876,7 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
 </table>
 </div></div></div>
 </div>
+<p>Finally, complementary metrics support these findings. While <strong>VAE+Attention</strong> achieves the lowest <strong>Mean Squared Error (MSE = 0.794)</strong> and the best <strong>latent space normality (p = 0.426)</strong>, its <strong>Pearson correlation</strong> with the original data is near zero. On the other hand, <strong>VAE+GAT</strong> reaches a higher correlation (<strong>0.090</strong>) and a balanced MSE (<strong>2.38</strong>), although with lower latent space normality (<strong>p = 0.000477</strong>). This suggests that, although VAE+Attention builds a more regular and compact latent space, <strong>VAE+GAT is more effective at capturing real structural relationships between cells</strong>, translating into higher practical clustering quality, particularly valuable for tasks such as identifying distinct cell types in single-cell data.</p>
 </section>
 </section>
 <section id="differential-expression-for-vae-gat">
@@ -3919,7 +3935,8 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
 <img alt="_images/be4706fce89c8a49de232a8967a4ce9501ee51eec2f91105fbffc9a4e882c7d3.png" src="_images/be4706fce89c8a49de232a8967a4ce9501ee51eec2f91105fbffc9a4e882c7d3.png" />
 </div>
 </div>
-<p>volvano plot</p>
+<section id="volcano-plot">
+<h4>Volcano Plot<a class="headerlink" href="#volcano-plot" title="Link to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">key_added</span><span class="o">=</span><span class="s1">&#39;rank_genes_gat&#39;</span>
@@ -3927,6 +3944,7 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
 </div>
 </div>
 </div>
+</section>
 <section id="cluster-summary-with-biological-interpretation">
 <h4>Cluster Summary with Biological Interpretation<a class="headerlink" href="#cluster-summary-with-biological-interpretation" title="Link to this heading">#</a></h4>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -4156,11 +4174,13 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vae-gat">VAE + GAT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expression-graph">Expression Graph</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparametrization-of-vae-gat">Hyperparametrization of VAE + GAT</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#model-defined-vae-gat">Model Defined VAE + GAT</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differential-expression-for-vae-gat">Differential Expression for VAE + GAT</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#volcano-plot">Volcano Plot</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-summary-with-biological-interpretation">Cluster Summary with Biological Interpretation</a></li>
 </ul>
 </li>
