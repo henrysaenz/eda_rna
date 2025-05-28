@@ -514,29 +514,28 @@ $$
 
 </pre></div>
 </div>
-<div class="highlight-{admonition}Negative notranslate"><div class="highlight"><pre><span></span>
-Used to model count data with overdispersion. Assumes each gene follows a NB distribution.
-
-**Formula:**
-
-$$
+<div class="admonition-negative-binomial-loss-nb admonition">
+<p class="admonition-title">Negative Binomial Loss (NB)</p>
+<p>Used to model count data with overdispersion. Assumes each gene follows a NB distribution.</p>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[
 \mathcal{L}_{NB} = - \sum_{i,j} \left[ \log \Gamma(x_{ij} + \theta) - \log \Gamma(x_{ij} + 1) - \log \Gamma(\theta) + x_{ij} \log(\mu_{ij}) + \theta \log \left( \frac{\theta}{\theta + \mu_{ij}} \right) \right]
-$$
-</pre></div>
+\]</div>
 </div>
-<div class="highlight-{admonition}Silhouette notranslate"><div class="highlight"><pre><span></span>
-Assesses how similar a cell is to its own cluster versus other clusters.
-
-**Formula:**
-
-$$
+<div class="admonition-silhouette-score admonition">
+<p class="admonition-title">Silhouette Score</p>
+<p>Assesses how similar a cell is to its own cluster versus other clusters.</p>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[
 s(i) = \frac{b(i) - a(i)}{max(a(i), b(i))}
-$$
-
-Where:
-- $a(i)$ = mean intra-cluster distance
-- $b(i)$ = mean nearest-cluster distance
-</pre></div>
+\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(a(i)\)</span> = mean intra-cluster distance</p></li>
+<li><p><span class="math notranslate nohighlight">\(b(i)\)</span> = mean nearest-cluster distance</p></li>
+</ul>
 </div>
 <div class="admonition-adjusted-rand-index-ari admonition">
 <p class="admonition-title">Adjusted Rand Index (ARI)</p>
