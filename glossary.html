@@ -409,24 +409,18 @@ document.write(`
 <section id="concepts-in-the-scrna-seq-analysis">
 <h2>Concepts in the scRNA - seq Analysis<a class="headerlink" href="#concepts-in-the-scrna-seq-analysis" title="Link to this heading">#</a></h2>
 <div class="highlight-{admonition}Gene notranslate"><div class="highlight"><pre><span></span>A **gene** is a sequence of DNA that contains the instructions to produce a specific molecule, typically a protein or functional RNA. In scRNA-seq, gene expression is quantified by counting the RNA molecules transcribed from genes.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Cells notranslate"><div class="highlight"><pre><span></span>**Cells** are the basic structural and functional units of all living organisms. In scRNA-seq, each cell is analyzed individually to understand its gene expression profile.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}RNA notranslate"><div class="highlight"><pre><span></span>**RNA (Ribonucleic Acid)** is a nucleic acid that plays essential roles in coding, decoding, regulation, and expression of genes. scRNA-seq measures the amount of RNA in each cell to infer gene expression.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Apoptosis notranslate"><div class="highlight"><pre><span></span>**Apoptosis** is a form of programmed cell death that occurs in multicellular organisms. It is characterized by specific cellular changes such as cell shrinkage, chromatin condensation, and membrane blebbing.
-
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Apoptotic notranslate"><div class="highlight"><pre><span></span>An **apoptotic cell** is a cell undergoing apoptosis. In scRNA-seq, high mitochondrial gene expression is often used as an indicator of apoptosis.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Gene notranslate"><div class="highlight"><pre><span></span>The **Gene Detection Rate** is the proportion of genes detected (i.e., with non-zero expression) in a given cell. It serves as a quality metric.
@@ -435,11 +429,9 @@ document.write(`
 $$
 \text{Gene Detection Rate} = \frac{\text{Number of detected genes in a cell}}{\text{Total number of genes}}
 $$
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Mitochondrial notranslate"><div class="highlight"><pre><span></span>In the context of scRNA-seq, **mitochondrial cells** usually refer to cells with abnormally high proportions of reads mapped to mitochondrial genes, often considered stressed or dying.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Mitochondrial notranslate"><div class="highlight"><pre><span></span>The **Mitochondrial Proportion** is the percentage of total reads in a cell that map to mitochondrial genes. High values suggest cell stress or apoptosis.
@@ -448,23 +440,18 @@ $$
 $$
 \text{Mitochondrial Proportion} = \frac{\text{Mitochondrial gene counts}}{\text{Total gene counts}} \times 100
 $$
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}UMI notranslate"><div class="highlight"><pre><span></span>**Unique Molecular Identifiers (UMIs)** are short sequences used to count unique RNA molecules, minimizing amplification bias during PCR. Total UMI counts per cell indicate its transcriptome size.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Batch notranslate"><div class="highlight"><pre><span></span>A **batch** refers to a group of cells that have been processed together under the same experimental conditions. Variability between batches is common and can introduce confounding effects.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Batch notranslate"><div class="highlight"><pre><span></span>**Batch Effect** is the unwanted variation in data due to technical differences between batches (e.g., reagent lots, sequencing runs), rather than biological differences.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Normalization notranslate"><div class="highlight"><pre><span></span>**Normalization** is the process of adjusting raw gene expression counts to account for differences in sequencing depth and other technical factors across cells.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Log notranslate"><div class="highlight"><pre><span></span>**Log Normalization** transforms the normalized counts using a logarithmic function to stabilize variance across genes.
@@ -474,11 +461,9 @@ $$
 \text{LogNormalized}(x) = \log_2\left(\frac{x}{\text{total counts per cell}} \times \text{scale factor} + 1\right)
 $$
 Typically, the scale factor is 10,000.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Highly notranslate"><div class="highlight"><pre><span></span>**Highly Variable Genes (HVGs)** are genes that show greater expression variability across cells than expected by chance. HVGs are useful for downstream dimensionality reduction and clustering.
-
 </pre></div>
 </div>
 <div class="highlight-{admonition}Principal notranslate"><div class="highlight"><pre><span></span>**PCA** is a linear dimensionality reduction technique that transforms the data into a set of orthogonal axes (principal components), each capturing a portion of the variance.
