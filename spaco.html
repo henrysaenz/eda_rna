@@ -801,6 +801,46 @@ Fraction of spatially-structured variance: 0.1902
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="conclusion">
 <h1>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h1>
+<p>The selection of Leiden resolution 0.8 for the VAE + GAT model in the clustering benchmark was guided by a comprehensive evaluation of multiple clustering metrics, each reflecting complementary aspects of performance. The Leiden algorithm, known for its robustness in community detection in graph-based representations, was applied at various resolution levels to explore how fine-grained or coarse the clustering results could become. Among these, the resolution of 0.8 emerged as the most effective, especially when paired with the VAE + GAT model, a combination that integrates both latent representation learning and graph attention mechanisms for enhanced spatial awareness in single-cell RNA sequencing data.</p>
+<p>Specifically, at resolution 0.8, the VAE + GAT model achieved the highest Silhouette Score (0.47195) across all configurations, indicating strong intra-cluster cohesion and inter-cluster separation. This metric is especially meaningful in evaluating the compactness and distinguishability of clusters in the latent space. Furthermore, the Calinski-Harabasz Index at this resolution also peaked, reaching 2774.32, which quantifies the ratio of between-cluster dispersion to within-cluster dispersion—a hallmark of well-formed clusters. Additionally, the Mean Squared Error (MSE) and Pearson correlation between the original and reconstructed data at this resolution provided further evidence of high reconstruction fidelity and strong global structure preservation in the learned latent representations.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Benchmark</span> <span class="pre">Metrics</span> <span class="pre">Table</span> <span class="pre">(Leiden</span> <span class="pre">Resolution</span> <span class="pre">0.8</span> <span class="pre">–</span> <span class="pre">VAE</span> <span class="pre">+</span> <span class="pre">GAT)</span></code></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Metric</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Method</p></th>
+<th class="head"><p>Resolution</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Silhouette Score</p></td>
+<td><p>0.471954</p></td>
+<td><p>Leiden</p></td>
+<td><p>0.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>Calinski-Harabasz Index</p></td>
+<td><p>2774.322012</p></td>
+<td><p>Leiden</p></td>
+<td><p>0.8</p></td>
+</tr>
+<tr class="row-even"><td><p>Mean Squared Error (MSE)</p></td>
+<td><p>0.012455</p></td>
+<td><p>Leiden</p></td>
+<td><p>0.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pearson Correlation</p></td>
+<td><p>0.0926571</p></td>
+<td><p>Leiden</p></td>
+<td><p>0.8</p></td>
+</tr>
+<tr class="row-even"><td><p>Latent Space Normality (p-value)</p></td>
+<td><p>0.000477</p></td>
+<td><p>Leidein</p></td>
+<td><p>0.8</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 
     <script type="text/x-thebe-config">
