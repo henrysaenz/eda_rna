@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Preprocessing of Raw Data &#8212; My sample book</title>
+    <title>Preprocessing of Raw Data &#8212; scRNA Sequencing Analysis</title>
   
   
   
@@ -62,8 +62,6 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'raw_data_pca';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Preprocessing of Raw Data using VAE + GAT1" href="raw_data_vaegat.html" />
-    <link rel="prev" title="Exploratory Data Analysis for test data" href="EDA_test.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -126,6 +124,8 @@
       
       
       
+        
+      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -155,8 +155,8 @@
       
     
     
-    <img src="_static/logo_uninorte.png" class="logo__image only-light" alt="My sample book - Home"/>
-    <script>document.write(`<img src="_static/logo_uninorte.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+    <img src="_static/logo_uninorte.png" class="logo__image only-light" alt="scRNA Sequencing Analysis - Home"/>
+    <script>document.write(`<img src="_static/logo_uninorte.png" class="logo__image only-dark" alt="scRNA Sequencing Analysis - Home"/>`);</script>
   
   
 </a></div>
@@ -181,9 +181,10 @@
                 </a>
             </li>
         </ul>
-        <ul class="current nav bd-sidenav">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to Single-Cell RNA Sequencing</a></li>
 
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Important Concepts and Metrics Used for scRNA-seq Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="EDA_sparse_matrix.html">Exploratory Data Analysis for the sparse matrix</a></li>
@@ -191,9 +192,12 @@
 <li class="toctree-l1"><a class="reference internal" href="Agrupaciones_y_clusters.html">Exploratory Data Analysis for clusterization and gene expressions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_test.html">Exploratory Data Analysis for test data</a></li>
 
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Preprocessing of Raw Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat.html">Preprocessing of Raw Data using VAE + GAT1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="raw_data_vaegat_base.html">Preprocessing of Raw Data using VAE + GAT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing of Raw Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PCA.html">Principal Component Analysis - Dimensionality reduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Benchmark_Models.html">Benchmark Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spaco.html">Spatial Component Analysis Based on Latent Representations (SpaCO)</a></li>
+
 </ul>
 
     </div>
@@ -3950,24 +3954,6 @@ Name: pvals_adj, dtype: float64
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="EDA_test.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Exploratory Data Analysis for test data</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="raw_data_vaegat.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Preprocessing of Raw Data using VAE + GAT1</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -4070,7 +4056,7 @@ Name: pvals_adj, dtype: float64
   <div class="footer-item">
     
 <p class="component-author">
-By The Jupyter Book Community
+By Henry D. Saenz
 </p>
 
   </div>
