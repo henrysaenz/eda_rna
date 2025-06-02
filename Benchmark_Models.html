@@ -62,6 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'Benchmark_Models';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Spatial Component Analysis Based on Latent Representations (SpaCO)" href="spaco.html" />
     <link rel="prev" title="Principal Component Analysis - Dimensionality reduction" href="PCA.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -183,6 +184,7 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to Single-Cell RNA Sequencing</a></li>
 
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Important Concepts and Metrics Used for scRNA-seq Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EDA_metadata.html">Exploratory Data Analysis for Metadata</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="EDA_sparse_matrix.html">Exploratory Data Analysis for the sparse matrix</a></li>
@@ -194,6 +196,8 @@
 <li class="toctree-l1"><a class="reference internal" href="PCA.html">Principal Component Analysis - Dimensionality reduction</a></li>
 
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Benchmark Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spaco.html">Spatial Component Analysis Based on Latent Representations (SpaCO)</a></li>
+
 </ul>
 
     </div>
@@ -1681,7 +1685,7 @@ Beyond the green lines and above the blue line, it’s considered both:</p>
 <img alt="_images/035dbf3919d69d603cc06f6b792ce7fbc40689f831fe37bd67553dd2d681d068.png" src="_images/035dbf3919d69d603cc06f6b792ce7fbc40689f831fe37bd67553dd2d681d068.png" />
 </div>
 </div>
-<div class="highlight-{admonition}**VAE notranslate"><div class="highlight"><pre><span></span>This model builds upon the standard Variational Autoencoder (VAE) architecture by incorporating a **self-attention mechanism** into the encoder. This allows the model to better capture interactions between genes and focus on the most informative features in the input.
+<div class="highlight-{admonition}VAE notranslate"><div class="highlight"><pre><span></span>This model builds upon the standard Variational Autoencoder (VAE) architecture by incorporating a self-attention mechanism into the encoder. This allows the model to better capture interactions between genes and focus on the most informative features in the input.
 
 Single-cell RNA sequencing data contains complex dependencies across genes. While the vanilla VAE captures global patterns, it may miss long-range or structured gene relationships. Self-attention mechanisms address this by dynamically weighting gene contributions per input.
 </pre></div>
@@ -4131,6 +4135,15 @@ Grid Search: 100%|██████████| 16/16 [39:07&lt;00:00, 146.74s
         <p class="prev-next-subtitle">previous</p>
         <p class="prev-next-title">Principal Component Analysis - Dimensionality reduction</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="spaco.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Spatial Component Analysis Based on Latent Representations (SpaCO)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
